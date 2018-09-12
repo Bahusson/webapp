@@ -26,10 +26,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="#">Aktualności</a>
+              <a class="nav-link" href="#">Aktualności</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Blog</a>
+              <a class="nav-link active" href="#">Blog</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Download</a>
@@ -40,37 +40,23 @@
     </header>
 
     <main role="main">
+      <div class="container">
+        <h1 class="text-center pt-3">Mój Blog</h1>
+        <h2 class="pt-2">Najnowsze Wpisy</h2>
+        <hr />
+          <div class="container">
 
-      <section class="jumbotron text-center">
-        <div class="container">
-          <h1 class="jumbotron-heading">Witaj!</h1>
-          <p class="lead text-muted">Nazywam się Jakub Kozdrowicz i jestem początkującym programistą. Ta strona i jej zawartość powstała w ramach mojej nauki programowania w Django 2, Python 3, PostgreSQL i in. </p>
-          <p>
-            <a href="mailto:jakub.kozdrowicz@gmail.com" class="btn btn-primary my-2">Wyślij email</a>
-          </p>
-        </div>
-      </section>
-
-      <div class="album py-5 bg-light">
-        <div class="container">
-
-          <div class="row">
-
-            {% for job in jobs.all %}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <img class="card-img-top" src="{{ job.image.url }}"/>
-                <div class="card-body">
-                  <p class="card-text">{{ job.summary }}</p>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+              {% for blog in blogs.all %}
+                  <h5 class="pt-2">{{ blog.title }}</h5>
+                  <img class="img-fluid" src="{{ blog.image.url }}" width=50% height=auto />
+                  <p class="text-muted">{{ blog.pubdate }}</p>
+                  <p>{{ blog.body }}</p>
+                  <hr />
+              {% endfor %}
 
           </div>
-        </div>
-      </div>
 
+      </div>
     </main>
 
     <footer class="text-muted">
