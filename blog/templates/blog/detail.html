@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Jakub Kozdrowicz</title>
+    <title>{{ blog.title }}</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -29,7 +29,7 @@
               <a class="nav-link" href="#">Aktualności</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
+              <a class="nav-link active" href="{% url 'allblogs' %}">Blog</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
@@ -43,38 +43,15 @@
     </header>
 
     <main role="main">
-
-      <section class="jumbotron text-center">
-        <div class="container">
-          <h1 class="jumbotron-heading">Witaj!</h1>
-          <p class="lead text-muted">Nazywam się Jakub Kozdrowicz i jestem początkującym programistą. Ta strona i jej zawartość powstała w ramach mojej nauki programowania w Django 2, Python 3, PostgreSQL i in. </p>
-          <p>
-            <a href="mailto:jakub.kozdrowicz@gmail.com" class="btn btn-primary my-2">Wyślij email</a>
-          </p>
-          <img src="{% static 'myphoto.jpg' %}" height="250" />
-        </div>
-      </section>
-
-      <div class="album py-5 bg-light">
-        <div class="container">
-
-          <div class="row">
-
-            {% for job in jobs.all %}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <img class="card-img-top" src="{{ job.image.url }}"/>
-                <div class="card-body">
-                  <p class="card-text">{{ job.summary }}</p>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-
-          </div>
-        </div>
+      <div class="container">
+        <h1 class="text-center pt-3">{{ blog.title }}</h1>
+        <h4 class="pt-2">{{ blog.pubdate_short }}</h4>
+        <hr />
+        <img class="img-fluid" src="{{ blog.image.url }}" width=50% height=auto />
+        <br />
+        <br />
+        {{ blog.body }}
       </div>
-
     </main>
 
     <footer class="text-muted">
