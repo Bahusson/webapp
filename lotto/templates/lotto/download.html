@@ -1,14 +1,13 @@
 <!doctype html>
 <html lang="en">
   {% load staticfiles %}
+
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <title>Jakub Kozdrowicz</title>
-
+    <title>Moje Programy</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <!-- Custom styles for this template
@@ -35,47 +34,41 @@
               <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'download' %}">Download</a>
+              <a class="nav-link active" href="{% url 'download' %}">Download</a>
             </li>
           </ul>
         </div>
       </nav>
     </header>
 
-    <main role="main">
-
-      <section class="jumbotron text-center">
-        <div class="container">
-          <h1 class="jumbotron-heading">Witaj!</h1>
-          <p class="lead text-muted">Nazywam się Jakub Kozdrowicz i jestem początkującym programistą. Ta strona i jej zawartość powstała w ramach mojej nauki programowania w Django 2, Python 3, PostgreSQL i in. </p>
+        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+          <h1 class="display-4">Moje Programy</h1>
+          <p class="lead">Najlepiej uczę się eksperymentując i pisząc różne programy. Te, które cechują się większą użytecznością udostępniam tutaj do powszechnego użytku. Jeśli potrzebujesz abym rozwinął którąś z funkcjonalności mojego programu napisz mi maila a ja spróbuję to zrobić w wolnym czasie.</p>
           <p>
             <a href="mailto:jakub.kozdrowicz@gmail.com" class="btn btn-primary my-2">Wyślij email</a>
           </p>
-          <img src="{% static 'myphoto.jpg' %}" height="250" />
         </div>
-      </section>
-
-      <div class="album py-5 bg-light">
         <div class="container">
-
-          <div class="row">
-
-            {% for job in jobs.all %}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <img class="card-img-top" src="{{ job.image.url }}"/>
-                <div class="card-body">
-                  <p class="card-text">{{ job.summary }}</p>
-                </div>
-              </div>
-            </div>
+          <div class="card-deck mb-3 text-center">
+            {% for lot in lots.all %}
+                 <div class="card mb-4 shadow-sm">
+                   <div class="card-header">
+                     <h4 class="my-0 font-weight-normal">{{ lot.title }}</h4>
+                   </div>
+                   <div class="card-body">
+                     <img class="img-fluid" src="{{ lot.image.url }}" width=150 height=100 />
+                     <ul class="list-unstyled mt-3 mb-4">
+                       <li>wersja: {{ lot.version }}</li>
+                       <li>opublikowano: {{ lot.date_short }}</li>
+                       <li>rozmiar pliku: {{ lot.weight }}</li>
+                       <a href="{% url 'progpage' lot.id %}"><li>Szczegóły</li></a>
+                     </ul>
             {% endfor %}
-
-          </div>
+                    <form action="{% url 'download' %}" method="POST">{% csrf_token %}<input type="submit" value="Odpal w przeglądarce" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+                   </div>
+                 </div>
         </div>
       </div>
-
-    </main>
 
     <footer class="text-muted">
       <div class="container text-center">

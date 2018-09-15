@@ -35,7 +35,7 @@
               <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Download</a>
+              <a class="nav-link" href="{% url 'download' %}">Download</a>
             </li>
           </ul>
         </div>
@@ -58,7 +58,6 @@
               {% endfor %}
 
           </div>
-
       </div>
     </main>
 
