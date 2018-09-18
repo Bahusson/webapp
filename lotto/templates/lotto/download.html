@@ -63,10 +63,11 @@
                        <li>rozmiar pliku: {{ lot.weight }}</li>
                        <a href="{% url 'progpage' lot.id %}"><li>Szczegóły</li></a>
                      </ul>
-            {% endfor %}
-                    <form action="{% url 'download' %}" method="POST">{% csrf_token %}<input type="submit" value="Odpal w przeglądarce" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+                     <form action="{% url 'download' %}" method="POST">{% csrf_token %}<input type="submit" value="Odpal z Serwera" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
                    </div>
                  </div>
+            {% endfor %}
+
         </div>
       </div>
 

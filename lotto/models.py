@@ -9,6 +9,8 @@ class Lotto(models.Model):
     weight = models.CharField(max_length=25)
     compatible = models.CharField(max_length=200)
     downlink = models.TextField()
+    gitsrccode = models.TextField(blank=True)
+    license = models.CharField(max_length=250, blank=True)
 
     #Ta funkcja pokazuje tytuł postu na stronie admina. Zawsze używaj ___str___ żeby wrzucić coś w górę do adminów.
     def __str__(self):

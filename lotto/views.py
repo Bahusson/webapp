@@ -1,7 +1,11 @@
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from lotto.serializers import UserSerializer, GroupSerializer
 from django.shortcuts import render, get_object_or_404
 import importlib
 import os
 from .models import Lotto
+
 
 def download(request):
     if request.method == 'GET':
@@ -17,4 +21,18 @@ def download(request):
 #Ta funkcja kieruje na podstronę ze szczegółami wybranego programu.
 def progpage(request, lotto_id):
     detprog = get_object_or_404(Lotto, pk=lotto_id)
-    return render(request, 'lotto/progpage.html', {'lotto':detprog})
+    return render(request, 'lotto/progpage.html', {'lotto': detprog})
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
