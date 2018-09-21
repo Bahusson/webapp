@@ -25,5 +25,6 @@ urlpatterns = [
     path('', jobs.views.home, name='home'),
     path('blog/', include('blog.urls')),
     path('lotto/', include('lotto.urls')),
+    path('jobs/', include('jobs.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -26,7 +26,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#">Aktualności</a>
+              <a class="nav-link" href="{% url 'newsletter' %}">Aktualności</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'allblogs' %}">Blog</a>
@@ -35,7 +35,7 @@
               <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Download</a>
+              <a class="nav-link" href="{% url 'download' %}">Download</a>
             </li>
           </ul>
         </div>
@@ -51,8 +51,6 @@
         <br />
         <br />
         {{ blog.body }}
-
-        {{%  %}}
       </div>
     </main>
 
