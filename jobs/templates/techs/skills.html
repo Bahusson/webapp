@@ -50,7 +50,7 @@
         <br />
         {{ tech.body }}
         <br />
-        {% if tech.link != 0 %}
+        {% if tech.linkifblank != 0 %}
             <br />
             {% with tech as t %}
             <a href="{% static t.link %}">Zobacz Certyfikat...</a>
