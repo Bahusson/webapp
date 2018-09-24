@@ -42,8 +42,9 @@
       </nav>
     </header>
 
-    <main role="main">
-      <div class="container">
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8 blog-main">
         <h1 class="text-center pt-3">{{ tech.title }}</h1>
         <img class="img" src="{{ tech.image.url }}" height=300px />
         <br />
@@ -58,6 +59,24 @@
         {% else %}
             <br/>
         {% endif %}
+      </div>
+
+      <aside class="col-md-4 blog-sidebar">
+        <div class="p-3">
+          <br />
+          <h4 class="font-strong">Wszystkie Umiejętności</h4>
+          <ol class="list-unstyled mb-0">
+            {% for tech in techs.all %}
+            <li><a href="{% url 'skills' tech.id %}">{{ tech.title }}</a></li>
+            {% endfor %}
+          </ol>
+        </div>
+        <div class="p-3">
+          <h4 class="font-strong">Zobacz CV</h4>
+          <ol class="list-unstyled mb-0">
+            <li><a href="{% static 'CV.pdf' %}">Pobierz PDF</a></li>
+        </div>
+      </aside><!-- /.blog-sidebar -->
       </div>
     </main>
 

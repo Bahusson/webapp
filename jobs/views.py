@@ -26,5 +26,6 @@ def books(request, jobs_id):
     return render(request, 'jobs/books.html', {'job':books})
 
 def skills(request, techs_id):
+    techs = Tech.objects
     skills = get_object_or_404(Tech, pk=techs_id)
-    return render(request, 'techs/skills.html', {'tech':skills})
+    return render(request, 'techs/skills.html', {'tech':skills, 'techs':techs})
