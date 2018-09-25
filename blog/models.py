@@ -5,6 +5,7 @@ class Blog(models.Model):
     pubdate = models.DateTimeField()
     body = models.TextField()
     image = models.ImageField(upload_to='images')
+    video = models.CharField(max_length=500, blank=True, null=True)
 
     #Ta funkcja pokazuje tytuł postu na stronie admina. Zawsze używaj ___str___ żeby wrzucić coś w górę do adminów.
     def __str__(self):
@@ -12,7 +13,7 @@ class Blog(models.Model):
 
     #Ta funkcja ogranicza długość tekstu na stronie wpisów, żeby nie było zbyt rozlegle i każdy mógł sobie wybrać...
     def summary(self):
-        return self.body[:300]
+        return self.body[:110]
 
     #Funkcja formatująca datę w ludzki sposób...
     def pubdate_short(self):

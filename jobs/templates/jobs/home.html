@@ -47,33 +47,14 @@
       <section class="jumbotron text-center">
         <div class="container">
           <h1 class="jumbotron-heading">Witaj!</h1>
+          <img src="{% static 'myphoto.jpg' %}" height="250" />
           <p class="lead text-muted">Nazywam się Jakub Kozdrowicz i jestem początkującym programistą. Ta strona i jej zawartość powstała w ramach mojej nauki programowania w Django 2, Python 3, PostgreSQL i in. </p>
+
           <p>
             <a href="mailto:jakub.kozdrowicz@gmail.com" class="btn btn-primary my-2">Wyślij email</a>
           </p>
-          <img src="{% static 'myphoto.jpg' %}" height="250" />
         </div>
       </section>
-
-      <div class="album py-5 bg-light">
-        <div class="container">
-
-          <div class="row">
-
-            {% for job in jobs.all %}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <img class="card-img-top" src="{{ job.image.url }}"/>
-                <div class="card-body">
-                  <p class="card-text">{{ job.summary }}</p>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-
-          </div>
-        </div>
-      </div>
 
     </main>
 

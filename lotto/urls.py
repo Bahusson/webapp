@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('', views.download, name='download'),
     path('<int:lotto_id>/', views.progpage, name='progpage'),
+    path('lotto/pybrun/', views.pybrun, name='pybrun'),
 ]

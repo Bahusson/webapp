@@ -19,4 +19,7 @@ class Lotto(models.Model):
     #Funkcja formatująca datę w ludzki sposób...
     def date_short(self):
         return self.date.strftime('%a %d %b %Y')
+
+    def summary(self):
+        return self.readme[:110]
 # Create your models here.

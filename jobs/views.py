@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Job
 from .models import Tech
 from blog.models import Blog
+from lotto.models import Lotto
 
 def home(request):
     jobs = Job.objects
@@ -12,11 +13,12 @@ def newsletter(request):
     blogs = Blog.objects
     jobs = Job.objects
     techs = Tech.objects
+    progs = list(Lotto.objects.all())
+    db3 = progs[-1]
     #detailblog = Blog.objects.all()[0]
     locations = list(Blog.objects.all())
     db1 = locations[-1]
     db2 = locations[-2]
-    db3 = locations[-3]
 #   detailblog = get_list_or_404(Blog)
     return render(request, 'jobs/newsletter.html', {'techs':techs, 'jobs':jobs, 'blogs':blogs, 'dblog':db1, 'cblog':db2, 'bblog':db3})
 

@@ -45,10 +45,11 @@
     <main role="main">
       <div class="container">
         <h1 class="text-center pt-3">{{ job.title }}</h1>
+        <br />
         <img class="img" src="{{ job.image.url }}" height=300px />
         <br />
         <br />
-        {{ job.summary }}
+        {{ job.summary|linebreaksbr }}
         <br />
         <a href="{{ job.link }}">Więcej...</a>
       </div>
