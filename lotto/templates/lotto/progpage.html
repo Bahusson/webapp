@@ -51,10 +51,11 @@
                 <li>opublikowano: {{ lotto.date_short }}</li>
                 <li>rozmiar pliku: {{ lotto.weight }}</li>
                 <li>licencja: {{ lotto.license }}
-                <a href="{{ lotto.downlink }}"><li>ściągnij plik exe</li></a>
-                <a href="{{ lotto.gitsrccode }}"><li>ściągnij kod źródłowy</li></a>
+                <a href="{{ lotto.downlink }}" target="_blank"><li>ściągnij plik exe</li></a>
+                <a href="{{ lotto.gitsrccode }}" target="_blank"><li>ściągnij kod źródłowy</li></a>
               </ul>
               <p>{{ lotto.readme }}</p>
+              <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Odpal w nowym oknie" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
             </div><!-- /.col-lg-4 -->
             <div class="col-md-5 order-md-1">
               <img class="featurette-image img-fluid mx-auto" src="{{ lotto.image.url }}">
