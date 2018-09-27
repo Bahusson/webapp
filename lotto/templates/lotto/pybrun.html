@@ -9,49 +9,195 @@
     <title>Moje Programy</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <!-- Custom styles for this template
-    <link href="album.css" rel="stylesheet"> -->
+    <!-- Custom styles for this template-->
+    <link href="pybrun.css" rel="stylesheet">
   </head>
 
   <body>
 
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{% url 'home' %}">Jakub Kozdrowicz</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'newsletter' %}">Aktualności</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="{% url 'download' %}">Download</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </header>
-    <br />
-    <div class="container">
-      <h1>Randomizer</h1>
+        <header>
+          <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="{% url 'home' %}">Jakub Kozdrowicz</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'newsletter' %}">Aktualności</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'download' %}">Download</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </header>
+        <br />
+        <div class="container"><!--start container-->
+          <h1 class="px-3 py-3 pt-md-5 pb-md-4 text-center">Randomizer</h1>
+          <br />
+          <div class="py-3 row"><!--start radio-->
+            <div class="col-md-3">
+              <label class="contain">MultiMulti
+                <input type="radio" checked="checked" name="radio1">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <label class="contain">Lotto
+                <input type="radio" name="radio2">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <label class="contain">Mini Lotek
+                <input type="radio" name="radio3">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <label class="contain">Ekstra Pensja
+                <input type="radio" name="radio4">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div><!--end radio-->
 
-      
+          <div class="py-3 row"><!--row 1-->
+            <div class="col-md-3">
+              <p class="contain">Zaznacz pomiary:</p>
+            </div>
+            <div class="col-md-3">
+              <!--To miejsce ma pozostać puste! -->
+            </div>
+            <div class="col-md-3">
+              <input name="calendar1" class="calendar" type="text">
+              <label for="calendar1"></label>
+            </div>
+            <div class="col-md-3">
+                <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Data początkowa" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+            </div>
+          </div><!--end row 1-->
 
+          <div class="py-3 row"><!--row 2-->
+            <div class="col-md-3">
+              <p class="contain">Całość pomiarów:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="checkboxG1" id="checkboxG1" class="css-checkbox" type="checkbox">
+              <label for="checkboxG1" class="css-label"></label>
+            </div>
+            <div class="col-md-3">
+              <input name="calendar2" class="calendar" type="text">
+              <label for="calendar2"></label>
+            </div>
+            <div class="col-md-3">
+                <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Data Końcowa" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+            </div>
+          </div><!--end row 2-->
 
-    </div>
-    <footer class="text-muted">
-      <div class="container text-center">
-        <p> &copy; Jakub Kozdrowicz {% now "Y" %}</p>
-      </div>
-    </footer>
+          <div class="py-3 row"><!--row 3-->
+            <div class="col-md-6">
+              <p class="contain">Generuj statystyki dla wybranego okresu:</p>
+            </div>
+          </div><!--end row 3-->
+
+          <div class="py-3 row"><!--row 4-->
+            <div class="col-md-3">
+              <p class="contain">Najczęstsza i najrzadsza liczba:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="checkboxG2" id="checkboxG2" class="css-checkbox" type="checkbox">
+              <label for="checkboxG2" class="css-label"></label>
+            </div>
+            <div class="col-md-3">
+              <p class="contain">Bez losowań:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
+              <label for="checkboxG3" class="css-label"></label>
+            </div>
+          </div><!--end row 4-->
+
+          <div class="py-3 row"><!--row 5-->
+            <div class="col-md-3">
+              <p class="contain">Najczęściej padające liczby:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
+              <label for="checkboxG3" class="css-label"></label>
+            </div>
+            <div class="col-md-3">
+              <p class="contain">Ilość liczb:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="numinput" class="numinput" type="number">
+              <label for="numinput"></label>
+            </div>
+          </div><!--end row 5-->
+
+          <div class="py-3 row"><!--row 6-->
+            <div class="col-md-3">
+              <p class="contain">Średnie wyników losowań:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="checkboxG4" id="checkboxG4" class="css-checkbox" type="checkbox">
+              <label for="checkboxG4" class="css-label"></label>
+            </div>
+            <div class="col-md-3">
+              <p class="contain">Generuj wykres:</p>
+            </div>
+            <div class="col-md-3">
+              <input name="checkboxG5" id="checkboxG5" class="css-checkbox" type="checkbox">
+              <label for="checkboxG5" class="css-label"></label>
+            </div>
+          </div><!--end row 6-->
+
+          <div class="py-3 row"><!--row 7-->
+            <div class="col-md-3">
+              <p class="contain">Generuj Raport:</p>
+            </div>
+            <div class="col-md-3">
+              <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Generuj" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+            </div>
+            <div class="col-md-3">
+              <p class="contain">Zapisz Raport:</p>
+            </div>
+            <div class="col-md-3">
+                <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Zapisz" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+            </div>
+          </div><!--end row 7-->
+
+          <div class="py-3 row"><!--row 8-->
+            <div class="col-md-3">
+              <p class="contain"> Twój Raport:
+            </div>
+            <div class="col-md-3">
+              <textarea class="textarea" name="textarea1" rows="8"></textarea>
+              <label for="textarea1"></label>
+            </div>
+            <div class="col-md-3">
+              <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Zagraj w wybraną Grę" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+            </div>
+            <div class="col-md-3">
+              <textarea class="textarea" name="textare21" rows="1"></textarea>
+              <label for="textarea2" class="contain">Twoje liczby</label>
+            </div>
+          </div><!--end row 8-->
+
+        </div><!--end container-->
+        <footer class="text-muted">
+          <div class="container text-center">
+            <p> &copy; Jakub Kozdrowicz {% now "Y" %}</p>
+          </div>
+        </footer>
 
   <!-- Bootstrap core JavaScript
   ================================================== -->
