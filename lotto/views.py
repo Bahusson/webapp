@@ -10,6 +10,7 @@ def download(request):
     if request.method == 'GET':
         lots = Lotto.objects
         return render(request, 'lotto/download.html', {'lots':lots})
+    #Wyłączona funkcja odpalająca tkinter GUI na stronie odkąd zdecydowałem się na przepisanie frontu pod web.
     #elif request.method == 'POST':
         #lots = Lotto.objects
         #os.system('python lotto/randfront.py')

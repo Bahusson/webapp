@@ -1,209 +1,209 @@
 <!doctype html>
 <html lang="en">
-  {% load staticfiles %}
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Moje Programy</title>
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <!-- Custom styles for this template-->
-    <link href="pybrun.css" rel="stylesheet">
-  </head>
+{% load staticfiles %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Moje Programy</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <!-- Custom styles for this template-->
+  <link href="pybrun.css" rel="stylesheet">
+</head>
 
-  <body>
+<body>
 
-        <header>
-          <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="{% url 'home' %}">Jakub Kozdrowicz</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'newsletter' %}">Aktualności</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link active" href="{% url 'download' %}">Download</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        </header>
-        <br />
-        <div class="container"><!--start container-->
-          <h1 class="px-3 py-3 pt-md-5 pb-md-4 text-center">Randomizer</h1>
-          <br />
-          <div class="py-3 row"><!--start radio-->
-            <div class="col-md-3">
-              <label class="contain">MultiMulti
-                <input type="radio" checked="checked" name="radio1">
-                <span class="checkmark"></span>
-              </label>
-            </div>
-            <div class="col-md-3">
-              <label class="contain">Lotto
-                <input type="radio" name="radio2">
-                <span class="checkmark"></span>
-              </label>
-            </div>
-            <div class="col-md-3">
-              <label class="contain">Mini Lotek
-                <input type="radio" name="radio3">
-                <span class="checkmark"></span>
-              </label>
-            </div>
-            <div class="col-md-3">
-              <label class="contain">Ekstra Pensja
-                <input type="radio" name="radio4">
-                <span class="checkmark"></span>
-              </label>
-            </div>
-          </div><!--end radio-->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="{% url 'home' %}">Jakub Kozdrowicz</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'newsletter' %}">Aktualności</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'download' %}">Download</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <br />
 
-          <div class="py-3 row"><!--row 1-->
-            <div class="col-md-3">
-              <p class="contain">Zaznacz pomiary:</p>
-            </div>
-            <div class="col-md-3">
-              <!--To miejsce ma pozostać puste! -->
-            </div>
-            <div class="col-md-3">
-              <input name="calendar1" class="calendar" type="text">
-              <label for="calendar1"></label>
-            </div>
-            <div class="col-md-3">
-                <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Data początkowa" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
-            </div>
-          </div><!--end row 1-->
+  <div class="container"><!--start container for the APP-->
+    <h1 class="px-3 py-3 pt-md-5 pb-md-4 text-center">Randomizer</h1>
+    <br />
+    <form id="appform"><!--start application form-->
+      <div class="py-3 row"><!--start radio selection of 4 games-->
+        <div class="col-md-3">
+          <label class="contain">MultiMulti
+            <input class="radio" type="radio" name="radio" Value="1">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div class="col-md-3">
+          <label class="contain">Lotto
+            <input class="radio" type="radio" checked="checked" name="radio" Value="2">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div class="col-md-3">
+          <label class="contain">Mini Lotek
+            <input class="radio" type="radio" name="radio" Value="3">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div class="col-md-3">
+          <label class="contain">Ekstra Pensja
+            <input class="radio" type="radio" name="radio" Value="4">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+      </div><!--end radio-->
 
-          <div class="py-3 row"><!--row 2-->
-            <div class="col-md-3">
-              <p class="contain">Całość pomiarów:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="checkboxG1" id="checkboxG1" class="css-checkbox" type="checkbox">
-              <label for="checkboxG1" class="css-label"></label>
-            </div>
-            <div class="col-md-3">
-              <input name="calendar2" class="calendar" type="text">
-              <label for="calendar2"></label>
-            </div>
-            <div class="col-md-3">
-                <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Data Końcowa" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
-            </div>
-          </div><!--end row 2-->
+      <div class="py-3 row"><!--row 1: 2 labels and a DATE input FROM-->
+        <div class="col-md-6">
+          <p class="contain">Zaznacz pomiary:</p>
+        </div>
+        <div class="col-md-3">
+          <label class="contain" for="date1">Data początkowa:</label>
+        </div>
+        <div class="col-md-3">
+          <input id="date1" class="contain" type="date">
+        </div>
 
-          <div class="py-3 row"><!--row 3-->
-            <div class="col-md-6">
-              <p class="contain">Generuj statystyki dla wybranego okresu:</p>
-            </div>
-          </div><!--end row 3-->
+      </div><!--end row 1-->
 
-          <div class="py-3 row"><!--row 4-->
-            <div class="col-md-3">
-              <p class="contain">Najczęstsza i najrzadsza liczba:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="checkboxG2" id="checkboxG2" class="css-checkbox" type="checkbox">
-              <label for="checkboxG2" class="css-label"></label>
-            </div>
-            <div class="col-md-3">
-              <p class="contain">Bez losowań:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
-              <label for="checkboxG3" class="css-label"></label>
-            </div>
-          </div><!--end row 4-->
+      <div class="py-3 row"><!--row 2: 2 labels, checkbox "Całość pomiarów" and a DATE input TO-->
+        <div class="col-md-3">
+          <p class="contain">Całość pomiarów:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="checkboxG1" id="checkboxG1" class="css-checkbox" type="checkbox">
+          <label for="checkboxG1" class="css-label"></label>
+        </div>
+        <div class="col-md-3">
+          <label class="contain" for="date2">Data końcowa:</label>
+        </div>
+        <div class="col-md-3">
+          <input id="date2" class="contain" type="date">
+        </div>
+      </div><!--end row 2-->
 
-          <div class="py-3 row"><!--row 5-->
-            <div class="col-md-3">
-              <p class="contain">Najczęściej padające liczby:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
-              <label for="checkboxG3" class="css-label"></label>
-            </div>
-            <div class="col-md-3">
-              <p class="contain">Ilość liczb:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="numinput" class="numinput" type="number">
-              <label for="numinput"></label>
-            </div>
-          </div><!--end row 5-->
+      <div class="py-3 row"><!--row 3: Solitary introductory wide label-->
+        <div class="col-md-6">
+          <p class="contain">Generuj statystyki dla wybranego okresu:</p>
+        </div>
+      </div><!--end row 3-->
 
-          <div class="py-3 row"><!--row 6-->
-            <div class="col-md-3">
-              <p class="contain">Średnie wyników losowań:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="checkboxG4" id="checkboxG4" class="css-checkbox" type="checkbox">
-              <label for="checkboxG4" class="css-label"></label>
-            </div>
-            <div class="col-md-3">
-              <p class="contain">Generuj wykres:</p>
-            </div>
-            <div class="col-md-3">
-              <input name="checkboxG5" id="checkboxG5" class="css-checkbox" type="checkbox">
-              <label for="checkboxG5" class="css-label"></label>
-            </div>
-          </div><!--end row 6-->
+      <div class="py-3 row"><!--row 4: 2 labels, 2 checkboxes: "Najczęstsza i najrzadsza liczba", "Bez losowań"-->
+        <div class="col-md-3">
+          <p class="contain">Najczęstsza i najrzadsza liczba:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="checkboxG2" id="checkboxG2" class="css-checkbox" type="checkbox">
+          <label for="checkboxG2" class="css-label"></label>
+        </div>
+        <div class="col-md-3">
+          <p class="contain">Bez losowań:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
+          <label for="checkboxG3" class="css-label"></label>
+        </div>
+      </div><!--end row 4-->
 
-          <div class="py-3 row"><!--row 7-->
-            <div class="col-md-3">
-              <p class="contain">Generuj Raport:</p>
-            </div>
-            <div class="col-md-3">
-              <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Generuj" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
-            </div>
-            <div class="col-md-3">
-              <p class="contain">Zapisz Raport:</p>
-            </div>
-            <div class="col-md-3">
-                <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Zapisz" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
-            </div>
-          </div><!--end row 7-->
+      <div class="py-3 row"><!--row 5: 2 labels, checkbox "Najczęściej padające liczby", numfield "Ilość liczb"-->
+        <div class="col-md-3">
+          <p class="contain">Najczęściej padające liczby:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
+          <label for="checkboxG3" class="css-label"></label>
+        </div>
+        <div class="col-md-3">
+          <p class="contain">Ilość liczb:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="numinput" data-type=numinput class="numinput" type="number">
+          <label for="numinput"></label>
+        </div>
+      </div><!--end row 5-->
 
-          <div class="py-3 row"><!--row 8-->
-            <div class="col-md-3">
-              <p class="contain"> Twój Raport:
-            </div>
-            <div class="col-md-3">
-              <textarea class="textarea" name="textarea1" rows="8"></textarea>
-              <label for="textarea1"></label>
-            </div>
-            <div class="col-md-3">
-              <form action="{% url 'pybrun' %}" target="_blank"><input type="submit" value="Zagraj w wybraną Grę" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
-            </div>
-            <div class="col-md-3">
-              <textarea class="textarea" name="textare21" rows="1"></textarea>
-              <label for="textarea2" class="contain">Twoje liczby</label>
-            </div>
-          </div><!--end row 8-->
+      <div class="py-3 row"><!--row 6: 2 labels, 2 checkboxes: "Średnie wyników losowań", "Generuj wykres"-->
+        <div class="col-md-3">
+          <p class="contain">Średnie wyników losowań:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="checkboxG4" id="checkboxG4" class="css-checkbox" type="checkbox">
+          <label for="checkboxG4" class="css-label"></label>
+        </div>
+        <div class="col-md-3">
+          <p class="contain">Generuj wykres:</p>
+        </div>
+        <div class="col-md-3">
+          <input name="checkboxG5" id="checkboxG5" class="css-checkbox" type="checkbox">
+          <label for="checkboxG5" class="css-label"></label>
+        </div>
+      </div><!--end row 6-->
 
-        </div><!--end container-->
-        <footer class="text-muted">
-          <div class="container text-center">
-            <p> &copy; Jakub Kozdrowicz {% now "Y" %}</p>
+      <div class="py-3 row"><!--row 7: 2 labels, 2 buttons: "Generuj", "Zapisz" [raport]-->
+        <div class="col-md-3">
+          <p class="contain">Generuj Raport:</p>
+        </div>
+        <div class="col-md-3">
+          <input type="submit" data-type="generate" value="Generuj" button type="button" class="btn btn-lg btn-block btn-primary"></input>
+        </div>
+        <div class="col-md-3">
+          <p class="contain">Zapisz Raport:</p>
+        </div>
+        <div class="col-md-3">
+          <input type="submit" data-type="save" value="Zapisz" button type="button" class="btn btn-lg btn-block btn-primary"></input>
+        </div>
+      </div><!--end row 7-->
+
+      <div class="py-3 row"><!--row 8: 1 label, 1 button "zagraj w wybraną grę", 2 textfields: "Twój raport". "Twoje liczby" -->
+        <div class="col-md-3">
+          <p class="contain"> Twój Raport:
           </div>
-        </footer>
+          <div class="col-md-3">
+            <textarea class="textarea" id="textarea1" rows="8"></textarea>
+          </div>
+          <div class="col-md-3">
+              <input type="submit" data-type="play" value="Zagraj w wybraną Grę" button type="button" class="btn btn-lg btn-block btn-primary"></input></form>
+          </div>
+          <div class="col-md-3">
+            <textarea class="textarea" id=textarea2 rows="1"></textarea>
+            <label for="textarea2" class="contain">Twoje liczby</label>
+          </div>
+        </div><!--end row 8--><!--start of application form-->
+    </form><!--end of application form-->
+  </div><!--end container-->
 
-  <!-- Bootstrap core JavaScript
-  ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <footer class="text-muted">
+      <div class="container text-center">
+        <p> &copy; Jakub Kozdrowicz {% now "Y" %}</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <!--My Javascript-->
+    <script src="myjs.js"></script>
   </body>
-</html>
+  </html>
