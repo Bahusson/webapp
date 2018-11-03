@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
+#from rest_framework import viewsets
 from django.shortcuts import render, get_object_or_404
 import importlib
-import os
+#import os
 from .models import Lotto
+from django.http import HttpResponse
 
 
 def download(request):
@@ -23,3 +24,11 @@ def progpage(request, lotto_id):
 
 def pybrun (request):
     return render(request, 'lotto/pybrun.html')
+
+#To funkcja frontu "zagraj w grę" pod AJAX.
+def roll (request):
+    if request.method == 'POST':
+        radio = request.POST['radio_button_value']
+        #import randomize1
+        #print(lst1)
+        return HttpResponse(radio)

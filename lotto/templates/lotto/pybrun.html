@@ -12,7 +12,6 @@
   <!-- Custom styles for this template-->
   <link href="{% static 'pybrun.css' %}" rel="stylesheet">
 </head>
-
 <body>
     <p>Strona w budowie. Podłączam tu jeszcze ajaxa, żeby wszystko śmigało. ;) Wróć proszę później kiedy front będzie działał.</p>
     <p><a href="{% url 'progpage' 1 %}">Tutaj</a> znajdziesz wersję pliku exe dla Windowsa 7+, oraz link do mojego githuba</p>
@@ -184,13 +183,13 @@
             <textarea class="textarea" id="textarea1" rows="8"></textarea>
           </div>
           <div class="col-md-3">
-            <button type="button" class="btn btn-lg btn-block btn-primary" id='play'>Zagraj w wybraną Grę</button>
+            <button type="button" class="btn btn-lg btn-block btn-primary" id='play'>Zagraj w wybraną grę</button>
           </div>
           <div class="col-md-3">
             <textarea class="textarea" id=textarea2 rows="1"></textarea>
             <label for="textarea2" class="contain">Twoje liczby</label>
           </div>
-        </div><!--end row 8--><!--start of application form-->
+        </div><!--end row 8--><!--start of application form {% csrf_token %} -->
     </form><!--end of application form-->
   </div><!--end container-->
 

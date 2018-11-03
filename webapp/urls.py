@@ -28,4 +28,5 @@ urlpatterns = [
     path('jobs/', include('jobs.urls')),
     path('techs/', include('jobs.urls')),
     path('api-auth/', include('rest_framework.urls')),
+    path('ajax/', include('ajax.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
