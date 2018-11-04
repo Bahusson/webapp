@@ -4,7 +4,8 @@ from django.shortcuts import render, get_object_or_404
 import importlib
 #import os
 from .models import Lotto
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponse
+
 
 
 def download(request):
@@ -23,12 +24,16 @@ def progpage(request, lotto_id):
     return render(request, 'lotto/progpage.html', {'lotto': detprog})
 
 def pybrun (request):
-    return render(request, 'lotto/pybrun.html')
+    if request.method == 'GET':
+        return render(request, 'lotto/pybrun.html')
 
 #To funkcja frontu "zagraj w grę" pod AJAX.
 def roll (request):
-    if request.method == 'POST':
-        radio = request.POST['radio_button_value']
+    if request.is_ajax():
+        radio = request.POST['gamesel']
         #import randomize1
         #print(lst1)
-        return HttpResponse(radio)
+        responsedata = {
+            'number' : radio
+        }
+        return JsonResponse(responsedata)
