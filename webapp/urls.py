@@ -18,7 +18,7 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 import jobs.views
-import lotto.views
+import lotto.randomize1
 
 
 urlpatterns = [
@@ -29,5 +29,5 @@ urlpatterns = [
     path('jobs/', include('jobs.urls')),
     path('techs/', include('jobs.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('lotto/roll/', lotto.views.roll, name='roll'),
+    path('lotto/roll/', lotto.randomize1.roll, name='roll'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -28,12 +28,3 @@ def pybrun (request):
         return render(request, 'lotto/pybrun.html')
 
 #To funkcja frontu "zagraj w grę" pod AJAX.
-def roll (request):
-    if request.is_ajax():
-        radio = request.POST['gamesel']
-        #import randomize1
-        #print(lst1)
-        responsedata = {
-            'number' : radio
-        }
-        return JsonResponse(responsedata)

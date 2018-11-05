@@ -15,7 +15,8 @@ $(document).ready(function(){
 
                           },
                     success:function(data){
-                    alert("form submitted: " + data['number'][0]);
+                    $('#textarea2').val(data['number']);
+                    //alert("form submitted: " + data['number']);
                     console.log(data)
                                       }
                   });
