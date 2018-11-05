@@ -2,21 +2,12 @@ from django.contrib.auth.models import User, Group
 #from rest_framework import viewsets
 from django.shortcuts import render, get_object_or_404
 import importlib
-#import os
 from .models import Lotto
-from django.http import JsonResponse, HttpResponse
-
-
 
 def download(request):
     if request.method == 'GET':
         lots = Lotto.objects
         return render(request, 'lotto/download.html', {'lots':lots})
-    #Wyłączona funkcja odpalająca tkinter GUI na stronie odkąd zdecydowałem się na przepisanie frontu pod web.
-    #elif request.method == 'POST':
-        #lots = Lotto.objects
-        #os.system('python lotto/randfront.py')
-        #return render(request, 'lotto/download.html', {'lots':lots})
 
 #Ta funkcja kieruje na podstronę ze szczegółami wybranego programu.
 def progpage(request, lotto_id):
@@ -26,5 +17,3 @@ def progpage(request, lotto_id):
 def pybrun (request):
     if request.method == 'GET':
         return render(request, 'lotto/pybrun.html')
-
-#To funkcja frontu "zagraj w grę" pod AJAX.

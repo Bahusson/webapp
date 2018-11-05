@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 import jobs.views
 import lotto.randomize1
+import lotto.randomize
 
 
 urlpatterns = [
@@ -30,4 +31,5 @@ urlpatterns = [
     path('techs/', include('jobs.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('lotto/roll/', lotto.randomize1.roll, name='roll'),
+    path('lotto/generate/', lotto.randomize.generate, name='generate'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

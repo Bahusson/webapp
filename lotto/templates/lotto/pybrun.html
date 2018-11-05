@@ -127,12 +127,8 @@
       </div><!--end row 4-->
 
       <div class="py-3 row"><!--row 5: 2 labels, checkbox "Najczęściej padające liczby", numfield "Ilość liczb"-->
-        <div class="col-md-3">
+        <div class="col-md-6">
           <p class="contain">Najczęściej padające liczby:</p>
-        </div>
-        <div class="col-md-3">
-          <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
-          <label for="checkboxG3" class="css-label"></label>
         </div>
         <div class="col-md-3">
           <p class="contain">Ilość liczb:</p>
@@ -165,7 +161,7 @@
           <p class="contain">Generuj Raport:</p>
         </div>
         <div class="col-md-3">
-          <button type="button" id="generate" class="btn btn-lg btn-block btn-primary">Generuj</button>
+          <button type="input" id="generate" class="btn btn-lg btn-block btn-primary">Generuj {% csrf_token %}</button>
         </div>
         <div class="col-md-3">
           <p class="contain">Zapisz Raport:</p>
