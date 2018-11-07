@@ -1,7 +1,35 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
+
+#Można uży tej funkcji do uporządkowania spraw z backendem tak żeby go nie przepisywa w całości.
+#To fukcja przypisująca numery od 1 do 8 w zależności od przypadku pazy danych i tego czy
+# jest filtrowana czy nie.
+def radparam():
+    global rad
+    if datal + radio == "11" :
+        rad = 1
+    elif datal + radio == "12" :
+        rad = 2
+    elif datal + radio == "13" :
+        rad = 3
+    elif datal + radio == "14" :
+        rad = 4
+    elif datal + radio == "01" :
+        randback.searchA(1,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 5
+    elif datal + radio == "02" :
+        randback.searchA(2,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 6
+    elif datal + radio == "03" :
+        randback.searchA(3,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 7
+    elif datal + radio == "04" :
+        randback.searchA(4,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 8
+    else:
+        pass
 
 #Ta funkcja ogranicza bazę rakordów do konkretnych dat.
 def searchA(base,day1,month1,year1,day2,month2,year2):
@@ -35,25 +63,25 @@ def searchA(base,day1,month1,year1,day2,month2,year2):
         cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4 LIMIT ? OFFSET ?', (rowto, rowfrom))
     rows=cur.fetchall()
     conn.close()
-    return rows
+#    return rows
 
 #Funkcja searchall dla checkboxa ściągająca dane z całej bazy danych. .
 def searchallbox(var):
     conn=sqlite3.connect("Lotto.db")
     cur=conn.cursor()
-    if var == 1 :
+    if var == "1" :
         cur.execute('SELECT * FROM game1')
-    elif var == 2 :
+    elif var == "2" :
         cur.execute('SELECT * FROM game2')
-    elif var == 3 :
+    elif var == "3" :
         cur.execute('SELECT * FROM game3')
-    elif var == 4 :
+    elif var == "4" :
         cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4')
     rows=cur.fetchall()
     conn.close()
-    return rows
+#    return rows
 
-#Ta funkcja wywołuje graf Bokeh.
+#Ta podfunkcja wywołuje graf Bokeh.
 def makegraph():
         p=figure(plot_width=500, plot_height=400, tools = 'pan, reset', logo=None)
         p.title.text = "Dystrybucja"
@@ -69,7 +97,7 @@ def makegraph():
         output_file('graph1.html')
         show(p)
 
-#To funkcja rekonwertująca bazę danych do df aby można było zrobić graf i inne fajne rzeczy na liczbach...
+#Ta podfunkcja rekonwertująca bazę danych do df aby można było zrobić graf i inne fajne rzeczy na liczbach...
 def dfdb(var):
     global df
     if var == 1 :
@@ -127,7 +155,7 @@ def enumerators(base,value,var1,var2):
     elif var1 == 0 and var2 == 1 :
         yield "Od najczęstszej: " + str(nums)
 
-# Zwraca graf i średnie wyników losowań.
+#Nadfunkcja - Zwraca graf i średnie wyników losowań.
 def makedf(base,var1,var2):
     dfdb(base)
     global df1
@@ -183,15 +211,45 @@ def getcaldate(base, date):
 
 #Główna oś funkcji
 def generate(request):
+    if request.is_ajax():
+        radio = request.POST['gamesel']
+        datfr = request.POST['datefrom']
+        datto = request.POST['dateto']
+        datal = request.POST['dateall']
+        nhilo = request.POST['numhilow']
+        norol = request.POST['norolls']
+        moftn = request.POST['mostoften']
+        avsco = request.POST['avgscores']
+        grgen = request.POST['graphgen']
 
+        radparam()
+        if datal == '1':
+            searchallbox(radio)
+        else:
+            #W tym miejscu trzeba dodaĆ dodatkowe zdanie warunkowe i rozbiĆ
+            #obiekt jaki zwraca front na dzień/miesiąc/rok, żeby funkcja SearchA
+            #sobie z tym poradziła. Przykładowe rozwiązanie masz na froncie programu w GUI
+            #ale jeszcze sprawdź dokładnie jaki typ danych zwraca ten konkretny kalendarz.
+            #Jeśli Datetime, to jesteśmy w domu, ale JSON pewnie robi z tego string, więc
+            #możliwe, że będzie trzeba do tego zaprząc jakiś parser...
+            #ByĆ może problem się rozwiąże poprzez funkcję radparam. Wtedy usuń tą poniżej i pozostaw 'pass'.
+            #searchA(gamesel,a,b,c,d,e,f):
+            pass
 
+        enumerators()
+        makedf()
 
+        if norol == '1':
+            rolls = rows
+        else:
+            rows = None
 
-    responsedata = {
-        'hilow' : hilow,
-        'rolls' : rolls,
-        'often' : often,
-        'avgsc' : avgsc,
-        'graph' : graph
-    }
-    return JsonResponse(responsedata)
+        responsedata = {
+            'hilow' : hilow,
+            'rolls' : rolls,
+            'often' : often,
+            'avgsc' : avgsc,
+#Co do ostatniego to możliwe, że trzeba będzie doda warunkowe HttpResponse pod ten graf.
+            'graph' : graph
+        }
+        return JsonResponse(responsedata)

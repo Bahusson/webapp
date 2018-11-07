@@ -35,7 +35,7 @@ $(document).ready(function(){
 /*Pomiń losowania*/   norolls:$('input:checkbox[name=checkboxG3]').val(),
 /*Skrajne numery*/    mostoften:$('input:numinput[name=numinput]').val(),
 /*Średnie wyników*/   avgscores:$('input:checkbox[name=checkboxG4]').val(),
-/*Generuj wykres*/    graph:$('input:checkbox[name=checkboxG5]').val(), /*Ten można by alternatywnie zrobic jako button z oddzielną funkcją*/
+/*Generuj wykres*/    graphgen:$('input:checkbox[name=checkboxG5]').val(), /*Ten można by alternatywnie zrobic jako button z oddzielną funkcją*/
                       csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                           },
                     success:function(data){
