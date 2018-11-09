@@ -1,13 +1,44 @@
-from django.http import JsonResponse, HttpResponse
 import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
 
+
+    (type(radio)
+    (type(datfr)
+    (type(datto)
+    (type(datal)
+    (type(nhilo)
+    (type(norol)
+    (type(moftn)
+    (type(avsco)
+    (type(grgen)
 #Można uży tej funkcji do uporządkowania spraw z backendem tak żeby go nie przepisywa w całości.
 #To fukcja przypisująca numery od 1 do 8 w zależności od przypadku pazy danych i tego czy
 # jest filtrowana czy nie.
-
-
+def radparam():
+    global rad
+    if datal + radio == "11" :
+        rad = 1
+    elif datal + radio == "12" :
+        rad = 2
+    elif datal + radio == "13" :
+        rad = 3
+    elif datal + radio == "14" :
+        rad = 4
+    elif datal + radio == "01" :
+        randback.searchA(1,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 5
+    elif datal + radio == "02" :
+        randback.searchA(2,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 6
+    elif datal + radio == "03" :
+        randback.searchA(3,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 7
+    elif datal + radio == "04" :
+        randback.searchA(4,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
+        rad = 8
+    else:
+        pass
 
 #Ta funkcja ogranicza bazę rakordów do konkretnych dat.
 def searchA(base,day1,month1,year1,day2,month2,year2):
@@ -190,100 +221,3 @@ def getcaldate(base, date):
     rows=cur.fetchall()
     conn.close()
     return rows
-
-
-#Główna oś funkcji
-def generate(request):
-    global radio
-    global datfr
-    global datto
-    global datal
-    global nhilo
-    global norol
-    global moftn
-    global avsco
-    global grgen
-    global rad
-    if request.is_ajax():
-        radio = request.POST.get('gamesel')
-        datfr = request.POST['datefrom']
-        datto = request.POST['dateto']
-        datal = request.POST['dateall']
-        nhilo = request.POST['numhilow']
-        norol = request.POST['norolls']
-        moftn = request.POST['mostoften']
-        avsco = request.POST['avgscores']
-        grgen = request.POST['graphgen']
-    print('radio ' + radio)
-    print('datfr ' + datfr)
-    print('datto ' + datto)
-    print('datal ' + datal)
-    print('nhilo ' + nhilo)
-    print('norol ' + norol)
-    print('moftn ' + moftn)
-    print('avsco ' + avsco)
-    print('grgen ' + grgen)
-
-    print(type(radio))
-    print(type(datfr))
-    print(type(datto))
-    print(type(datal))
-    print(type(nhilo))
-    print(type(norol))
-    print(type(moftn))
-    print(type(avsco))
-    print(type(grgen))
-
-    if datal + radio == "11" :
-        rad == 1
-    elif datal + radio == "12" :
-        rad == 2
-    elif datal + radio == "13" :
-        rad == 3
-    elif datal + radio == "14" :
-        rad == 4
-    elif datal + radio == "01" :
-        randback.searchA(1,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
-        rad == 5
-    elif datal + radio == "02" :
-        randback.searchA(2,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
-        rad == 6
-    elif datal + radio == "03" :
-        randback.searchA(3,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
-        rad == 7
-    elif datal + radio == "04" :
-        randback.searchA(4,dt2.day,dt2.month,dt2.year,dt1.day,dt1.month,dt1.year)
-        rad == 8
-    else:
-        pass
-
-    if datal == '1':
-        searchallbox(radio)
-    else:
-        #W tym miejscu trzeba dodaĆ dodatkowe zdanie warunkowe i rozbiĆ
-        #obiekt jaki zwraca front na dzień/miesiąc/rok, żeby funkcja SearchA
-        #sobie z tym poradziła. Przykładowe rozwiązanie masz na froncie programu w GUI
-        #ale jeszcze sprawdź dokładnie jaki typ danych zwraca ten konkretny kalendarz.
-        #Jeśli Datetime, to jesteśmy w domu, ale JSON pewnie robi z tego string, więc
-        #możliwe, że będzie trzeba do tego zaprząc jakiś parser...
-        #ByĆ może problem się rozwiąże poprzez funkcję radparam. Wtedy usuń tą poniżej i pozostaw 'pass'.
-        #searchA(gamesel,a,b,c,d,e,f):
-        pass
-
-    enumerators(rad,moftn,nhilo)
-    makedf(rad,avsco,grgen)
-
-    if norol == '1':
-        rolls = rows
-    else:
-        pass
-
-    responsedata = {
-        'hilow' : hilow,
-        'rolls' : rolls,
-        'often' : often,
-        'avgsc' : avgsc,
-#Co do ostatniego to możliwe, że trzeba będzie doda warunkowe HttpResponse pod ten graf.
-        'graph' : graph
-    }
-    return JsonResponse(responsedata)

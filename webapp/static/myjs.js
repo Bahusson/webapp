@@ -1,4 +1,9 @@
 $(document).ready(function(){
+        $("#numinput").val("0");
+        $('input[type="checkbox"]').val("0");
+        $('input[type="checkbox"]').click(function () {
+          $(this).prop("checked") ? $(this).val("1") : $(this).val("0")
+        });
 
             //Funkcja #play odwołuje się do randomize1.py, wywołuje wynik gry losowej z przycisku "zagraj",
             // i zwraca dane do textarea2.
@@ -22,20 +27,20 @@ $(document).ready(function(){
             //programu po kliknięciu w "generuj" - przesyła dane do "textarea".
         $('#generate').click(function(e) {
           e.preventDefault()
+
            $.ajax({
                     url: "/lotto/generate/",
                     type: "POST",
-                    dataType: "json",
                     data: {
 /*Numer gry*/         gamesel:$('input:radio[name=gamesel]:checked').val(),
-/*Data Od:*/          datefrom:$('input:date[name=date1]').val(),
-/*Data Do:*/          dateto:$('input:date[name=date2]').val(),
-/*Cała baza*/         dateall:$('input:checkbox[name=checkboxG1]').val(),
-/*Skrajne numery*/    numhilow:$('input:checkbox[name=checkboxG2]').val(),
-/*Pomiń losowania*/   norolls:$('input:checkbox[name=checkboxG3]').val(),
-/*Skrajne numery*/    mostoften:$('input:numinput[name=numinput]').val(),
-/*Średnie wyników*/   avgscores:$('input:checkbox[name=checkboxG4]').val(),
-/*Generuj wykres*/    graphgen:$('input:checkbox[name=checkboxG5]').val(), /*Ten można by alternatywnie zrobic jako button z oddzielną funkcją*/
+/*Data Od:*/          datefrom:$("#date1").val(),
+/*Data Do:*/          dateto:$("#date2").val(),
+/*Cała baza*/         dateall:$("#checkboxG1").val(),
+/*Skrajne numery*/    numhilow:$("#checkboxG2").val(),
+/*Pomiń losowania*/   norolls:$("#checkboxG3").val(),
+/*Skrajne numery*/    mostoften:$("#numinput").val(),
+/*Średnie wyników*/   avgscores:$("#checkboxG4").val(),
+/*Generuj wykres*/    graphgen:$("#checkboxG5").val(), /*Ten można by alternatywnie zrobic jako button z oddzielną funkcją*/
                       csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                           },
                     success:function(data){

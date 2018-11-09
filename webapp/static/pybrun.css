@@ -81,6 +81,7 @@
 
 						input[type=checkbox].css-checkbox:checked + label.css-label {
 							background-position: 0 -25px;
+
 						}
 						label.css-label {
 				background-image:url(http://csscheckbox.com/checkboxes/u/csscheckbox_391ce065f36b1460c4845fa9b5173fba.png);
