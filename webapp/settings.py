@@ -86,6 +86,10 @@ DATABASES = {
         'PASSWORD': 'Ma3taksamo_Jakja',
         'HOST': 'localhost',
         'PORT': '5432',
+    },
+    'randomizerdb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'Lotto.db'),
     }
 }
 

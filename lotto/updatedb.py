@@ -62,3 +62,8 @@ def update(request):
     connect(4)
 
     return JsonResponse()
+
+connect(1)
+connect(2)
+connect(3)
+connect(4)
