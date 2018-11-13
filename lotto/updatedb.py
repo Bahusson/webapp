@@ -1,4 +1,4 @@
-import sqlite3
+import psycopg2
 import pandas
 import urllib.request, urllib.parse, urllib.error
 from bs4 import BeautifulSoup
@@ -29,41 +29,42 @@ html = urllib.request.urlopen(url, context=ctx).read()
 soup = BeautifulSoup(html, 'html.parser')
 lsource = str(soup.find_all('td'))
 g1 = re.findall(">(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>, <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<", lsource)
-
+g1 = g1[0]
+print(g1)
 #Na starcie łączy się z siecią i aktualizuje bazy danych dla wszystkich 4 gier losowych.
 def connect(var):
-    conn=sqlite3.connect("Lotto.db")
+    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
     cur=conn.cursor()
     if var == 1 :
         df = pandas.read_csv('http://www.mbnet.com.pl/ml.txt',header =None, sep='[., ]', engine ='python')
-        df1= df.drop(df.columns[0:2],1)
+        df1= df.drop(df.columns[1],1)
         df1.to_sql('game1', conn, if_exists='replace', index=False)
     elif var == 2 :
         df = pandas.read_csv('http://www.mbnet.com.pl/dl.txt',header =None, sep='[., ]', engine ='python')
-        df1= df.drop(df.columns[0:2],1)
+        df1= df.drop(df.columns[1],1)
         df1.to_sql('game2', conn, if_exists='replace', index=False)
     elif var == 3 :
         df = pandas.read_csv('http://www.mbnet.com.pl/el.txt',header =None, sep='[., ]', engine ='python')
-        df1= df.drop(df.columns[0:2],1)
+        df1= df.drop(df.columns[1],1)
         df1.to_sql('game3', conn, if_exists='replace', index=False)
     elif var == 4 :
-        cur.execute('CREATE TABLE IF NOT EXISTS game4 ("1" INTEGER, "2" INTEGER, "3" INTEGER, "4" INTEGER, "5" INTEGER, "6" INTEGER, "7" INTEGER, "8" INTEGER, "9" INTEGER, "10" INTEGER)')
-        cur.executemany('INSERT OR REPLACE INTO game4 ("1","2","3","4","5","6","7","8","9","10") VALUES (?,?,?,?,?,?,?,?,?,?)', g1)
-        cur.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_casenum ON game4 ("1")')
+    #    cur.execute('CREATE TABLE IF NOT EXISTS game4 ("1" INTEGER, "2" INTEGER, "3" INTEGER, "4" INTEGER, "5" INTEGER, "6" INTEGER, "7" INTEGER, "8" INTEGER, "9" INTEGER, "10" INTEGER)')
+        cur.execute('INSERT INTO game4 ("Id","year","month","day","N1","N2","N3","N4","N5","R1") VALUES (g1[0],g1[1],g1[2],g1[3],g1[4],g1[5],g1[6],g1[7],g1[8],g1[9]) ON CONFLICT ("Id") DO NOTHING')
+        cur.execute('CREATE UNIQUE INDEX idx_casenum ON game4 ("Id")')
     conn.commit()
     conn.close()
 
 #Główna funkcja do której odwołuje się silnik Django.
-def update(request):
+#def update(request):
 
-    connect(1)
-    connect(2)
-    connect(3)
-    connect(4)
+#    connect(1)
+#    connect(2)
+#    connect(3)
+#    connect(4)
+#
+#    return JsonResponse()
 
-    return JsonResponse()
-
-connect(1)
-connect(2)
-connect(3)
+#connect(1)
+#connect(2)
+#connect(3)
 connect(4)

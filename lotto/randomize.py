@@ -245,15 +245,15 @@ def generate(request):
         datfro = datfr[0]
         dattoo = datto[0]
 
-    radparam()
+#    radparam()
 
-    if datal == '1':
-        searchallbox(radio)
-    else:
-        pass
+#    if datal == '1':
+#        searchallbox(radio)
+#    else:
+#        pass
 
-    enumerators(rad,moftn,nhilo)
-    makedf(rad,avsco,grgen)
+#    enumerators(rad,moftn,nhilo)
+#    makedf(rad,avsco,grgen)
 
     if norol == '1':
         rolls = rows
