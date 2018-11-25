@@ -44,8 +44,9 @@ $(document).ready(function(){
                       csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                           },
                     success:function(data){
-                    $('#textarea').val(data['number']);
-                    //alert("form submitted: " + data['number']);
+                //    var jdata = data['hilow','often',"avgsc","rolls"];
+                  //  var finaldata = jdata.join("\n\n");
+                    $('#textarea1').val(data['hilow'] + "\n\n" + data['often'] + "\n\n" + data['avgsc'] + "\n\n" + data['rolls']);
                     console.log(data)
                                       }
                   });

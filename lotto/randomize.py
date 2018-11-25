@@ -1,73 +1,131 @@
 from django.http import JsonResponse, HttpResponse
-import sqlite3
+import psycopg2
 import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
 import re
+
+#Główna oś funkcji
+def generate(request):
+    global radio
+    global datal
+    global nhilo
+    global norol
+    global moftn
+    global avsco
+    global grgen
+    global rad
+    global datfro
+    global dattoo
+    if request.is_ajax():
+        radio = request.POST.get('gamesel')
+        datfr = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
+        datto = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['dateto'])
+        datal = request.POST['dateall']
+        nhilo = request.POST['numhilow']
+        norol = request.POST['norolls']
+        moftn = request.POST['mostoften']
+        avsco = request.POST['avgscores']
+        grgen = request.POST['graphgen']
+        datfro = datfr[0]
+        dattoo = datto[0]
+
+    radparam()
+
+    if datal == '1':
+        searchallbox(radio)
+    else:
+        pass
+
+    enumerators(rad,moftn,nhilo)
+    makedf(rad,avsco,grgen)
+
+    if norol == '1':
+        rolls = "Nie wybrano losowań"
+    else:
+        rollhead = ["Losowania wraz z datą:" + "\n"]
+        rowspacing = list()
+        while len(rowspacing)<len(rows):
+            rowspacing.append("\n")
+        zippedrows = zip(rows, rowspacing)
+        ziprows = list(zippedrows)
+        rolls = [rollhead, ziprows]
+
+    responsedata = {
+        'hilow' : hilow,
+        'rolls' : rolls,
+        'often' : often,
+        'avgsc' : avgsc,
+#Co do ostatniego to możliwe, że trzeba będzie dodaĆ warunkowe return/render HttpResponse pod ten graf.
+        'graph' : graph
+    }
+    return JsonResponse(responsedata)
 
 
 #Można uży tej funkcji do uporządkowania spraw z backendem tak żeby go nie przepisywa w całości.
 #To fukcja przypisująca numery od 1 do 8 w zależności od przypadku pazy danych i tego czy
 # jest filtrowana czy nie.
 def radparam():
+    global rad
     if datal + radio == "11" :
-        rad == 1
+        rad = 1
     elif datal + radio == "12" :
-        rad == 2
+        rad = 2
     elif datal + radio == "13" :
-        rad == 3
+        rad = 3
     elif datal + radio == "14" :
-        rad == 4
+        rad = 4
     elif datal + radio == "01" :
+        rad = 5
         searchA(1,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-        rad == 5
     elif datal + radio == "02" :
+        rad = 6
         searchA(2,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-        rad == 6
     elif datal + radio == "03" :
+        rad = 7
         searchA(3,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-        rad == 7
     elif datal + radio == "04" :
+        rad = 8
         searchA(4,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-        rad == 8
+
     else:
         pass
 
 
 #Ta funkcja ogranicza bazę rakordów do konkretnych dat.
 def searchA(base,day1,month1,year1,day2,month2,year2):
-    conn=sqlite3.connect("Lotto.db")
+    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
     cur=conn.cursor()
     global rowfrom
     global rowto
+    global rows
     if base == 1:
-        cur.execute('SELECT MIN(rowid) FROM game1 WHERE "2"=? AND "3"=? AND "4"=?',(day2,month2,year2))
+        cur.execute('SELECT MIN(rowid) FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
         print(rowfrom)
-        cur.execute('SELECT MAX(rowid) FROM game1 WHERE "2"=? AND "3"=? AND "4"=?',(day1,month1,year1))
+        cur.execute('SELECT MAX(rowid) FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game1 LIMIT ? OFFSET ?', (rowto, rowfrom))
+        cur.execute('SELECT * FROM game1 LIMIT %s OFFSET %s', (rowto, rowfrom))
     elif base == 2:
-        cur.execute('SELECT MAX(rowid) FROM game2 WHERE "2"<=? AND "3"=? AND "4"=?',(day2,month2,year2))
+        cur.execute('SELECT MAX(rowid) FROM game2 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN(rowid) FROM game2 WHERE "2">=? AND "3"=? AND "4"=?',(day1,month1,year1))
+        cur.execute('SELECT MIN(rowid) FROM game2 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game2 LIMIT ? OFFSET ?', (rowto, rowfrom))
+        cur.execute('SELECT * FROM game2 LIMIT %s OFFSET %s', (rowto, rowfrom))
     elif base == 3:
-        cur.execute('SELECT MAX(rowid) FROM game3 WHERE "2"<=? AND "3"=? AND "4"=?',(day2,month2,year2))
+        cur.execute('SELECT MAX(rowid) FROM game3 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN(rowid) FROM game3 WHERE "2">=? AND "3"=? AND "4"=?',(day1,month1,year1))
+        cur.execute('SELECT MIN(rowid) FROM game3 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game3 LIMIT ? OFFSET ?', (rowto, rowfrom))
+        cur.execute('SELECT * FROM game3 LIMIT %s OFFSET %s', (rowto, rowfrom))
     elif base == 4:
-        cur.execute('SELECT MIN("1") FROM game4 WHERE "2"=? AND "3"=? AND "4"=?',(day2,month2,year2))
+        cur.execute('SELECT MIN("1") FROM game4 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX("1") FROM game4 WHERE "2"=? AND "3"=? AND "4"=?',(day1,month1,year1))
+        cur.execute('SELECT MAX("1") FROM game4 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4 LIMIT ? OFFSET ?', (rowto, rowfrom))
+        cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4 LIMIT %s OFFSET %s', (rowto, rowfrom))
     rows=cur.fetchall()
     conn.close()
-    print(rows)
 
 #Funkcja searchall dla checkboxa ściągająca dane z całej bazy danych. .
 def searchallbox(var):
@@ -107,39 +165,41 @@ def dfdb(var):
     if var == 1 :
         df = pandas.read_sql_query(
             sql=('SELECT * FROM game1'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, parse_dates=None, chunksize=None)
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
     elif var == 2 :
         df = pandas.read_sql_query(
             sql=('SELECT * FROM game2'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, parse_dates=None, chunksize=None)
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
     elif var == 3 :
         df = pandas.read_sql_query(
             sql=('SELECT * FROM game3'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, parse_dates=None, chunksize=None)
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
     elif var == 4 :
         df = pandas.read_sql_query(
             sql=('SELECT * FROM game4'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, parse_dates=None, chunksize=None)
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
     elif var == 5 :
         df = pandas.read_sql_query(
             sql=('SELECT * FROM game1 LIMIT ? OFFSET ?'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
     elif var == 6 :
         df = pandas.read_sql_query(
-            sql=('SELECT * FROM game2 LIMIT ? OFFSET ?'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
+            sql=('SELECT * FROM game2 LIMIT %s OFFSET %s'),
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
     elif var == 7 :
         df = pandas.read_sql_query(
-            sql=('SELECT * FROM game3 LIMIT ? OFFSET ?'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
+            sql=('SELECT * FROM game3 LIMIT %s OFFSET %s'),
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
     elif var == 8 :
         df = pandas.read_sql_query(
-            sql=('SELECT * FROM game4 LIMIT ? OFFSET ?'),
-            con=sqlite3.connect("Lotto.db"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
+            sql=('SELECT * FROM game4 LIMIT %s OFFSET %s'),
+            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
 
 #Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 def enumerators(base,value,var1):
     dfdb(base)
+    global hilow
+    global often
     if base == 4 or base == 8 :
         df1=df.drop(df.columns[0:4],1)
         df1=df1.drop(df.columns[-1],1)
@@ -151,22 +211,27 @@ def enumerators(base,value,var1):
     nplus = df3.sort_values(['total'], ascending=[False])[:1].index.values;
     nminus = df3.sort_values(['total'], ascending=[False])[-1:].index.values;
     nums = df3.sort_values(['total'], ascending=[False])[:int(value)].index.values;
-    if int(value) > 0 :
-        var2 == 1
+
+    if var1 == '1' and int(value) > 0 :
+        hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
+        often = "Od najczęstszej: " + str(nums)
+    elif var1 == '0' and int(value) > 0 :
+        often = "Od najczęstszej: " + str(nums)
+        hilow = "Nie wybrano liczb skrajnych"
+    elif var1 == '1' and int(value) == 0 :
+        hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
+        often = "Nie wybrano najczęstszych liczb"
     else:
-        var2 == 0
-    if var1 == '1' and var2 == '1' :
-        yield "Max: " + str(nplus) + "  Min: " + str(nminus)
-        yield "Od najczęstszej: " + str(nums)
-    elif var1 == '1' and var2 == '0' :
-        yield "Max: " + str(nplus) + "  Min: " + str(nminus)
-    elif var1 == '0' and var2 == '1' :
-        yield "Od najczęstszej: " + str(nums)
+        hilow = "Nie wybrano liczb skrajnych"
+        often = "Nie wybrano najczęstszych liczb"
 
 #Nadfunkcja - Zwraca graf i średnie wyników losowań.
 def makedf(base,var1,var2):
     dfdb(base)
     global df1
+    global graph
+    global source
+    global avgsc
     if base == 4 or base == 8 :
         df1=df.drop(df.columns[0:4],1)
         df1=df1.drop(df.columns[-1],1)
@@ -175,12 +240,17 @@ def makedf(base,var1,var2):
     df4=df1.T
     df5=df4.mean().round(0).value_counts()
     slist = list()
+    nrlist = list()
     while len(slist)<len(df5.index):
         slist.append(" / ")
-    zipped = zip(df5.index, slist, df5.values)
-    global a
+    while len(nrlist)<len(df5.index):
+        nrlist.append("\n")
+    dfindex = df5.index.astype(str)
+    dfvalue = df5.values.astype(str)
+    zipped = zip(dfindex, slist, dfvalue, nrlist)
     a=list(zipped)
-    global source
+    ahead= ["Średnia" + " / " + "ilość" + "\n" ]
+    b=ahead+a
 
     source = ColumnDataSource(
         data=dict(
@@ -189,11 +259,16 @@ def makedf(base,var1,var2):
             ))
     if var1 == '1' and var2 == '1':
             makegraph()
-            yield a
+            avgsc = b
     elif var1 == '0' and var2 == '1':
             makegraph()
+            avgsc = "Nie wybrano generowania średnich"
     elif var1 == '1' and var2 == '0':
-            yield a
+            avgsc = b
+            graph = "Nie wybrano generowania wykresu"
+    else:
+            avgsc = "Nie wybrano generowania średnich"
+            graph = "Nie wybrano generowania wykresu"
 
 #Ta funkcja wyciąga z bazy danych pierwszą/ostatnią datę. (W wersji webowej do zaimplementowania na końcu...)
 def getcaldate(base, date):
@@ -218,54 +293,3 @@ def getcaldate(base, date):
     rows=cur.fetchall()
     conn.close()
     #return rows
-
-
-#Główna oś funkcji
-def generate(request):
-    global radio
-    global datal
-    global nhilo
-    global norol
-    global moftn
-    global avsco
-    global grgen
-    global rad
-    global datfro
-    global dattoo
-    if request.is_ajax():
-        radio = request.POST.get('gamesel')
-        datfr = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
-        datto = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['dateto'])
-        datal = request.POST['dateall']
-        nhilo = request.POST['numhilow']
-        norol = request.POST['norolls']
-        moftn = request.POST['mostoften']
-        avsco = request.POST['avgscores']
-        grgen = request.POST['graphgen']
-        datfro = datfr[0]
-        dattoo = datto[0]
-
-#    radparam()
-
-#    if datal == '1':
-#        searchallbox(radio)
-#    else:
-#        pass
-
-#    enumerators(rad,moftn,nhilo)
-#    makedf(rad,avsco,grgen)
-
-    if norol == '1':
-        rolls = rows
-    else:
-        pass
-
-    responsedata = {
-        'hilow' : hilow,
-        'rolls' : rolls,
-        'often' : often,
-        'avgsc' : avgsc,
-#Co do ostatniego to możliwe, że trzeba będzie dodaĆ warunkowe return/render HttpResponse pod ten graf.
-        'graph' : graph
-    }
-    return JsonResponse(responsedata)
