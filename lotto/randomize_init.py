@@ -4,7 +4,7 @@ import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
 import re
-#from config import config
+from lotto import config
 
 #Główna oś funkcji
 def generate(request):
@@ -28,14 +28,8 @@ def generate(request):
         moftn = request.POST['mostoften']
         avsco = request.POST['avgscores']
         grgen = request.POST['graphgen']
-        if datal == "0":
-            datfro = datfr[0]
-            dattoo = datto[0]
-            allrollstrigger = False
-        elif datal == "1":
-            allrollstrigger = True
-        else:
-            bug_catch()
+        datfro = datfr[0]
+        dattoo = datto[0]
 
     radparam()
 
@@ -49,7 +43,7 @@ def generate(request):
 
     if norol == '1':
         rolls = "Nie wybrano losowań"
-    elif norol == "0" and datal == "0":
+    else:
         rollhead = ["Losowania wraz z datą:" + "\n"]
         rowspacing = list()
         while len(rowspacing)<len(rows):
@@ -57,10 +51,6 @@ def generate(request):
         zippedrows = zip(rows, rowspacing)
         ziprows = list(zippedrows)
         rolls = [rollhead, ziprows]
-    elif norol == "0" and datal == "1":
-        rolls = "Zaznaczono całość pomiarów"
-    else:
-        bug_catch()
 
     responsedata = {
         'hilow' : hilow,
@@ -72,14 +62,6 @@ def generate(request):
     }
     return JsonResponse(responsedata)
 
-#Moje nowe narzędzie do łapania errorów w kodzie. Jest prawdziwie piękne. :)
-def bug_catch():
-    try:
-        raise ValueError('Represents a hidden bug, do not catch this')
-        raise Exception('This is the exception you expect to handle')
-    except Exception as error:
-        print('Caught this error: ' + repr(error))
-#Jeśli ma choĆ w połowie tyle skuteczności co piękna na wejrzeniu, to będę używał... <3
 
 #Można uży tej funkcji do uporządkowania spraw z backendem tak żeby go nie przepisywa w całości.
 #To fukcja przypisująca numery od 1 do 8 w zależności od przypadku pazy danych i tego czy
@@ -113,27 +95,34 @@ def radparam():
 
 #Ta funkcja ogranicza bazę rakordów do konkretnych dat.
 def searchA(base,day1,month1,year1,day2,month2,year2):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
-    cur=conn.cursor()
+    conn=None
+    # read connection parameters
+    params = config.config()
+    # connect to the PostgreSQL server
+    print('Connecting to the PostgreSQL database...')
+    conn = psycopg2.connect(**params)
+    # create a cursor
+    cur = conn.cursor()
     global rowfrom
     global rowto
     global rows
     if base == 1:
-        cur.execute('SELECT MIN("0") FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
+        cur.execute('SELECT MIN(rowid) FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX("0") FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
+        print(rowfrom)
+        cur.execute('SELECT MAX(rowid) FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
         cur.execute('SELECT * FROM game1 LIMIT %s OFFSET %s', (rowto, rowfrom))
     elif base == 2:
-        cur.execute('SELECT MAX("0") FROM game2 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
+        cur.execute('SELECT MAX(rowid) FROM game2 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN("0") FROM game2 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
+        cur.execute('SELECT MIN(rowid) FROM game2 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
         cur.execute('SELECT * FROM game2 LIMIT %s OFFSET %s', (rowto, rowfrom))
     elif base == 3:
-        cur.execute('SELECT MAX("0") FROM game3 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
+        cur.execute('SELECT MAX(rowid) FROM game3 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
         rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN("0") FROM game3 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
+        cur.execute('SELECT MIN(rowid) FROM game3 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
         rowto=(cur.fetchone()[0])-rowfrom
         cur.execute('SELECT * FROM game3 LIMIT %s OFFSET %s', (rowto, rowfrom))
     elif base == 4:
@@ -147,8 +136,14 @@ def searchA(base,day1,month1,year1,day2,month2,year2):
 
 #Funkcja searchall dla checkboxa ściągająca dane z całej bazy danych. .
 def searchallbox(var):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
-    cur=conn.cursor()
+    conn=None
+    # read connection parameters
+    params = config()
+    # connect to the PostgreSQL server
+    print('Connecting to the PostgreSQL database...')
+    conn = psycopg2.connect(**params)
+    # create a cursor
+    cur = conn.cursor()
     if var == "1" :
         cur.execute('SELECT * FROM game1')
     elif var == "2" :
@@ -198,7 +193,7 @@ def dfdb(var):
             con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
     elif var == 5 :
         df = pandas.read_sql_query(
-            sql=('SELECT * FROM game1 LIMIT %s OFFSET %s'),
+            sql=('SELECT * FROM game1 LIMIT ? OFFSET ?'),
             con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
     elif var == 6 :
         df = pandas.read_sql_query(
@@ -222,8 +217,7 @@ def enumerators(base,value,var1):
         df1=df.drop(df.columns[0:4],1)
         df1=df1.drop(df.columns[-1],1)
     else:
-        df1=df.drop(df.columns[0:5],1)
-        print(df1)
+        df1=df.drop(df.columns[0:3],1)
     df2 = df1.apply(pandas.value_counts).fillna(0);
     df2.loc[:,'total'] = df2.sum(axis=1)
     df3=df2
@@ -291,7 +285,7 @@ def makedf(base,var1,var2):
 
 #Ta funkcja wyciąga z bazy danych pierwszą/ostatnią datę. (W wersji webowej do zaimplementowania na końcu...)
 def getcaldate(base, date):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
+    conn=sqlite3.connect("Lotto.db")
     cur=conn.cursor()
     if base == 1 and date == 1 :
         cur.execute('SELECT "2","3","4" FROM game1 ORDER BY rowid ASC LIMIT 1')
