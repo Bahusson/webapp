@@ -4,7 +4,142 @@ import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
 import re
-#from config import config
+import configparser
+import datetime
+from lotto import updatedb
+
+class Database:
+    def __init__(self):
+        # instantiate
+    global db
+    config = ConfigParser()
+    # parse existing file
+    config.read('database.ini')
+    # read values from a section
+    host = config.get('dbrandom', 'host')
+    port= config.get('dbrandom', 'port')
+    dbase = config.get('dbrandom', 'database')
+    user = config.get('dbrandom', 'user')
+    password = config.get('dbrandom', 'password')
+    update_val = config.get('update', 'date')
+
+    #update database if it's the first time someone checked on it that day:
+    currdate = datetime.date.today()
+    currday = str(currdate.day)
+    if currday == update_val:
+        pass
+    else:
+        config.set('update', 'date', currday)
+        updatedb()
+
+    db = "dbname=%s user=%s password=%s" % (dbase,user,password)
+    #Lączenie z bazą danych...
+    conn=psycopg2.connect(db)
+    cur=conn.cursor()
+
+    #Spakowana lepiej funkcja wyszukiwania po datach.
+    def selectdate(self,base,table,day1,month1,year1,day2,month2,year2):
+        if base == 1 or 4
+            duck and quack is '='
+        else:
+            duck is '<=' and quack is ">="
+        if base == 4
+            range = "1"
+            execall = 'SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM %s LIMIT %s OFFSET %s', (table, rowto, rowfrom)
+        else:
+            range = "0"
+            execall = 'SELECT * FROM %s LIMIT %s OFFSET %s', (table,rowto,rowfrom)
+        cur.execute('SELECT MIN(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s',(range,table,duck,day2,month2,year2))
+        rowfrom=(cur.fetchone()[0])
+        cur.execute('SELECT MAX(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s',(range,table,quack,day1,month1,year1))
+        rowfrom=(cur.fetchone()[0])-
+        cur.execute(execall)
+        rows=cur.fetchall()
+        conn.close()
+
+    def searchall(table):
+        query = 'SELECT * FROM %s' (table,)
+        cur.execute(query)
+        rows=cur.fetchall()
+        conn.close()
+
+    #Ta podfunkcja rekonwertująca bazę danych do df aby można było zrobić graf i inne fajne rzeczy na liczbach...
+#Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
+class dataframes():
+    def __init__(self,table):
+        global df
+        if datal is True:
+            query = 'SELECT * FROM %s' (table,)
+            par = " "
+        else:
+            query = 'SELECT * FROM game1 LIMIT %s OFFSET %s'
+            par = "params=[rowto, rowfrom],"
+        df = pandas.read_sql_query(sql=(query),
+            con=psycopg2.connect(db), coerce_float=False,par parse_dates=None, chunksize=None)
+
+        if base == 4 :
+            df1=df.drop(df.columns[0:4],1)
+            df1=df1.drop(df.columns[-1],1)
+        else:
+            df1=df.drop(df.columns[0:num],1)
+
+
+    def extremes():
+        global hilow
+        global often
+        df2 = df1.apply(pandas.value_counts).fillna(0);
+        df2.loc[:,'total'] = df2.sum(axis=1)
+        df3=df2
+
+        nplus = df3.sort_values(['total'], ascending=[False])[:1].index.values;
+        nminus = df3.sort_values(['total'], ascending=[False])[-1:].index.values;
+        nums = df3.sort_values(['total'], ascending=[False])[:int(value)].index.values;
+
+        if var1 == '1':
+            hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
+        else:
+            hilow = "Nie wybrano liczb skrajnych"
+        if int(value) > 0 :
+            often = "Od najczęstszej: " + str(nums)
+        else: "Nie wybrano najczęstszych liczb"
+
+    def makedf(base,var1,var2):
+        global df1
+        global graph
+        global sourcef
+        global avgsc
+        if base == 4 or base == 8 :
+            df1=df.drop(df.columns[0:4],1)
+            df1=df1.drop(df.columns[-1],1)
+        else:
+            df1=df.drop(df.columns[0:3],1)
+        df4=df1.T
+        df5=df4.mean().round(0).value_counts()
+        slist = list()
+        nrlist = list()
+        while len(slist)<len(df5.index):
+            slist.append(" / ")
+        while len(nrlist)<len(df5.index):
+            nrlist.append("\n")
+        dfindex = df5.index.astype(str)
+        dfvalue = df5.values.astype(str)
+        zipped = zip(dfindex, slist, dfvalue, nrlist)
+        a=list(zipped)
+        ahead= ["Średnia" + " / " + "Częstotliwość" + "\n" ]
+        b=ahead+a
+
+        source = ColumnDataSource(
+            data=dict(
+                Means=df5.index,
+                Freqs=df5.values
+                ))
+        if var1 is True:
+            avgsc = b
+        else:
+            avgsc = "Nie wybrano generowania średnich"
+        if var1 is True:
+            #makegraph() - tutaj muszę właśnie popracowaĆ nad integracją bokeh z django.
+            pass
 
 #Główna oś funkcji
 def generate(request):
@@ -28,24 +163,23 @@ def generate(request):
         moftn = request.POST['mostoften']
         avsco = request.POST['avgscores']
         grgen = request.POST['graphgen']
-        if datal == "0":
-            datfro = datfr[0]
-            dattoo = datto[0]
-            allrollstrigger = False
-        elif datal == "1":
-            allrollstrigger = True
-        else:
-            bug_catch()
 
-    radparam()
+    table = "game" + radio
+    base = int(radio)
 
-    if datal == '1':
-        searchallbox(radio)
+    if datal == "0":
+        datfro = datfr[0]
+        dattoo = datto[0]
+        database.selectdate(base,table,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
+        datal = False
+    elif datal == "1":
+        database.searchall(table)
+        datal == True
     else:
-        pass
+        bug_catch()
 
     enumerators(rad,moftn,nhilo)
-    makedf(rad,avsco,grgen)
+    makedf(base,avsco,grgen)
 
     if norol == '1':
         rolls = "Nie wybrano losowań"
@@ -72,147 +206,6 @@ def generate(request):
     }
     return JsonResponse(responsedata)
 
-#Moje nowe narzędzie do łapania errorów w kodzie. Jest prawdziwie piękne. :)
-def bug_catch():
-    try:
-        raise ValueError('Represents a hidden bug, do not catch this')
-        raise Exception('This is the exception you expect to handle')
-    except Exception as error:
-        print('Caught this error: ' + repr(error))
-#Jeśli ma choĆ w połowie tyle skuteczności co piękna na wejrzeniu, to będę używał... <3
-
-#Można uży tej funkcji do uporządkowania spraw z backendem tak żeby go nie przepisywa w całości.
-#To fukcja przypisująca numery od 1 do 8 w zależności od przypadku pazy danych i tego czy
-# jest filtrowana czy nie.
-def radparam():
-    global rad
-    if datal + radio == "11" :
-        rad = 1
-    elif datal + radio == "12" :
-        rad = 2
-    elif datal + radio == "13" :
-        rad = 3
-    elif datal + radio == "14" :
-        rad = 4
-    elif datal + radio == "01" :
-        rad = 5
-        searchA(1,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-    elif datal + radio == "02" :
-        rad = 6
-        searchA(2,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-    elif datal + radio == "03" :
-        rad = 7
-        searchA(3,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-    elif datal + radio == "04" :
-        rad = 8
-        searchA(4,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
-
-    else:
-        pass
-
-
-#Ta funkcja ogranicza bazę rakordów do konkretnych dat.
-def searchA(base,day1,month1,year1,day2,month2,year2):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
-    cur=conn.cursor()
-    global rowfrom
-    global rowto
-    global rows
-    if base == 1:
-        cur.execute('SELECT MIN("0") FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX("0") FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game1 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    elif base == 2:
-        cur.execute('SELECT MAX("0") FROM game2 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN("0") FROM game2 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game2 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    elif base == 3:
-        cur.execute('SELECT MAX("0") FROM game3 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN("0") FROM game3 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game3 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    elif base == 4:
-        cur.execute('SELECT MIN("1") FROM game4 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX("1") FROM game4 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    rows=cur.fetchall()
-    conn.close()
-
-#Funkcja searchall dla checkboxa ściągająca dane z całej bazy danych. .
-def searchallbox(var):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
-    cur=conn.cursor()
-    if var == "1" :
-        cur.execute('SELECT * FROM game1')
-    elif var == "2" :
-        cur.execute('SELECT * FROM game2')
-    elif var == "3" :
-        cur.execute('SELECT * FROM game3')
-    elif var == "4" :
-        cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4')
-    rows=cur.fetchall()
-    conn.close()
-#    return rows
-
-#Ta podfunkcja wywołuje graf Bokeh.
-def makegraph():
-        p=figure(plot_width=500, plot_height=400, tools = 'pan, reset', logo=None)
-        p.title.text = "Dystrybucja"
-        p.title.text_color = "Orange"
-        p.title.text_font = "times"
-        p.title.text_font_style = "italic"
-        p.yaxis.minor_tick_line_color = "Yellow"
-        p.xaxis.axis_label = "Średnie"
-        p.yaxis.axis_label = "Częstotliwości"
-        p.circle(x='Means', y='Freqs', source=source, size = 10, color="red", alpha=0.6)
-        hover=HoverTool(tooltips=[("Mean","@Means"),("Freq","@Freqs")])
-        p.add_tools(hover)
-        output_file('graph1.html')
-        show(p)
-
-#Ta podfunkcja rekonwertująca bazę danych do df aby można było zrobić graf i inne fajne rzeczy na liczbach...
-def dfdb(var):
-    global df
-    if var == 1 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game1'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
-    elif var == 2 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game2'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
-    elif var == 3 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game3'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
-    elif var == 4 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game4'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, parse_dates=None, chunksize=None)
-    elif var == 5 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game1 LIMIT %s OFFSET %s'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
-    elif var == 6 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game2 LIMIT %s OFFSET %s'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
-    elif var == 7 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game3 LIMIT %s OFFSET %s'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
-    elif var == 8 :
-        df = pandas.read_sql_query(
-            sql=('SELECT * FROM game4 LIMIT %s OFFSET %s'),
-            con=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja"), coerce_float=False, params=[rowto, rowfrom], parse_dates=None, chunksize=None)
-
 #Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 def enumerators(base,value,var1):
     dfdb(base)
@@ -223,7 +216,6 @@ def enumerators(base,value,var1):
         df1=df1.drop(df.columns[-1],1)
     else:
         df1=df.drop(df.columns[0:5],1)
-        print(df1)
     df2 = df1.apply(pandas.value_counts).fillna(0);
     df2.loc[:,'total'] = df2.sum(axis=1)
     df3=df2
@@ -231,18 +223,13 @@ def enumerators(base,value,var1):
     nminus = df3.sort_values(['total'], ascending=[False])[-1:].index.values;
     nums = df3.sort_values(['total'], ascending=[False])[:int(value)].index.values;
 
-    if var1 == '1' and int(value) > 0 :
+    if var1 == '1':
         hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
-        often = "Od najczęstszej: " + str(nums)
-    elif var1 == '0' and int(value) > 0 :
-        often = "Od najczęstszej: " + str(nums)
-        hilow = "Nie wybrano liczb skrajnych"
-    elif var1 == '1' and int(value) == 0 :
-        hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
-        often = "Nie wybrano najczęstszych liczb"
     else:
         hilow = "Nie wybrano liczb skrajnych"
-        often = "Nie wybrano najczęstszych liczb"
+    if int(value) > 0 :
+        often = "Od najczęstszej: " + str(nums)
+    else: "Nie wybrano najczęstszych liczb"
 
 #Nadfunkcja - Zwraca graf i średnie wyników losowań.
 def makedf(base,var1,var2):
@@ -268,7 +255,7 @@ def makedf(base,var1,var2):
     dfvalue = df5.values.astype(str)
     zipped = zip(dfindex, slist, dfvalue, nrlist)
     a=list(zipped)
-    ahead= ["Średnia" + " / " + "ilość" + "\n" ]
+    ahead= ["Średnia" + " / " + "Częstotliwość" + "\n" ]
     b=ahead+a
 
     source = ColumnDataSource(
@@ -288,6 +275,36 @@ def makedf(base,var1,var2):
     else:
             avgsc = "Nie wybrano generowania średnich"
             graph = "Nie wybrano generowania wykresu"
+
+#Moje nowe narzędzie do łapania errorów w kodzie. Jest prawdziwie piękne. :)
+def bug_catch():
+    try:
+        raise ValueError('Represents a hidden bug, do not catch this')
+        raise Exception('This is the exception you expect to handle')
+    except Exception as error:
+        print('Caught this error: ' + repr(error))
+#Jeśli ma choĆ w połowie tyle skuteczności co piękna na wejrzeniu, to będę używał... <3
+
+
+#Ta podfunkcja wywołuje graf Bokeh.
+def makegraph():
+        p=figure(plot_width=500, plot_height=400, tools = 'pan, reset', logo=None)
+        p.title.text = "Dystrybucja"
+        p.title.text_color = "Orange"
+        p.title.text_font = "times"
+        p.title.text_font_style = "italic"
+        p.yaxis.minor_tick_line_color = "Yellow"
+        p.xaxis.axis_label = "Średnie"
+        p.yaxis.axis_label = "Częstotliwości"
+        p.circle(x='Means', y='Freqs', source=source, size = 10, color="red", alpha=0.6)
+        hover=HoverTool(tooltips=[("Mean","@Means"),("Freq","@Freqs")])
+        p.add_tools(hover)
+        output_file('graph1.html')
+        show(p)
+
+
+
+
 
 #Ta funkcja wyciąga z bazy danych pierwszą/ostatnią datę. (W wersji webowej do zaimplementowania na końcu...)
 def getcaldate(base, date):
