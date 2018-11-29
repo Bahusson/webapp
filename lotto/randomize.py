@@ -4,7 +4,62 @@ import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
 import re
-#from config import config
+import configparser
+import datetime
+from lotto import updatedb
+
+class Database:
+    configure()
+    #Lączenie z bazą danych...
+    def __init__(self, db):
+        conn=psycopg2.connect(db)
+        cur=conn.cursor()
+
+    #Spakowana lepiej funkcja wyszukiwania po datach.
+    def selector(self,base,table,day1,month1,year1,day2,month2,year2,q):
+        if q == 1:
+            duck is '<=' and quack is ">="
+        elif q == 0:
+            duck and quack is '='
+        if base == 4 or 8:
+            range = "1"
+            execall = 'SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM %s LIMIT %s OFFSET %s', (table, rowto, rowfrom)
+        else:
+            range = "0"
+            execall = 'SELECT * FROM %s LIMIT %s OFFSET %s', (table,rowto,rowfrom)
+        cur.execute('SELECT MIN(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s',(range,table,duck,day2,month2,year2))
+        rowfrom=(cur.fetchone()[0])
+        cur.execute('SELECT MAX(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s',(range,table,quack,day1,month1,year1))
+        rowfrom=(cur.fetchone()[0])-
+        cur.execute(execall)
+        rows=cur.fetchall()
+        conn.close()
+
+def configure():
+    # instantiate
+    global db
+    config = ConfigParser()
+    # parse existing file
+    config.read('database.ini')
+    # read values from a section
+    host = config.get('dbrandom', 'host')
+    dbase = config.get('dbrandom', 'database')
+    user = config.get('dbrandom', 'user')
+    password = config.get('dbrandom', 'password')
+    update_val = config.get('update', 'date')
+
+    #update database if it's the first time someone checked on it that day:
+    currdate = datetime.date.today()
+    currday = str(currdate.day)
+
+    if currday == update_val:
+        pass
+    else:
+        config.set('update', 'date', currday)
+        updatedb()
+
+    db = "dbname=%s user=%s password=%s" % (dbase,user,password)
+
 
 #Główna oś funkcji
 def generate(request):
@@ -18,6 +73,7 @@ def generate(request):
     global rad
     global datfro
     global dattoo
+    global table
     if request.is_ajax():
         radio = request.POST.get('gamesel')
         datfr = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
@@ -28,6 +84,9 @@ def generate(request):
         moftn = request.POST['mostoften']
         avsco = request.POST['avgscores']
         grgen = request.POST['graphgen']
+
+        table = "game" + radio
+
         if datal == "0":
             datfro = datfr[0]
             dattoo = datto[0]
@@ -111,40 +170,6 @@ def radparam():
         pass
 
 
-#Ta funkcja ogranicza bazę rakordów do konkretnych dat.
-def searchA(base,day1,month1,year1,day2,month2,year2):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
-    cur=conn.cursor()
-    global rowfrom
-    global rowto
-    global rows
-    if base == 1:
-        cur.execute('SELECT MIN("0") FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX("0") FROM game1 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game1 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    elif base == 2:
-        cur.execute('SELECT MAX("0") FROM game2 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN("0") FROM game2 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game2 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    elif base == 3:
-        cur.execute('SELECT MAX("0") FROM game3 WHERE "2"<=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MIN("0") FROM game3 WHERE "2">=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT * FROM game3 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    elif base == 4:
-        cur.execute('SELECT MIN("1") FROM game4 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX("1") FROM game4 WHERE "2"=%s AND "3"=%s AND "4"=%s',(day1,month1,year1))
-        rowto=(cur.fetchone()[0])-rowfrom
-        cur.execute('SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM game4 LIMIT %s OFFSET %s', (rowto, rowfrom))
-    rows=cur.fetchall()
-    conn.close()
-
 #Funkcja searchall dla checkboxa ściągająca dane z całej bazy danych. .
 def searchallbox(var):
     conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
@@ -223,7 +248,6 @@ def enumerators(base,value,var1):
         df1=df1.drop(df.columns[-1],1)
     else:
         df1=df.drop(df.columns[0:5],1)
-        print(df1)
     df2 = df1.apply(pandas.value_counts).fillna(0);
     df2.loc[:,'total'] = df2.sum(axis=1)
     df3=df2
@@ -231,18 +255,13 @@ def enumerators(base,value,var1):
     nminus = df3.sort_values(['total'], ascending=[False])[-1:].index.values;
     nums = df3.sort_values(['total'], ascending=[False])[:int(value)].index.values;
 
-    if var1 == '1' and int(value) > 0 :
+    if var1 == '1':
         hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
-        often = "Od najczęstszej: " + str(nums)
-    elif var1 == '0' and int(value) > 0 :
-        often = "Od najczęstszej: " + str(nums)
-        hilow = "Nie wybrano liczb skrajnych"
-    elif var1 == '1' and int(value) == 0 :
-        hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
-        often = "Nie wybrano najczęstszych liczb"
     else:
         hilow = "Nie wybrano liczb skrajnych"
-        often = "Nie wybrano najczęstszych liczb"
+    if int(value) > 0 :
+        often = "Od najczęstszej: " + str(nums)
+    else: "Nie wybrano najczęstszych liczb"
 
 #Nadfunkcja - Zwraca graf i średnie wyników losowań.
 def makedf(base,var1,var2):
@@ -268,7 +287,7 @@ def makedf(base,var1,var2):
     dfvalue = df5.values.astype(str)
     zipped = zip(dfindex, slist, dfvalue, nrlist)
     a=list(zipped)
-    ahead= ["Średnia" + " / " + "ilość" + "\n" ]
+    ahead= ["Średnia" + " / " + "Częstotliwość" + "\n" ]
     b=ahead+a
 
     source = ColumnDataSource(
