@@ -153,6 +153,7 @@ def generate(request):
     global rad
     global datfro
     global dattoo
+    global table
     if request.is_ajax():
         radio = request.POST.get('gamesel')
         datfr = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
