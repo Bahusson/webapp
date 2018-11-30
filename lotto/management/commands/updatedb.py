@@ -1,11 +1,12 @@
-        import psycopg2
-        import pandas
-        import urllib.request, urllib.parse, urllib.error
-        from bs4 import BeautifulSoup
-        import re
-        import ssl
-        from sqlalchemy import create_engine
-        import configparser
+import psycopg2
+import pandas
+import urllib.request, urllib.parse, urllib.error
+from bs4 import BeautifulSoup
+import re
+import ssl
+from sqlalchemy import create_engine
+import configparser
+from lotto import randomize
 
         #Zaprogramuj tę funkcję na serwerze tak, aby raz dziennie o północy odnawiała bazę danych.
         #Opcjonalnie dla oszczędzania zasobów możesz zrobi tak, żeby za pierwszym razem danego dnia
@@ -13,43 +14,41 @@
         #guziku zapisu.
 
         #Ten kawałek to parser beautifulsoup i regular expressions dla ekstra pensji, bo na mbtnet nie ma bazy w CSV.
-class updatedb:
-    def __init__():
-
+class Updatedb(self):
+    database():
+    def __init__(self):
+        url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
+        html = urllib.request.urlopen(url, context=ctx).read()
+        soup = BeautifulSoup(html, 'html.parser')
+        a = str(soup.find_all('td'))
+        p = re.findall(">(\d\d\d\d)<", a)
+        url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'+str(p)
+        lsource = str(soup.find_all('td'))
+        g1 = re.findall(">(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>, <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<", lsource)
 
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
 
-        def gotolast():
-            url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
-            html = urllib.request.urlopen(url, context=ctx).read()
-            soup = BeautifulSoup(html, 'html.parser')
-            a = str(soup.find_all('td'))
-            p = re.findall(">(\d\d\d\d)<", a)
-            return(p[-1])
-
-        url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'+str(gotolast())
-        html = urllib.request.urlopen(url, context=ctx).read()
-        soup = BeautifulSoup(html, 'html.parser')
-        lsource = str(soup.find_all('td'))
-        g1 = re.findall(">(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>, <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<", lsource)
-    def connect(var):
+    def connect():
         x=5
+        query=
         while x > 0:
             x=x-1
-            engine = create_engine('postgresql+psycopg2://postgres:Ma3taksamo_Jakja@localhost:5432/webappbasedb')
-
-            engine = create_engine('postgresql+psycopg2://postgres:Ma3taksamo_Jakja@localhost:5432/webappbasedb')
+            gra = {multi : 'http://www.mbnet.com.pl/ml.txt',
+                   lotek : 'http://www.mbnet.com.pl/dl.txt',
+                   mini  : 'http://www.mbnet.com.pl/el.txt'}
+            db_ini = 'postgresql+psycopg2://postgres:Ma3taksamo_Jakja@localhost:5432/webappbasedb'
+            engine = create_engine(db_ini
             if var == 1:
+                query = table + ', engine,if_exists="replace",index=False']
                 df = pandas.read_csv('http://www.mbnet.com.pl/ml.txt',header =None, sep='[., ]', engine ='python')
-                df.to_sql('game1', engine,if_exists='replace',index=False) #truncates the table
+                df.to_sql(query[] #truncates the table
+
+
             elif var == 2 :
                 df = pandas.read_csv('http://www.mbnet.com.pl/dl.txt',header =None, sep='[., ]', engine ='python')
-                df.to_sql('game2', engine,if_exists='replace',index=False) #truncates the table
             elif var == 3 :
                 df = pandas.read_csv('http://www.mbnet.com.pl/el.txt',header =None, sep='[., ]', engine ='python')
-                df.to_sql('game3', engine,if_exists='replace',index=False) #truncates the table
             conn = engine.raw_connection()
             cur = conn.cursor()
             conn.commit()
