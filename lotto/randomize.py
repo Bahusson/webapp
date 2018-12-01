@@ -9,6 +9,7 @@ import datetime
 from lotto import updatedb
 
 class Database:
+    table = "game"+str(base)
     def __init__(self):
         # instantiate
         # formułka konfiguracji funkcji odczytu baz danych.
@@ -26,62 +27,71 @@ class Database:
         #Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
         today = str(fulldate.day)
+        db = "dbname={0} user={1} password={2}".format(db_base,user,password)
         if currday == update_val:
             pass
         else:
             config.set('update', 'date', currday)
-            updatedb()
+            updatedb(user,password,host,port,db_base,db)
             #OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
                 #kiedy nikt nie korzysta z aplikacji.
                 #Z początku myślałem, żeby zapuściĆ w kółko proces na serwerze,
                 #tak, aby aktualizowała się sama pod koniec dnia.
                 #Tak jest jednak lepiej. ^^
 
-        db = "dbname=%s user=%s password=%s" % (db_base,user,password)
+
         #Lączenie z bazą danych...
-        conn=psycopg2.connect(db)
-        cur=conn.cursor()
+        self.conn=psycopg2.connect(db)
+        self.cur=self.conn.cursor()
 
     #Select piece of database queries by date function
     #Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
-    def selectdate(self,base,table,day1,month1,year1,day2,month2,year2):
+    def selectdate(self,base,day1,month1,year1,day2,month2,year2):
         if base == 1 or 4
             duck = '='
             witch = '='
+            sign = ['MIN','MAX']
                 #film = 'Monty Python and the holy grail: Witch scene.'
         else:
             duck = '<='
             witch = ">="
-             #  film(she='witch'):
+            sign = ['MAX','MIN']
+             # irrelevant joke: film(she='witch'):
                 #sir_galahad: "What else can swim?"
                 #peasant(John_Cleese):"Little rocks!"
                 #Arthur-King-Of-The-Britons: "A DUCK!!! (...)"
                 #sir_galahad: "If "she" weighs the same as a duck, then..."
                 #peasants: "A witch!!! Burn her!!!"
                 #peasants.weighting(witch,duck) returned: {witch : "Alright you got me...", witch : she}
+        selquery = 'SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5} AND "4"={6}'.format(sign[0],range,table,duck,day2,month2,year2)
+        selquery_ = 'SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5} AND "4"={6}'.format(sign[1],range,table,duck,day2,month2,year2)
+        self.cur.execute(selquery)
+        rowfrom=(self.cur.fetchone()[0])
+        self.cur.execute(selquery_)
+        rowto=(self.cur.fetchone()[0])-rowfrom
         if base == 4
             range = "1"
             execall = 'SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM %s LIMIT %s OFFSET %s', (table, rowto, rowfrom)
         else:
             range = "0"
-            execall = 'SELECT * FROM %s LIMIT %s OFFSET %s', (table,rowto,rowfrom)
-        cur.execute('SELECT MIN(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s',(range,table,duck,day2,month2,year2))
-        rowfrom=(cur.fetchone()[0])
-        cur.execute('SELECT MAX(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s',(range,table,quack,day1,month1,year1))
-        rowfrom=(cur.fetchone()[0])-
-        cur.execute(execall)
-        rows=cur.fetchall()
-        conn.close()
+            execall = 'SELECT * FROM {0} LIMIT {1} OFFSET {2}'.format(table,rowto,rowfrom)
+        self.cur.execute(execall)
+        rows=self.cur.fetchall()
+        return rows
 
-    def searchall(table):
-        query = 'SELECT * FROM %s' (table,)
-        cur.execute(query)
-        rows=cur.fetchall()
-        conn.close()
+    def searchall(self,table):
+        query = 'SELECT * FROM {0}'.format(table)
+        self.cur.execute(query)
+        rows=self.cur.fetchall()
+        return rows
+
+    def __del__(self):
+        self.conn.close()
+
 
     #Ta podfunkcja rekonwertująca bazę danych do df aby można było zrobić graf i inne fajne rzeczy na liczbach...
 #Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
-class Dataframes(base,num):
+class Dataframes:
     table = "game" + str(base)
     avg = bool(aver == "1" )
     grap = bool(graph == "1")
