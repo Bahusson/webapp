@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class LottoConfig(AppConfig):
-    name = 'lotto'
+class MyprogramsConfig(AppConfig):
+    name = 'myprograms'

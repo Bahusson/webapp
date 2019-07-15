@@ -1,13 +1,13 @@
 from modeltranslation.translator import translator, TranslationOptions
-from jobs.models import Job
+from jobs.models import Trick
 from jobs.models import Tech
 
 
-class JobTranslate(TranslationOptions):
+class TrickTranslate(TranslationOptions):
     fields = ('title', 'summary',)
 
 
-translator.register(Job, JobTranslate)
+translator.register(Trick, TrickTranslate)
 
 
 class TechTranslate(TranslationOptions):
