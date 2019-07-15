@@ -1,17 +1,17 @@
 from modeltranslation.translator import translator, TranslationOptions
-from lotto.models import MyProgram
-from lotto.models import Lotto
+from myprograms.models import ProgramPage
+from myprograms.models import MyProgram
 
 
-class MyProgramTranslate(TranslationOptions):
+class ProgramPageTranslate(TranslationOptions):
     fields = ('bit_intro', 'small_intro', 'send_email', 'published', 'version', 'system', 'weight', 'license', 'download_exe', 'link_git', 'details', 'launch_new',)
 
 
-translator.register(MyProgram, MyProgramTranslate)
+translator.register(ProgramPage, ProgramPageTranslate)
 
 
-class LottoTranslate(TranslationOptions):
+class MyProgramTranslate(TranslationOptions):
     fields = ('title', 'readme', 'image', 'compatible', 'license',)
 
 
-translator.register(Lotto, LottoTranslate)
+translator.register(MyProgram, MyProgramTranslate)
