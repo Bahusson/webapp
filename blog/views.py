@@ -1,13 +1,25 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from django.shortcuts import get_object_or_404 as G404
+from .models import Blog as B
+from .models import Pageitem as P
+from webapp.settings import LANGUAGES as L
+from webapp.special.classes import PageLoad
 
-from .models import Blog
 
 def allblogs(request):
-    blogs = Blog.objects
-    return render(request, 'blog/allblogs.html', {'blogs':blogs})
+    pl = PageLoad(P, L)
+    pl.portal(B=B)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'blogs': pl.blogs, }
+    return render(request, 'blog/allblogs.html', context)
 
-#Ta funkcja kieruje na podstronę wybranego wpisu na blogu.
+
+# Ta funkcja kieruje na podstronę wybranego wpisu na blogu.
 def detail(request, blog_id):
-    detailblog = get_object_or_404(Blog, pk=blog_id)
-    return render(request, 'blog/detail.html', {'blog':detailblog})
-# Create your views here.
+    pl = PageLoad(P, L)
+    pl.portal(B=B, G404=G404, blogid=blog_id)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'blog': pl.blog, }
+    return render(request, 'blog/detail.html', context)
