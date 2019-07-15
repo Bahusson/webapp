@@ -31,10 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
     'lotto.apps.LottoConfig',
     'blog.apps.BlogConfig',
     'jobs.apps.JobsConfig',
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +46,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -59,7 +62,7 @@ ROOT_URLCONF = 'webapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,13 +87,13 @@ DATABASES = {
         'NAME': 'webappbasedb',
         'USER': 'postgres',
         'PASSWORD': 'Ma3taksamo_Jakja',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     },
     'randomizerdb': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'Lotto.db'),
-    }
+    },
 }
 
 # Password validation
@@ -111,11 +114,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# CACHE bazodanowy. https://docs.djangoproject.com/en/2.2/topics/cache/
+# Przed użyciem stwórz tabelę w bazie danych za pomocą: "python manage.py createcachetable"
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+        'TIMEOUT': 10,
+        'OPTIONS': {
+            'MAX_ENTRIES': 2000,
+            'CULL_FREQUENCY': 2
+        }
+    }
+}
+
+CACHE_MIDDLEWARE_ALIAS = 'default'
+
+CACHE_MIDDLEWARE_SECONDS = 10
+
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+# Dla sesji opartych na ciastkach "django.contrib.sessions.backends.signed_cookies"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl'
 
 TIME_ZONE = 'UTC'
 
@@ -125,6 +150,37 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Moduł tłumaczeniowy, jak wszystko z MODELTRANSLATION w nazwie
+# https://django-modeltranslation.readthedocs.io/en/latest/
+# klasy są tak poustawiane, że dodanie lub usunięcie języka z settings.py
+# automatycznie powoduje ich dodanie/usunięcie wszędzie indziej.
+# TODO: Poprawić langjs.js żeby też był z tym zsynchronizowany.
+gettext = lambda s: s
+LANGUAGES = (
+    ('pl', gettext('Polish')),  # Pierwszy jest zawsze defaultem chyba, że zrobisz override.
+    ('en', gettext('English')),
+)
+
+LANGUAGE_COOKIE_AGE = 31449600  # Około rok ważności ustawień między logowaniami w sekundach.
+# Ustaw None jeśli chcesz, żeby się zerowały po każdym wyłączeniu przeglądarki.
+
+LANGUAGE_COOKIE_NAME = 'esks_language' # Nazwa ciacha językowego, żeby się nie myliło.
+
+LANGUAGE_COOKIE_PATH = '/' # Domyślna ścieżka ciastków. Na wypadek jakbyśmy chcieli nimi manipulować.
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'pl' # Tu możesz zmienić default language.
+
+MODELTRANSLATION_LANGUAGES = ('pl', 'en')
+
+# W ten sposób zachowają sie języki jak nie znajdzie się jakiegoś w bazie. Do zmiany być może?
+MODELTRANSLATION_FALLBACK_LANGUAGES = {'default': ('en', ), 'en': ('pl', )}
+
+# Tutaj rejestruje się wszystkie trackery translacyjne translation.py, które umieszczasz w folderze apki.
+MODELTRANSLATION_TRANSLATION_FILES = (
+    'blog.translation',
+    'jobs.translation',
+    'lotto.translation',
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -139,16 +195,17 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
+LOGIN_REDIRECT_URL = '/'  # Przekierowanie usera po zalogowaniu
+# jeśli nie masz tego zdefiniowanego inaczej. My mamy, ale zostawiam bo w razie
+# "w" default przekierowuje na nieistniejącą stronę. To już lepiej na główną!
 
+LOGOUT_REDIRECT_URL = '/'  # Przekierowanie po wylogowaniu.
+
+# Ściągnij ustawienia lokalne gdybyśmy chcieli udostępnić kod i wejść na OpenSource
+# na serwerze obok "settings" robisz plik .local_settings i ustalasz od nowa:
+# SECRET_KEY, DEBUG = False, DATABASES, oraz CACHES jeśli używasz Memccache.
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
 
