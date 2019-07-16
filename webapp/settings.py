@@ -164,7 +164,7 @@ LANGUAGES = (
 LANGUAGE_COOKIE_AGE = 31449600  # Około rok ważności ustawień między logowaniami w sekundach.
 # Ustaw None jeśli chcesz, żeby się zerowały po każdym wyłączeniu przeglądarki.
 
-LANGUAGE_COOKIE_NAME = 'esks_language' # Nazwa ciacha językowego, żeby się nie myliło.
+LANGUAGE_COOKIE_NAME = 'webapp_language' # Nazwa ciacha językowego, żeby się nie myliło.
 
 LANGUAGE_COOKIE_PATH = '/' # Domyślna ścieżka ciastków. Na wypadek jakbyśmy chcieli nimi manipulować.
 

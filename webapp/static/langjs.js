@@ -8,7 +8,7 @@ var domain = "127.0.0.1" // Tu zmień domenę z localhost albo podepnij to jako�
 
 function setCookie(cvalue)
 {
-  document.cookie = "esks_language = " + cvalue + ";domain=" + domain + ";path=/";
+  document.cookie = "webapp_language = " + cvalue + ";domain=" + domain + ";path=/";
   location.reload();
 }
 
