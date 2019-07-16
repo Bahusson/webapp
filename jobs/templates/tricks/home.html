@@ -4,16 +4,16 @@
   <!-- Custom styles for this template
   <link href="album.css" rel="stylesheet"> -->
   <title>{{ items.headtitle }}</title>
-  
+
 {% endblock %}
 
 {% block body %}
     <main role="main">
       <section class="jumbotron text-center">
         <div class="container">
-          <h1 class="jumbotron-heading">Witaj!</h1>
+          <h1 class="jumbotron-heading">{{ items.welcome }}</h1>
           <img src="{% static 'myphoto.jpg' %}" height="250" />
-          <p class="lead text-muted">Nazywam się Jakub Kozdrowicz i jestem początkującym programistą. Ta strona i jej zawartość powstała w ramach mojej nauki programowania w Django 2, Python 3, PostgreSQL i in. </p>
+          <p class="lead text-muted">{{ items.intro }}</p>
           <p>
             <a href="mailto:jakub.kozdrowicz@gmail.com" class="btn btn-primary my-2">{{ items.send_email }}</a>
           </p>

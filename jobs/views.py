@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404 as G404
+from .models import Curriculum as Cv
 from .models import Trick as Tr
 from .models import Tech as Te
 from blog.models import Blog as B
@@ -52,8 +53,9 @@ def books(request, tricks_id):
 # Pełna strona konkretnej umiejętności.
 def skills(request, techs_id):
     pl = PageLoad(P, L)
-    pl.portal(Te=Te, G404=G404, techsid=techs_id)
+    pl.portal(Te=Te, Cv=Cv, G404=G404, techsid=techs_id)
     context = {'items': pl.items,
                'langs': pl.langs,
-               'tech': pl.tech, }
+               'tech': pl.tech,
+               'cv': pl.cv, }
     return render(request, 'techs/skills.html', context)

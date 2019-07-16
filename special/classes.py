@@ -38,6 +38,11 @@ class PageLoad(object):
             te = kwargs['Te']
             self.techs = te.objects
 
+        if 'Cv' in kwargs:
+            cvs = kwargs['Cv']
+            cvlist = list(cvs.objects.all())
+            self.cv = cvlist[0]
+
         if 'G404' in kwargs:
             G404 = kwargs['G404']
 
