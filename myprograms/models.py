@@ -17,7 +17,7 @@ class ProgramPage(models.Model):
     launch_new = models.Charfield(max_lenght=40)
 
 
-# Klasa dla poszczególnych programów. Można by zmienić nazwę. Tak jakoś dziwnie zostało...
+# Klasa dla poszczególnych programów.
 class MyProgram(models.Model):
     title = models.CharField(max_length=100)
     date = models.DateTimeField()
@@ -30,7 +30,7 @@ class MyProgram(models.Model):
     gitsrccode = models.TextField(blank=True)
     license = models.CharField(max_length=250, blank=True)
 
-    # Ta funkcja pokazuje tytuł postu na stronie admina. Zawsze używaj ___str___ żeby wrzucić coś w górę do adminów.
+    # Ta funkcja pokazuje tytuł postu na stronie admina.
     def __str__(self):
         return self.title
 
@@ -38,7 +38,6 @@ class MyProgram(models.Model):
     def date_short(self):
         return self.date.strftime('%a %d %b %Y')
 
-    # Zwraca skrócony opis, gdyby kiedyś był gdzieś potrzebny. Np. w zestawieniu programów.
+    # Zwraca skrócony opis,
     def summary(self):
         return self.readme[:110]
-# Create your models here.

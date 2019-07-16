@@ -9,6 +9,7 @@ from webapp.settings import LANGUAGES as L
 from webapp.special.classes import PageLoad
 
 
+# Strona Startowa.
 def home(request):
     pl = PageLoad(P, L)
     pl.portal(B=B, Tr=Tr)
@@ -18,6 +19,7 @@ def home(request):
     return render(request, 'tricks/home.html', context)
 
 
+# Strona 'Aktualności'. Dużo różnych rzeczy - skrótowo.
 def newsletter(request):
     pl = PageLoad(P, L)
     pl.portal(B=B, Tr=Tr, Te=Te)
@@ -37,6 +39,7 @@ def newsletter(request):
     return render(request, 'tricks/newsletter.html', context)
 
 
+# Pełna strona konkretnej ciekawostki.
 def books(request, tricks_id):
     pl = PageLoad(P, L)
     pl.portal(Tr=Tr, G404=G404, tricksid=tricks_id)
@@ -46,6 +49,7 @@ def books(request, tricks_id):
     return render(request, 'tricks/books.html', context)
 
 
+# Pełna strona konkretnej umiejętności.
 def skills(request, techs_id):
     pl = PageLoad(P, L)
     pl.portal(Te=Te, G404=G404, techsid=techs_id)

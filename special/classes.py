@@ -25,7 +25,7 @@ class PageLoad(object):
 
         self.langs = zip(lang_id, langsl)
 
-    def portal(self, *args, **kwargs):
+    def portal(self, **kwargs):
         if 'B' in kwargs:
             b = kwargs['B']
             self.blogs = b.objects
@@ -54,8 +54,11 @@ class PageLoad(object):
             self.techs = G404(te, pk=techs_id)
 
     def showroom(self, *args, **kwargs):
-        m = args[0]
-        self.myprog = m.objects
+        if len(args) > 0:
+            m = args[0]
+            pp = args[1]
+            self.myprogs = m.objects
+            self.pritems = pp.objects
 
         if 'myprogramid' in kwargs:
             G404 = kwargs['G404']

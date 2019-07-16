@@ -23,13 +23,13 @@ import myprograms.randomize
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('', jobs.views.home, name='home'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
-    path('lotto/', include('lotto.urls')),
-    path('tricks/', include('jobs.urls')),
+    path('myprograms/', include('myprograms.urls')),
+    path('myprograms/generate/', myprograms.randomize.generate, name='generate'),
+    path('myprograms/roll/', myprograms.randomize1.roll, name='roll'),
     path('techs/', include('jobs.urls')),
-    path('lotto/roll/', myprograms.randomize1.roll, name='roll'),
-    path('lotto/generate/', myprograms.randomize.generate, name='generate'),
+    path('tricks/', include('jobs.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

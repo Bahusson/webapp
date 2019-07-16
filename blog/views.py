@@ -6,6 +6,7 @@ from webapp.settings import LANGUAGES as L
 from webapp.special.classes import PageLoad
 
 
+# Zestawienie wszystkich wpisów na blogu.
 def allblogs(request):
     pl = PageLoad(P, L)
     pl.portal(B=B)
@@ -15,7 +16,7 @@ def allblogs(request):
     return render(request, 'blog/allblogs.html', context)
 
 
-# Ta funkcja kieruje na podstronę wybranego wpisu na blogu.
+# Pełna strona konkretnego wpisu na blogu.
 def detail(request, blog_id):
     pl = PageLoad(P, L)
     pl.portal(B=B, G404=G404, blogid=blog_id)
