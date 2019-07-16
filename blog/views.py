@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404 as G404
 from .models import Blog as B
-from .models import Pageitem as P
+from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
-from webapp.special.classes import PageLoad
+from special.classes import PageLoad
 
 
 # Zestawienie wszystkich wpisów na blogu.

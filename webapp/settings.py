@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'lotto.apps.LottoConfig',
+    'myprograms.apps.MyprogramsConfig',
     'blog.apps.BlogConfig',
     'jobs.apps.JobsConfig',
     'modeltranslation',
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ajax',
+#    'ajax',
 ]
 
 MIDDLEWARE = [
@@ -84,9 +84,9 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'webappbasedb',
+        'NAME': 'webappdb',
         'USER': 'postgres',
-        'PASSWORD': 'Ma3taksamo_Jakja',
+        'PASSWORD': 'Mu3kata!owieC',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     },
@@ -179,7 +179,7 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {'default': ('en', ), 'en': ('pl', )}
 MODELTRANSLATION_TRANSLATION_FILES = (
     'blog.translation',
     'jobs.translation',
-    'lotto.translation',
+    'myprograms.translation',
 )
 
 # Static files (CSS, JavaScript, Images)

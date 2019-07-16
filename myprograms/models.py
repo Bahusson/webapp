@@ -3,18 +3,18 @@ from django.db import models
 
 # Klasa wspólna dla tłumaczeń części o programach.
 class ProgramPage(models.Model):
-    big_intro = models.Charfield(max_length=50)
-    small_intro = models.Charfield(max_length=300)
-    send_email = models.charfield(max_length=30)
+    big_intro = models.CharField(max_length=50)
+    small_intro = models.CharField(max_length=300)
+    send_email = models.CharField(max_length=30)
     published = models.CharField(max_length=30)
-    version = models.Charfield(max_length=20)
-    system = models.Charfield(max_length=20)
+    version = models.CharField(max_length=20)
+    system = models.CharField(max_length=20)
     weight = models.CharField(max_length=25)
     license = models.CharField(max_length=25)
-    download_exe = models.Charfield(max_length=200)
-    link_git = models.Charfield(max_length=200)
+    download_exe = models.CharField(max_length=200)
+    link_git = models.CharField(max_length=200)
     details = models.CharField(max_length=25)
-    launch_new = models.Charfield(max_lenght=40)
+    launch_new = models.CharField(max_length=40)
 
 
 # Klasa dla poszczególnych programów.

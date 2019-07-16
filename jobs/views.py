@@ -6,7 +6,7 @@ from blog.models import Blog as B
 from myprograms.models import MyProgram
 from .models import Pageitem as P
 from webapp.settings import LANGUAGES as L
-from webapp.special.classes import PageLoad
+from special.classes import PageLoad
 
 
 # Strona Startowa.

@@ -4,7 +4,7 @@ from .models import MyProgram as M
 from .models import ProgramPage as Pp
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
-from webapp.special.classes import PageLoad
+from special.classes import PageLoad
 
 
 # Strona z programami do ściągnięcia/przetestowania.
