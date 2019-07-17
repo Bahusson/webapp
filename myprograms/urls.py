@@ -3,8 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.download, name='download'),
-    path('<int:myprogram_id>/', views.progpage, name='progpage'),
-    path('myprogram/pybrun/', views.pybrun, name='pybrun'),
-#    path('myprogram/roll/', views.roll, name='roll'),
-    path('myprogram/pybrun/<int:myprogram_id>/', views.progpage, name='progpage'),
+    path('progpage/<int:myprogram_id>/', views.progpage, name='progpage'),
+    path('pybrun/', views.pybrun, name='pybrun'),
+    path('launchme/<int:myprogram_id>/', views.launchme, name='launchme')
+    # path('myprograms/roll/', views.roll, name='roll'),
 ]

@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404 as G404
-from .models import MyProgram as M
 from .models import ProgramPage as Pp
+from .models import MyProgram as Mp
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import PageLoad
@@ -13,23 +13,23 @@ def download(request):
         pass
     else:
         pl = PageLoad(P, L)
-        pl.showroom(M, Pp)
+        pl.showroom(Pp, Mp)
         context = {'items': pl.items,
                    'langs': pl.langs,
-                   'myprogs': pl.myprogs,
-                   'pritems': pl.pritems, }
-        return render(request, 'myprogram/download.html', context)
+                   'pritems': pl.pritems,
+                   'myprogs': pl.myprogs, }
+        return render(request, 'myprograms/download.html', context)
 
 
 # Strona ze szczegółami konkretnego programu.
 def progpage(request, myprogram_id):
     pl = PageLoad(P, L)
-    pl.showroom(M, Pp, G404=G404, myprogramid=myprogram_id)
+    pl.showroom(Pp, Mp, G404=G404, myprogramid=myprogram_id)
     context = {'items': pl.items,
                'langs': pl.langs,
-               'myprog': pl.myprog,
-               'pritems': pl.pritems, }
-    return render(request, 'myprogram/progpage.html', context)
+               'pritems': pl.pritems,
+               'myprog': pl.myprog, }
+    return render(request, 'myprograms/progpage.html', context)
 
 
 # Emulator randomizera. Bo nie da rady tego po prostu "wygenerować".
@@ -40,4 +40,11 @@ def pybrun(request):
         pl = PageLoad(P, L)
         context = {'items': pl.items,
                    'langs': pl.langs, }
-        return render(request, 'myprogram/pybrun.html', context)
+        return render(request, 'myprograms/pybrun.html', context)
+
+
+def launchme(request, myprogram_id):
+    if myprogram_id == 1:
+        return redirect('pybrun')
+    else:
+        pass

@@ -60,12 +60,13 @@ class PageLoad(object):
 
     def showroom(self, *args, **kwargs):
         if len(args) > 0:
-            m = args[0]
-            pp = args[1]
-            self.myprogs = m.objects
-            self.pritems = pp.objects
+            pp = args[0]
+            mp = args[1]
+            firstp = list(pp.objects.all())
+            self.pritems = firstp[0]
+            self.myprogs = mp.objects
 
         if 'myprogramid' in kwargs:
             G404 = kwargs['G404']
             myprogram_id = kwargs['myprogramid']
-            self.myprog = G404(m, pk=myprogram_id)
+            self.myprog = G404(mp, pk=myprogram_id)
