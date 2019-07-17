@@ -30,6 +30,7 @@ class Pageitem(models.Model):
     git_link = models.CharField(max_length=200)  # link do githuba
     gitter = models.CharField(max_length=200)  # tekst linku do gittera
     gitter_link = models.CharField(max_length=200)  # link do gittera
+    fresh_entries = models.CharField(max_length=200)  # Najnowsze wpisy.
 
 
 class Trick(models.Model):
