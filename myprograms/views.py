@@ -22,9 +22,9 @@ def download(request):
 
 
 # Strona ze szczegółami konkretnego programu.
-def progpage(request, myprogram_id):
+def progpage(request, place):
     pl = PageLoad(P, L)
-    pl.showroom(Pp, Mp, G404=G404, myprogramid=myprogram_id)
+    pl.showroom(Pp, Mp, G404=G404, place=place)
     context = {'items': pl.items,
                'langs': pl.langs,
                'pritems': pl.pritems,
@@ -43,8 +43,8 @@ def pybrun(request):
         return render(request, 'myprograms/pybrun.html', context)
 
 
-def launchme(request, myprogram_id):
-    if myprogram_id == 1:
+def launchme(request, place):
+    if place == 1:
         return redirect('pybrun')
     else:
         pass

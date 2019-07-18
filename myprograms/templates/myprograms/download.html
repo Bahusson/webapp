@@ -28,9 +28,9 @@
                        <li>{{ pritems.version }}: {{ myprog.version }}</li>
                        <li>{{ pritems.published }}: {{ myprog.date_short }}</li>
                        <li>{{ pritems.weight }}: {{ myprog.weight }}</li>
-                       <a href="{% url 'progpage' myprog.id %}"><li>{{ pritems.details }}</li></a>
+                       <a href="{% url 'progpage' myprog.place %}"><li>{{ pritems.details }}</li></a>
                      </ul>
-                       <a href="{% url 'launchme' myprog.id %}" class="btn btn-lg btn-block btn-primary">{{ pritems.launch_new }}</a>
+                       <a href="{% url 'launchme' myprog.place %}" class="btn btn-lg btn-block btn-primary">{{ pritems.launch_new }}</a>
                    </div>
                  </div>
             {% endfor %}

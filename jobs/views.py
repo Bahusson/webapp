@@ -4,7 +4,8 @@ from .models import Curriculum as Cv
 from .models import Trick as Tr
 from .models import Tech as Te
 from blog.models import Blog as B
-from myprograms.models import MyProgram
+from myprograms.models import MyProgram as Mp
+from myprograms.models import ProgramPage as Pp
 from .models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import PageLoad
@@ -23,20 +24,16 @@ def home(request):
 # Strona 'Aktualności'. Dużo różnych rzeczy - skrótowo.
 def newsletter(request):
     pl = PageLoad(P, L)
+    pr = PageLoad(P, L)
     pl.portal(B=B, Tr=Tr, Te=Te)
-    prog = list(MyProgram.objects.all())
-    news = list(B.objects.all())
-    slot1 = news[-1]
-    slot2 = news[-2]
-    slot3 = prog[-1]
+    pr.showroom(Pp, Mp)
     context = {'items': pl.items,
                'langs': pl.langs,
                'tricks': pl.tricks,
                'techs': pl.techs,
-               'blogs': pl.blogs,
-               'dblog': slot1,
-               'cblog': slot2,
-               'bblog': slot3, }
+               'blogs': pl.bloglist,
+               'pritems': pr.pritems,
+               'myprogs': pr.proglist, }
     return render(request, 'tricks/newsletter.html', context)
 
 

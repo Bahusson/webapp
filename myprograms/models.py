@@ -30,6 +30,7 @@ class MyProgram(models.Model):
     gitsrccode = models.TextField(blank=True)
     license = models.CharField(max_length=250, blank=True)
     linkinside = models.CharField(max_length=250, blank=True)
+    place = models.CharField(max_length=3)
 
     # Ta funkcja pokazuje tytuł postu na stronie admina.
     def __str__(self):
@@ -42,6 +43,9 @@ class MyProgram(models.Model):
     # Zwraca skrócony opis,
     def summary(self):
         return self.readme[:110]
+
+    class Meta:
+        ordering = ['-place']
 
 #class RandomizerItems(models.Model):
 #    title =

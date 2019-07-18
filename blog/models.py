@@ -16,3 +16,6 @@ class Blog(models.Model):
 
     def pubdate_short(self):
         return self.pubdate.strftime('%a %d %b %Y')
+
+    class Meta:
+        ordering = ['-pubdate']

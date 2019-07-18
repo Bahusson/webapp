@@ -12,9 +12,9 @@
 
       <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
         <div class="col-md-6 px-0">
-          <h1 class="display-4 font-italic">{{ dblog.title }}</h1>
-          <p class="lead my-3">{{ dblog.summary }}</p>
-          <p class="lead mb-0"><a href="{% url 'detail' dblog.id %}" class="text-white font-weight-bold">Czytaj dalej......</a></p>
+          <h1 class="display-4 font-italic">{{ blogs.0.title }}</h1>
+          <p class="lead my-3">{{ blogs.0.summary }}</p>
+          <p class="lead mb-0"><a href="{% url 'detail' blogs.0.id %}" class="text-white font-weight-bold">Czytaj dalej......</a></p>
         </div>
       </div>
 
@@ -22,15 +22,15 @@
         <div class="col-md-6">
           <div class="card flex-md-row mb-4 shadow-sm h-md-250">
             <div class="card-body d-flex flex-column align-items-start">
-              <strong class="d-inline-block mb-2 text-primary">{{ item.blogfeed }}</strong>
+              <strong class="d-inline-block mb-2 text-primary">{{ items.blogfeed }}</strong>
               <h3 class="mb-0">
-                <a class="text-dark" href="{% url 'detail' cblog.id %}">{{ cblog.title }}</a>
+                <a class="text-dark" href="{% url 'detail' blogs.1.id %}">{{ blogs.1.title }}</a>
               </h3>
-              <div class="mb-1 text-muted">{{ cblog.pubdate_short }}</div>
-              <p class="card-text mb-auto">{{ cblog.summary }}</p>
-              <a href="{% url 'detail' cblog.id %}">{{ item.carryon }}</a>
+              <div class="mb-1 text-muted">{{ blogs.1.pubdate_short }}</div>
+              <p class="card-text mb-auto">{{ blogs.1.summary }}</p>
+              <a href="{% url 'detail' 1 %}">{{ items.carryon }}</a>
             </div>
-            <img class="card-img-right flex-auto d-none d-lg-block" src="{{ cblog.image.url }}" alt="Card image cap"/>
+            <img class="card-img-right flex-auto d-none d-lg-block" src="{{ blogs.1.image.url }}" alt="Card image cap"/>
           </div>
         </div>
         <div class="col-md-6">
@@ -38,13 +38,13 @@
             <div class="card-body d-flex flex-column align-items-start">
               <strong class="d-inline-block mb-2 text-success">{{ items.newcode }}</strong>
               <h3 class="mb-0">
-                <a class="text-dark" href="{% url 'progpage' bblog.id %}">{{ bblog.title }}</a>
+                <a class="text-dark" href="{% url 'progpage' 1 %}">{{ myprogs.0.title }}</a>
               </h3>
-              <div class="mb-1 text-muted">{{ bblog.date_short }}</div>
-              <p class="card-text mb-auto">{{ bblog.summary }}</p>
-              <a href="{% url 'progpage' bblog.id %}">{{ item.carryon }}</a>
+              <div class="mb-1 text-muted">{{ myprogs.0.date_short }}</div>
+              <p class="card-text mb-auto">{{ myprogs.0.summary }}</p>
+              <a href="{% url 'progpage' 1 %}">{{ items.carryon }}</a>
             </div>
-            <img class="card-img-right flex-auto d-none d-lg-block" src="{{ bblog.image.url }}" alt="Card image cap"/>
+            <img class="card-img-right flex-auto d-none d-lg-block" src="{{ myprogs.0.image.url }}" alt="Card image cap"/>
           </div>
         </div>
       </div>

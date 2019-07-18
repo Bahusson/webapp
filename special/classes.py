@@ -28,6 +28,7 @@ class PageLoad(object):
     def portal(self, **kwargs):
         if 'B' in kwargs:
             b = kwargs['B']
+            self.bloglist = list(b.objects.all())
             self.blogs = b.objects
 
         if 'Tr' in kwargs:
@@ -63,10 +64,11 @@ class PageLoad(object):
             pp = args[0]
             mp = args[1]
             firstp = list(pp.objects.all())
+            self.proglist = list(mp.objects.all())
             self.pritems = firstp[0]
             self.myprogs = mp.objects
 
-        if 'myprogramid' in kwargs:
+        if 'place' in kwargs:
             G404 = kwargs['G404']
-            myprogram_id = kwargs['myprogramid']
-            self.myprog = G404(mp, pk=myprogram_id)
+            place_pr = kwargs['place']
+            self.myprog = G404(mp, pk=place_pr)
