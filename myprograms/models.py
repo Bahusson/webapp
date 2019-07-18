@@ -47,5 +47,29 @@ class MyProgram(models.Model):
     class Meta:
         ordering = ['-place']
 
-#class RandomizerItems(models.Model):
-#    title =
+
+# Specjalna klasa tylko dla tłumaczenia programu
+class RandomizerItems(models.Model):
+    title = models.CharField(max_length=100)  # Nazwa programu
+    sel1 = models.CharField(max_length=100)  # Opcje 1-4
+    sel2 = models.CharField(max_length=100)  # Typu radio
+    sel3 = models.CharField(max_length=100)
+    sel4 = models.CharField(max_length=100)
+    mark_selection = models.CharField(max_length=100)  # Zaznacz pomiary
+    start_date = models.CharField(max_length=100)  # Data początkowa
+    mark_all = models.CharField(max_length=100)  # Całość pomiarów
+    end_date = models.CharField(max_length=100)  # Data końcowa
+    gen_stats = models.CharField(max_length=100)  # Generuj statystyki
+    hi_low = models.CharField(max_length=100)  # Najczęstsza/najrzadsza liczba
+    no_raw = models.CharField(max_length=100)  # Bez gołych losowań
+    mode = models.CharField(max_length=100)  # Najczęstsze liczby
+    count = models.CharField(max_length=100)  # Ile chcesz ww liczb
+    avg = models.CharField(max_length=100)  # Średnie wyników losowań
+    gen = models.CharField(max_length=100)  # Generuj
+    chart = models.CharField(max_length=100)  # Generuj wykres
+    score = models.CharField(max_length=100)  # Generuj raport
+    save_sc = models.CharField(max_length=100)  # Zapisz raport
+    saveme = models.CharField(max_length=100)  # Zapisz
+    your = models.CharField(max_length=100)  # Twój raport
+    play = models.CharField(max_length=100)  # Zagraj w wybraną grę
+    nums = models.CharField(max_length=100)  # Twoje liczby

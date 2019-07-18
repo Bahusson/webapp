@@ -1,70 +1,40 @@
-<!doctype html>
-<html lang="en">
-{% load static %}
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head %}
   <title>Moje Programy</title>
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <!-- Custom styles for this template-->
+{% endblock %}
+
+{% block styles %}
   <link href="{% static 'pybrun.css' %}" rel="stylesheet">
-</head>
-<body>
+{% endblock %}
 
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="{% url 'home' %}">Jakub Kozdrowicz</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'newsletter' %}">Aktualności</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% static 'CV.pdf' %}">CV</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'download' %}">Download</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-  <br />
-
+{% block body %}
   <div class="container"><!--start container for the APP-->
-    <h1 class="px-3 py-3 pt-md-5 pb-md-4 text-center">Randomizer</h1>
+    <h1 class="px-3 py-3 pt-md-5 pb-md-4 text-center">{{ rand.title }}</h1>
     <br />
     <form id="appform" name="appform"><!--start application form-->
       <div class="py-3 row"><!--start radio selection of 4 games-->
         <div class="col-md-3">
-          <label class="contain">MultiMulti
+          <label class="contain">{{ rand.sel1 }}
             <input type="radio" class="radio" name="gamesel" Value="1">
             <span class="checkmark"></span>
           </label>
         </div>
         <div class="col-md-3">
-          <label class="contain">Lotto
+          <label class="contain">{{ rand.sel2 }}
             <input type="radio" class="radio" checked="checked" name="gamesel" Value="2">
             <span class="checkmark"></span>
           </label>
         </div>
         <div class="col-md-3">
-          <label class="contain">Mini Lotek
+          <label class="contain">{{ rand.sel3 }}
             <input type="radio" class="radio" name="gamesel" Value="3">
             <span class="checkmark"></span>
           </label>
         </div>
         <div class="col-md-3">
-          <label class="contain">Ekstra Pensja
+          <label class="contain">{{ rand.sel4 }}
             <input type="radio" class="radio" name="gamesel" Value="4">
             <span class="checkmark"></span>
           </label>
@@ -73,10 +43,10 @@
 
       <div class="py-3 row"><!--row 1: 2 labels and a DATE input FROM-->
         <div class="col-md-6">
-          <p class="contain">Zaznacz pomiary:</p>
+          <p class="contain">{{ rand.mark_selection }}:</p>
         </div>
         <div class="col-md-3">
-          <label class="contain" for="date1">Data początkowa:</label>
+          <label class="contain" for="date1">{{ rand.start_date }}:</label>
         </div>
         <div class="col-md-3">
           <input id="date1" class="contain" type="date">
@@ -86,14 +56,14 @@
 
       <div class="py-3 row"><!--row 2: 2 labels, checkbox "Całość pomiarów" and a DATE input TO-->
         <div class="col-md-3">
-          <p class="contain">Całość pomiarów:</p>
+          <p class="contain">{{ rand.mark_all }}:</p>
         </div>
         <div class="col-md-3">
           <input name="checkboxG1" id="checkboxG1" class="css-checkbox" type="checkbox">
           <label for="checkboxG1" class="css-label"></label>
         </div>
         <div class="col-md-3">
-          <label class="contain" for="date2">Data końcowa:</label>
+          <label class="contain" for="date2">{{ rand.end_date }}:</label>
         </div>
         <div class="col-md-3">
           <input id="date2" class="contain" type="date">
@@ -102,20 +72,20 @@
 
       <div class="py-3 row"><!--row 3: Solitary introductory wide label-->
         <div class="col-md-6">
-          <p class="contain">Generuj statystyki dla wybranego okresu:</p>
+          <p class="contain">{{ rand.gen_stats }}:</p>
         </div>
       </div><!--end row 3-->
 
       <div class="py-3 row"><!--row 4: 2 labels, 2 checkboxes: "Najczęstsza i najrzadsza liczba", "Bez losowań"-->
         <div class="col-md-3">
-          <p class="contain">Najczęstsza i najrzadsza liczba:</p>
+          <p class="contain">{{ rand.hi_low }}:</p>
         </div>
         <div class="col-md-3">
           <input name="checkboxG2" id="checkboxG2" class="css-checkbox" type="checkbox">
           <label for="checkboxG2" class="css-label"></label>
         </div>
         <div class="col-md-3">
-          <p class="contain">Bez losowań:</p>
+          <p class="contain">{{ rand.no_raw }}:</p>
         </div>
         <div class="col-md-3">
           <input name="checkboxG3" id="checkboxG3" class="css-checkbox" type="checkbox">
@@ -125,10 +95,10 @@
 
       <div class="py-3 row"><!--row 5: 2 labels, checkbox "Najczęściej padające liczby", numfield "Ilość liczb"-->
         <div class="col-md-6">
-          <p class="contain">Najczęściej padające liczby:</p>
+          <p class="contain">{{ rand.mode }}:</p>
         </div>
         <div class="col-md-3">
-          <p class="contain">Ilość liczb:</p>
+          <p class="contain">{{ rand.count }}:</p>
         </div>
         <div class="col-md-3">
           <input name="numinput" id=numinput data-type=numinput min="0" max="5" class="numinput" type="number">
@@ -138,14 +108,14 @@
 
       <div class="py-3 row"><!--row 6: 2 labels, 2 checkboxes: "Średnie wyników losowań", "Generuj wykres"-->
         <div class="col-md-3">
-          <p class="contain">Średnie wyników losowań:</p>
+          <p class="contain">{{ rand.avg }}:</p>
         </div>
         <div class="col-md-3">
           <input name="checkboxG4" id="checkboxG4" class="css-checkbox" type="checkbox">
           <label for="checkboxG4" class="css-label"></label>
         </div>
         <div class="col-md-3">
-          <p class="contain">Generuj wykres:</p>
+          <p class="contain">{{ rand.chart }}:</p>
         </div>
         <div class="col-md-3">
           <input name="checkboxG5" id="checkboxG5" class="css-checkbox" type="checkbox">
@@ -155,51 +125,37 @@
 
       <div class="py-3 row"><!--row 7: 2 labels, 2 buttons: "Generuj", "Zapisz" [raport]-->
         <div class="col-md-3">
-          <p class="contain">Generuj Raport:</p>
+          <p class="contain">{{ rand.score }}:</p>
         </div>
         <div class="col-md-3">
-          <button type="input" id="generate" class="btn btn-lg btn-block btn-primary">Generuj {% csrf_token %}</button>
+          <button type="input" id="generate" class="btn btn-lg btn-block btn-primary">{{ rand.gen }} {% csrf_token %}</button>
         </div>
         <div class="col-md-3">
-          <p class="contain">Zapisz Raport:</p>
+          <p class="contain">{{ rand.save_sc }}:</p>
         </div>
         <div class="col-md-3">
-          <button type="button" id="save" class="btn btn-lg btn-block btn-primary">Zapisz</button>
+          <button type="button" id="save" class="btn btn-lg btn-block btn-primary">{{ rand.saveme }}</button>
         </div>
       </div><!--end row 7-->
 
       <div class="py-3 row"><!--row 8: 1 label, 1 button "zagraj w wybraną grę", 2 textfields: "Twój raport". "Twoje liczby" -->
         <div class="col-md-3">
-          <p class="contain"> Twój Raport:
+          <p class="contain">{{ rand.your }}:
           </div>
           <div class="col-md-3">
             <textarea class="textarea" id="textarea1" rows="8"></textarea>
           </div>
           <div class="col-md-3">
-            <button type="input" class="btn btn-lg btn-block btn-primary" id='play'>Zagraj w wybraną grę {% csrf_token %}</button>
+            <button type="input" class="btn btn-lg btn-block btn-primary" id='play'>{{ rand.play }} {% csrf_token %}</button>
           </div>
           <div class="col-md-3">
             <textarea class="textarea" id=textarea2 rows="1"></textarea>
-            <label for="textarea2" class="contain">Twoje liczby</label>
+            <label for="textarea2" class="contain">{{ rand.nums }}</label>
           </div>
         </div><!--end row 8--><!--start of application form {% csrf_token %} -->
     </form><!--end of application form-->
   </div><!--end container-->
+{% endblock %}
 
-    <footer class="text-muted">
-      <div class="container text-center">
-        <p> &copy; Jakub Kozdrowicz {% now "Y" %}</p>
-      </div>
-    </footer>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
-    <script type="text/javascript" src="{% static "jquery.js" %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <!--My Javascript-->
-    <script src="{% static "myjs.js" %}"></script>
-  </body>
-  </html>
+{% block scripts %}
+{% endblock %}

@@ -1,6 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
-from myprograms.models import ProgramPage
-from myprograms.models import MyProgram
+from myprograms.models import ProgramPage, MyProgram, RandomizerItems
 
 
 class ProgramPageTranslate(TranslationOptions):
@@ -18,3 +17,14 @@ class MyProgramTranslate(TranslationOptions):
 
 
 translator.register(MyProgram, MyProgramTranslate)
+
+
+class RandomizerItemsTranslate(TranslationOptions):
+    fields = (
+     'title', 'sel1', 'sel2', 'sel3', 'sel4', 'mark_selection', 'start_date',
+     'mark_all', 'end_date', 'gen_stats', 'hi_low', 'no_raw', 'mode', 'count',
+     'avg', 'gen', 'chart', 'score', 'save_sc', 'saveme', 'your', 'play',
+     'nums',)
+
+
+translator.register(RandomizerItems, RandomizerItemsTranslate)

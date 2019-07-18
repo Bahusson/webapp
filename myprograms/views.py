@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404 as G404
 from .models import ProgramPage as Pp
 from .models import MyProgram as Mp
+from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import PageLoad
@@ -38,11 +39,15 @@ def pybrun(request):
         pass
     else:
         pl = PageLoad(P, L)
+        pl.launcher(Randomizer=Ri)
         context = {'items': pl.items,
-                   'langs': pl.langs, }
+                   'langs': pl.langs,
+                   'rand': pl.randitem,
+                   }
         return render(request, 'myprograms/pybrun.html', context)
 
 
+# Launchpad dla wszystkich programów.
 def launchme(request, place):
     if place == 1:
         return redirect('pybrun')
