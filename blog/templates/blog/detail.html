@@ -13,7 +13,7 @@
         <h1 class="text-center pt-3">{{ blog.title }}</h1>
         <h4 class="pt-2">{{ blog.pubdate_short }}</h4>
         <hr />
-        {% if blog.video != None %}
+        {% if blog.video %}
             <br />
             {% with blog as b %}
             <iframe width="560" height="315" src="{{ b.video }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>

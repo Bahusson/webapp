@@ -57,7 +57,7 @@ class PageLoad(object):
 
         if 'techsid' in kwargs:
             techs_id = kwargs['techsid']
-            self.techs = G404(te, pk=techs_id)
+            self.tech = G404(te, pk=techs_id)
 
     def showroom(self, *args, **kwargs):
         if len(args) > 0:

@@ -53,6 +53,7 @@ def skills(request, techs_id):
     pl.portal(Te=Te, Cv=Cv, G404=G404, techsid=techs_id)
     context = {'items': pl.items,
                'langs': pl.langs,
+               'techs': pl.techs,
                'tech': pl.tech,
                'cv': pl.cv, }
     return render(request, 'techs/skills.html', context)

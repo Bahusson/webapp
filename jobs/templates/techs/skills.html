@@ -15,10 +15,10 @@
         <br />
         {{ tech.body }}
         <br />
-        {% if tech.linkifblank != 0 %}<!--Pobierz certyfikat umiejętności w PDF-->
+        {% if tech.file %}<!--Pobierz certyfikat umiejętności w PDF jeśli dostępny-->
             <br />
             {% with tech as t %}
-            <a href="{{ tech.file.url }}">{{ item.see_cert }}</a>
+            <a href="{{ t.file.url }}">{{ items.see_cert }}</a>
             {% endwith %}
         {% else %}
             <br/>
@@ -28,7 +28,7 @@
       <aside class="col-md-4 blog-sidebar">
         <div class="p-3">
           <br />
-          <h4 class="font-strong">{{ item.skills_all }}</h4>
+          <h4 class="font-strong">{{ items.skills_all }}</h4>
           <ol class="list-unstyled mb-0">
             {% for tech in techs.all %}
             <li><a href="{% url 'skills' tech.id %}">{{ tech.title }}</a></li>
@@ -36,9 +36,9 @@
           </ol>
         </div>
         <div class="p-3">
-          <h4 class="font-strong">{{ item.download_cv }}</h4><!--Pobierz najnowsze CV w PDF-->
+          <h4 class="font-strong">{{ items.download_cv }}</h4><!--Pobierz najnowsze CV w PDF-->
           <ol class="list-unstyled mb-0">
-            <li><a href="{ cv.file.url }">{{ item.download_pdf }}</a></li>
+            <li><a href="{ cv.file.url }">{{ items.download_pdf }}</a></li>
         </div>
       </aside><!-- /.blog-sidebar -->
       </div>

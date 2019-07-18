@@ -35,9 +35,13 @@ class Pageitem(models.Model):
 
 class Trick(models.Model):
     title = models.CharField(max_length=200, blank=True)
+    pubdate = models.DateTimeField()
     image = models.ImageField(upload_to='images')
     summary = models.TextField()
     link = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        ordering = ['-pubdate']
 
     def __str__(self):
         return self.title
@@ -48,18 +52,16 @@ class Trick(models.Model):
 
 class Tech(models.Model):
     title = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='images', blank=True)
+    pubdate = models.DateTimeField()
+    image = models.ImageField(upload_to='images')
     body = models.TextField()
     file = models.FileField(upload_to='assets', blank=True, null=True)
 
     def __str__(self):
         return self.title
 
-    def linkifblank(self):
-        if self.file is None:
-            return 0
-        else:
-            return self
+    class Meta:
+        ordering = ['-pubdate']
 
 
 class Curriculum(models.Model):
