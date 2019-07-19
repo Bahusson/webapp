@@ -10,10 +10,26 @@ from .managment.commands.updatedb import Updatedb
 from special.snippets import bug_catch
 
 
+# Żeby uniknąć zdań warunkowych wykorzystaj polimorfizm dla bazy 4!
+
 class Database(object):
 
-    def __init__(self, base):
-        self.table = "game" + str(self.base)
+    def __init__(self, request):
+        if request.is_ajax():  # Czy można bez If request is ajax?
+            # Albo wyrzucić request is ajax do views?
+            self.base = request.POST.get('gamesel')
+            self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                                    request.POST['datefrom'])
+            self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                                    request.POST['dateto'])
+            self.datal = request.POST['dateall']
+            self.nhilo = request.POST['numhilow']
+            self.norol = request.POST['norolls']
+            self.moftn = request.POST['mostoften']
+            self.avsco = request.POST['avgscores']
+            self.grgen = request.POST['graphgen']
+            self.table = "game" + str(self.base)
+
         # instantiate
         # formułka konfiguracji funkcji odczytu baz danych.
         config = ConfigParser()
@@ -95,12 +111,12 @@ class Database(object):
 # aby można było zrobić graf i inne fajne rzeczy na liczbach...
 # Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 class Dataframe(Database):
-    avg = bool(aver == "1")
-    grap = bool(graph == "1")
-
-    def __init__(self, base, table, ):
+    def __init__(self, request, ):
+        super().__init__(self, request, )
         if datal is True:
-            query = 'SELECT * FROM %s' (table,)
+            avg = bool(aver == "1")
+            grap = bool(graph == "1")
+            query = 'SELECT * FROM %s' (self.table)
             par = ""
         else:
             query = 'SELECT * FROM game1 LIMIT %s OFFSET %s'
