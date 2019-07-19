@@ -6,12 +6,14 @@ from bokeh.models import HoverTool, ColumnDataSource
 import re
 import ConfigParser
 import datetime
-from lotto import updatedb
+from .managment.commands.updatedb import Updatedb
+from special.snippets import bug_catch
 
 
 class Database(object):
 
-    def __init__(self):
+    def __init__(self, base):
+        self.table = "game" + str(self.base)
         # instantiate
         # formułka konfiguracji funkcji odczytu baz danych.
         config = ConfigParser()
@@ -35,7 +37,8 @@ class Database(object):
             pass
         else:
             config.set('update', 'date', currday)
-            updatedb(user, password, host, port, db_base, db, )
+            udb = Updatedb()
+            udb.connect(user, password, host, port, db_base, db, )
             print('database updated successfully')
             # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
             # kiedy nikt nie korzysta z aplikacji.
@@ -46,8 +49,8 @@ class Database(object):
 
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
-    def selectdate(self, base, day1, month1, year1, day2, month2, year2, ):
-        if base == 1 or 4:
+    def selectdate(self, day1, month1, year1, day2, month2, year2, ):
+        if self.base == 1 or 4:
             lessq = '='
             moreq = '='
             sign = ['MIN', 'MAX']
@@ -55,24 +58,25 @@ class Database(object):
             lessq = '<='
             moreq = ">="
             sign = ['MAX', 'MIN']
-        selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
-         AND "4"={6}'''.format(
-         sign[0], range, table, lessq, day2, month2, year2, )
-        selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
-         AND "4"={6}'''.format(
-         sign[1], range, table, moreq, day2, month2, year2, )
-        self.cur.execute(selquery)
         rowfrom = (self.cur.fetchone()[0])
-        self.cur.execute(selquery_)
         rowto = (self.cur.fetchone()[0])-rowfrom
-        if base == 4:
+        if self.base == 4:
             range = "1"
             execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
-            FROM %s LIMIT %s OFFSET %s''', (table, rowto, rowfrom, )
+            FROM {0} LIMIT {1} OFFSET {2}'''.format(
+             self.table, rowto, rowfrom, )
         else:
             range = "0"
             execall = 'SELECT * FROM {0} LIMIT {1} OFFSET {2}'.format(
-             table, rowto, rowfrom, )
+             self.table, rowto, rowfrom, )
+        selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
+         AND "4"={6}'''.format(
+         sign[0], range, self.table, lessq, day2, month2, year2, )
+        selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
+         AND "4"={6}'''.format(
+         sign[1], range, self.table, moreq, day2, month2, year2, )
+        self.cur.execute(selquery)
+        self.cur.execute(selquery_)
         self.cur.execute(execall)
         rows = self.cur.fetchall()
         return rows
@@ -80,7 +84,7 @@ class Database(object):
     def searchall(self, table, ):
         query = 'SELECT * FROM {0}'.format(table)
         self.cur.execute(query)
-        rows=self.cur.fetchall()
+        rows = self.cur.fetchall()
         return rows
 
     def __del__(self):
@@ -91,7 +95,6 @@ class Database(object):
 # aby można było zrobić graf i inne fajne rzeczy na liczbach...
 # Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 class Dataframe(Database):
-    table = "game" + str(base)
     avg = bool(aver == "1")
     grap = bool(graph == "1")
 
@@ -232,17 +235,7 @@ def generate(request):
         'graph' : graph
     }
     return JsonResponse(responsedata)
-
-#Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
-
-#Moje nowe narzędzie do łapania errorów w kodzie. Jest prawdziwie piękne. :)
-def bug_catch():
-    try:
-        raise ValueError('Represents a hidden bug, do not catch this')
-        raise Exception('This is the exception you expect to handle')
-    except Exception as error:
-        print('Caught this error: ' + repr(error))
-#Jeśli ma choĆ w połowie tyle skuteczności co piękna na wejrzeniu, to będę używał... <3
+# Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 
 
 #Ta podfunkcja wywołuje graf Bokeh.
