@@ -26,6 +26,8 @@ class PageLoad(object):
         self.langs = zip(lang_id, langsl)
 
     def portal(self, **kwargs):
+        # Spora złożoność cyklomatyczna (8),
+        # ale nie bardzo jest jak z niej zejść...
         if 'B' in kwargs:
             b = kwargs['B']
             self.bloglist = list(b.objects.all())

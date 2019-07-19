@@ -6,31 +6,94 @@ from bokeh.models import HoverTool, ColumnDataSource
 import re
 import configparser
 import datetime
-from special.snippets import bug_catch
 
 
 class Database(object):
 
+    def __init__(self, request):
+        if request.is_ajax():  # czy można bez If request is ajax?
+            radio = request.POST.get('gamesel')
+            datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                               request.POST['datefrom'])
+            datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                               request.POST['dateto'])
+            datal = request.POST['dateall']
+            self.nhilo = request.POST['numhilow']
+            self.norol = request.POST['norolls']
+            self.moftn = request.POST['mostoften']
+            self.avsco = request.POST['avgscores']
+            self.grgen = request.POST['graphgen']
+            self.table = "game" + radio
+
+        # Za radparam() bo się nie powtarza + DRY
+        rad = (int(datal)*2)*int(radio)
+        searchMe = searchA(rad, dattoo[2], dattoo[1], dattoo[0],
+                           datfro[2], datfro[1], datfro[0], )
+        searchMe
+
+        if datal == '1':
+            searchallbox(radio)
+        else:
+            pass
+
+        enumerators(rad, moftn, nhilo, )
+        makedf(rad, avsco, grgen, )
+
+        if norol == '1':
+            rolls = "Nie wybrano losowań"
+        elif norol == "0" and datal == "0":
+            rollhead = ["Losowania wraz z datą:" + "\n"]
+            rowspacing = list()
+            while len(rowspacing) < len(rows):
+                rowspacing.append("\n")
+            zippedrows = zip(rows, rowspacing, )
+            ziprows = list(zippedrows)
+            rolls = [rollhead, ziprows, ]
+        elif norol == "0" and datal == "1":
+            rolls = "Zaznaczono całość pomiarów"
+
+        responsedata = {
+            'hilow': hilow,
+            'rolls': rolls,
+            'often': often,
+            'avgsc': avgsc,
+            # Co do ostatniego to możliwe, że trzeba będzie dodaĆ
+            # warunkowe return/render HttpResponse pod ten graf.
+            'graph': graph
+        }
+        return JsonResponse(responsedata)
+
+# Ten kawałek wywal do Views??
+
+        if self.datal == "0":
+            datfro = datfr[0]
+            dattoo = datto[0]
+            self.allrollstrigger = False
+        elif self.datal == "1":
+            self.allrollstrigger = True
+
+
+class Selector(Database):
     def __init__(self, db):
         self.conn = psycopg2.connect(db)
         self.cur = self.conn.cursor()
 
-    def selector(
-         self, base, table, day1, month1, year1, day2, month2, year2, q, ):
+    def select(self):
         if q == 1:
             duck = '<='
             quack = ">="
         elif q == 0:
             duck = '='
             quack = '='
-        if base == 4 or 8:
-            range = "1"
-            execall = 'SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM %s LIMIT %s OFFSET %s', (
-             table, rowto, rowfrom, )
-        else:
+        if if base == 4 or 8::
             range = "0"
             execall = 'SELECT * FROM %s LIMIT %s OFFSET %s', (
              table, rowto, rowfrom, )
+        else:
+            range = "1"
+            execall = 'SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM %s LIMIT %s OFFSET %s', (
+             table, rowto, rowfrom, )
+
         self.cur.execute(
          'SELECT MIN(%s) FROM %s WHERE "2" %s %s AND "3"=%s AND "4"=%s', (
           range, table, duck, day2, month2, year2, ))
@@ -42,7 +105,6 @@ class Database(object):
         self.cur.execute(execall)
         self.rows = self.cur.fetchall()
         self.conn.close()
-
 
 # Główna oś funkcji
 def generate(request):
