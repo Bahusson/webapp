@@ -1,14 +1,13 @@
 import psycopg2
 import pandas
-import urllib.request, urllib.parse, urllib.error
+import urllib.request.urlopen
 from bs4 import BeautifulSoup
 import re
 import ssl
 from sqlalchemy import create_engine
-import configparser
 
 
-class Updatedb:
+class Updatedb(object):
 
     def __init__(self):
         ctx = ssl.create_default_context()

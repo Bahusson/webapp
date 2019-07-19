@@ -28,7 +28,8 @@ class Database(object):
         # Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
         currday = str(fulldate.day)
-        self.db = "dbname={0} user={1} password={2}".format(db_base, user, password)
+        db = "dbname={0} user={1} password={2}".format(
+         db_base, user, password)
         if currday == update_val:
             print('database up to date')
             pass
