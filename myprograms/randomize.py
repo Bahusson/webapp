@@ -1,15 +1,16 @@
-db_setupfrom django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse
 import psycopg2
 import pandas
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool, ColumnDataSource
 import re
-import configparser
+import ConfigParser
 import datetime
 from lotto import updatedb
 
-class Database:
-    table = "game"+str(base)
+
+class Database(object):
+
     def __init__(self):
         # instantiate
         # formułka konfiguracji funkcji odczytu baz danych.
@@ -18,68 +19,64 @@ class Database:
         config.read('database.ini')
         # read values from a section
         host = config.get('db_setup', 'host')
-        port= config.get('db_setup', 'port')
+        port = config.get('db_setup', 'port')
         db_base = config.get('db_setup', 'database')
         user = config.get('db_setup', 'user')
         password = config.get('db_setup', 'password')
         update_val = config.get('db_update', 'date')
 
-        #Updates database if it's the first visit that day.
+        # Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
-        today = str(fulldate.day)
-        db = "dbname={0} user={1} password={2}".format(db_base,user,password)
+        currday = str(fulldate.day)
+        self.db = "dbname={0} user={1} password={2}".format(db_base, user, password)
         if currday == update_val:
+            print('database up to date')
             pass
         else:
             config.set('update', 'date', currday)
-            updatedb(user,password,host,port,db_base,db)
-            #OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
-                #kiedy nikt nie korzysta z aplikacji.
-                #Z początku myślałem, żeby zapuściĆ w kółko proces na serwerze,
-                #tak, aby aktualizowała się sama pod koniec dnia.
-                #Tak jest jednak lepiej. ^^
+            updatedb(user, password, host, port, db_base, db, )
+            print('database updated successfully')
+            # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
+            # kiedy nikt nie korzysta z aplikacji.
 
+        # Lączenie z bazą danych...
+        self.conn = psycopg2.connect(db)
+        self.cur = self.conn.cursor()
 
-        #Lączenie z bazą danych...
-        self.conn=psycopg2.connect(db)
-        self.cur=self.conn.cursor()
-
-    #Select piece of database queries by date function
-    #Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
-    def selectdate(self,base,day1,month1,year1,day2,month2,year2):
-        if base == 1 or 4
-            duck = '='
-            witch = '='
-            sign = ['MIN','MAX']
-                #film = 'Monty Python and the holy grail: Witch scene.'
+    # Select piece of database queries by date function
+    # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
+    def selectdate(self, base, day1, month1, year1, day2, month2, year2, ):
+        if base == 1 or 4:
+            lessq = '='
+            moreq = '='
+            sign = ['MIN', 'MAX']
         else:
-            duck = '<='
-            witch = ">="
-            sign = ['MAX','MIN']
-             # irrelevant joke: film(she='witch'):
-                #sir_galahad: "What else can swim?"
-                #peasant(John_Cleese):"Little rocks!"
-                #Arthur-King-Of-The-Britons: "A DUCK!!! (...)"
-                #sir_galahad: "If "she" weighs the same as a duck, then..."
-                #peasants: "A witch!!! Burn her!!!"
-                #peasants.weighting(witch,duck) returned: {witch : "Alright you got me...", witch : she}
-        selquery = 'SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5} AND "4"={6}'.format(sign[0],range,table,duck,day2,month2,year2)
-        selquery_ = 'SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5} AND "4"={6}'.format(sign[1],range,table,duck,day2,month2,year2)
+            lessq = '<='
+            moreq = ">="
+            sign = ['MAX', 'MIN']
+        selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
+         AND "4"={6}'''.format(
+         sign[0], range, table, lessq, day2, month2, year2, )
+        selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
+         AND "4"={6}'''.format(
+         sign[1], range, table, moreq, day2, month2, year2, )
         self.cur.execute(selquery)
-        rowfrom=(self.cur.fetchone()[0])
+        rowfrom = (self.cur.fetchone()[0])
         self.cur.execute(selquery_)
-        rowto=(self.cur.fetchone()[0])-rowfrom
-        if base == 4
+        rowto = (self.cur.fetchone()[0])-rowfrom
+        if base == 4:
             range = "1"
-            execall = 'SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10" FROM %s LIMIT %s OFFSET %s', (table, rowto, rowfrom)
+            execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
+            FROM %s LIMIT %s OFFSET %s''', (table, rowto, rowfrom, )
         else:
             range = "0"
-            execall = 'SELECT * FROM {0} LIMIT {1} OFFSET {2}'.format(table,rowto,rowfrom)
+            execall = 'SELECT * FROM {0} LIMIT {1} OFFSET {2}'.format(
+             table, rowto, rowfrom, )
         self.cur.execute(execall)
-        rows=self.cur.fetchall()
+        rows = self.cur.fetchall()
         return rows
 
-    def searchall(self,table):
+    def searchall(self, table, ):
         query = 'SELECT * FROM {0}'.format(table)
         self.cur.execute(query)
         rows=self.cur.fetchall()
@@ -89,66 +86,73 @@ class Database:
         self.conn.close()
 
 
-    #Ta podfunkcja rekonwertująca bazę danych do df aby można było zrobić graf i inne fajne rzeczy na liczbach...
-#Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
-class Dataframes:
+# Ta podfunkcja rekonwertująca bazę danych do df
+# aby można było zrobić graf i inne fajne rzeczy na liczbach...
+# Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
+class Dataframe(Database):
     table = "game" + str(base)
-    avg = bool(aver == "1" )
+    avg = bool(aver == "1")
     grap = bool(graph == "1")
-    def __init__(self,base,table):
+
+    def __init__(self, base, table, ):
         if datal is True:
             query = 'SELECT * FROM %s' (table,)
-            par = " "
+            par = ""
         else:
             query = 'SELECT * FROM game1 LIMIT %s OFFSET %s'
             par = "params=[rowto, rowfrom],"
-            df = pandas.read_sql_query(sql=(query),
-            con=psycopg2.connect(db), coerce_float=False,par parse_dates=None, chunksize=None)
+            df = pandas.read_sql_query(
+             sql=(query), con=psycopg2.connect(db),
+             coerce_float=False, parse_dates=None, chunksize=None)
 
-        if base == 4 :
-            df1=df.drop(df.columns[0:4],1)
-            df1=df1.drop(df.columns[-1],1)
+        if base == 4:
+            df1 = df.drop(df.columns[0:4], 1)
+            df1 = df1.drop(df.columns[-1], 1)
         else:
-            df1=df.drop(df.columns[0:num],1)
+            df1 = df.drop(df.columns[0:num], 1)
 
-    def extremes(self,num=5):
-        if base =! 4 :
+    def extremes(self, num=5):
+        if base != 4:
             df1(num)
-        df2 = df1.apply(pandas.value_counts).fillna(0);
-        df2.loc[:,'total'] = df2.sum(axis=1)
-        df3=df2
+        df2 = df1.apply(pandas.value_counts).fillna(0)
+        df2.loc[:, 'total'] = df2.sum(axis=1)
+        df3 = df2
 
-        nplus = df3.sort_values(['total'], ascending=[False])[:1].index.values;
-        nminus = df3.sort_values(['total'], ascending=[False])[-1:].index.values;
-        nums = df3.sort_values(['total'], ascending=[False])[:int(value)].index.values;
+        nplus = df3.sort_values(
+         ['total'], ascending=[False])[:1].index.values
+        nminus = df3.sort_values(
+         ['total'], ascending=[False])[-1:].index.values
+        nums = df3.sort_values(
+         ['total'], ascending=[False])[:int(value)].index.values
 
         if var1 == '1':
             hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
         else:
             hilow = "Nie wybrano liczb skrajnych"
-        if int(value) > 0 :
+        if int(value) > 0:
             often = "Od najczęstszej: " + str(nums)
-        else: "Nie wybrano najczęstszych liczb"
+        else:
+            "Nie wybrano najczęstszych liczb"
 
-    def makedf(self,base,avg,grap,num=3):
+    def makedf(self, base, avg, grap, num=3):
         global sourcef
         global avgsc
-        if base =! 4 :
+        if base != 4:
             df1(num)
-        df4=df1.T
-        df5=df4.mean().round(0).value_counts()
+        df4 = df1.T
+        df5 = df4.mean().round(0).value_counts()
         slist = list()
         nrlist = list()
-        while len(slist)<len(df5.index):
+        while len(slist) < len(df5.index):
             slist.append(" / ")
-        while len(nrlist)<len(df5.index):
+        while len(nrlist) < len(df5.index):
             nrlist.append("\n")
         dfindex = df5.index.astype(str)
         dfvalue = df5.values.astype(str)
         zipped = zip(dfindex, slist, dfvalue, nrlist)
-        a=list(zipped)
-        ahead= ["Średnia" + " / " + "Częstotliwość" + "\n" ]
-        b=ahead+a
+        a = list(zipped)
+        ahead = ["Średnia" + " / " + "Częstotliwość" + "\n" ]
+        b = ahead + a
 
         source = ColumnDataSource(
             data=dict(
@@ -160,10 +164,11 @@ class Dataframes:
         else:
             avgsc = "Nie wybrano generowania średnich"
         if grap is True:
-            #makegraph() - tutaj muszę właśnie popracowaĆ nad integracją bokeh z django.
+            # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
 
-#Główna oś funkcji
+
+# Główna oś funkcji
 def generate(request):
     global datal
     global nhilo
@@ -175,8 +180,10 @@ def generate(request):
     global dattoo
     if request.is_ajax():
         radio = request.POST.get('gamesel')
-        datfr = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
-        datto = re.findall("(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['dateto'])
+        datfr = re.findall(
+                 r"(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
+        datto = re.findall(
+                 r"(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['dateto'])
         datal = request.POST['dateall']
         nhilo = request.POST['numhilow']
         norol = request.POST['norolls']
@@ -187,7 +194,9 @@ def generate(request):
     if datal == "0":
         datfro = datfr[0]
         dattoo = datto[0]
-        database.selectdate(base,table,dattoo[2],dattoo[1],dattoo[0],datfro[2],datfro[1],datfro[0])
+        database.selectdate(
+                            base, table, dattoo[2], dattoo[1], dattoo[0],
+                            datfro[2], datfro[1], datfro[0], )
         datal = False
     elif datal == "1":
         database.searchall(table)
