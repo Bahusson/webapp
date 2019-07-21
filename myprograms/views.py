@@ -49,7 +49,5 @@ def pybrun(request):
 
 # Launchpad dla wszystkich programów.
 def launchme(request, place):
-    if place == 1:
-        return redirect('pybrun')
-    else:
-        pass
+    redlist = ['pybrun',]
+    return redirect(redlist[place-1])
