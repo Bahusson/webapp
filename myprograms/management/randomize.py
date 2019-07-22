@@ -22,13 +22,11 @@ class Database(object):
                 bool(int(x == 1))
 
             self.base = int(request.POST.get('gamesel'))
-            datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+            self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                request.POST['datefrom'])
-            self.date_from = datfr[0]
 
-            datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+            self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                request.POST['dateto'])
-            self.date_to = datto[0]
             self.all_data = intistrue(request.POST['dateall'])
             self.extreme_nums = intistrue(request.POST['numhilow'])
             self.no_rolls = intistrue(request.POST['norolls'])
@@ -39,13 +37,14 @@ class Database(object):
 
         # instantiate
         # formułka konfiguracji funkcji odczytu baz danych.
-        config = configparser()
+        config = configparser.ConfigParser()
         # parse existing file
         config.read('database.ini')
         # read values from a section
         host = config.get('db_setup', 'host')
+        print(host)
         port = config.get('db_setup', 'port')
-        db_base = config.get('db_setup', 'database')
+        db_base = config.get('db_setup', 'db_base')
         user = config.get('db_setup', 'user')
         password = config.get('db_setup', 'password')
         update_val = config.get('db_update', 'date')
@@ -59,7 +58,7 @@ class Database(object):
             print('database up to date')
             pass
         else:
-            config.set('update', 'date', currday)
+            config.set('db_update', 'date', currday)
             udb = Updatedb()
             udb.connect(user, password, host, port, db_base, self.db, )
             print('database updated successfully')
@@ -73,6 +72,8 @@ class Database(object):
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
     def selectdate(self):
+        date_from = self.datfr[0]
+        date_to = self.datto[0]
         if self.base == 1 or 4:
             lessq = '='
             moreq = '='
@@ -95,11 +96,11 @@ class Database(object):
         selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
          AND "4"={6}'''.format(
          sign[0], range, self.table, lessq,
-         self.date_from[2], self.date_from[1], self.date_from[0], )
+         date_from[2], date_from[1], date_from[0], )
         selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
          AND "4"={6}'''.format(
          sign[1], range, self.table, moreq,
-         self.date_to[2], self.date_to[1], self.date_to[0], )
+         date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.cur.execute(selquery_)
         self.cur.execute(execall)
