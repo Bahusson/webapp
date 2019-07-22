@@ -1,8 +1,8 @@
-from django.http import JsonResponse, HttpResponse
+# from django.http import JsonResponse, HttpResponse
 import psycopg2
 import pandas
-from bokeh.plotting import figure, output_file, show
-from bokeh.models import HoverTool, ColumnDataSource
+# from bokeh.plotting import figure, output_file, show
+# from bokeh.models import HoverTool, ColumnDataSource
 import re
 import ConfigParser
 import datetime
@@ -176,11 +176,11 @@ class Dataframe(Database):
         ahead = ["Średnia" + " / " + "Częstotliwość" + "\n"]
         b = ahead + a
 
-        source = ColumnDataSource(
-            data=dict(
-                Means=df5.index,
-                Freqs=df5.values
-                ))
+    #    source = ColumnDataSource(
+    #        data=dict(
+    #            Means=df5.index,
+    #            Freqs=df5.values
+    #            ))
         if self.avsco is True:
             avgsc = b
         else:

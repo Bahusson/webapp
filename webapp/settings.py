@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-#    'ajax',
+    # 'ajax',
 ]
 
 MIDDLEWARE = [
@@ -96,7 +96,7 @@ DATABASES = {
         'USER': 'jackk',
         'PASSWORD': 'Mordega2',
         'HOST': '127.0.0.1',
-        'PORT': '5433',
+        'PORT': '5432',
     },
 }
 
@@ -119,7 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # CACHE bazodanowy. https://docs.djangoproject.com/en/2.2/topics/cache/
-# Przed użyciem stwórz tabelę w bazie danych za pomocą: "python manage.py createcachetable"
+# Przed użyciem stwórz tabelę w bazie danych za pomocą:
+# "python manage.py createcachetable"
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
@@ -139,7 +140,8 @@ CACHE_MIDDLEWARE_SECONDS = 10
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-# Dla sesji opartych na ciastkach "django.contrib.sessions.backends.signed_cookies"
+# Dla sesji opartych na ciastkach:
+# "django.contrib.sessions.backends.signed_cookies"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -161,25 +163,26 @@ USE_TZ = True
 # TODO: Poprawić langjs.js żeby też był z tym zsynchronizowany.
 gettext = lambda s: s
 LANGUAGES = (
-    ('pl', gettext('Polish')),  # Pierwszy jest zawsze defaultem chyba, że zrobisz override.
+    # Pierwszy jest zawsze defaultem chyba, że zrobisz override.
+    ('pl', gettext('Polish')),
     ('en', gettext('English')),
 )
 
-LANGUAGE_COOKIE_AGE = 31449600  # Około rok ważności ustawień między logowaniami w sekundach.
+LANGUAGE_COOKIE_AGE = 31449600  # Około rok ważności
 # Ustaw None jeśli chcesz, żeby się zerowały po każdym wyłączeniu przeglądarki.
 
-LANGUAGE_COOKIE_NAME = 'webapp_language' # Nazwa ciacha językowego, żeby się nie myliło.
+LANGUAGE_COOKIE_NAME = 'webapp_language'  # Nazwa ciacha językowego
 
-LANGUAGE_COOKIE_PATH = '/' # Domyślna ścieżka ciastków. Na wypadek jakbyśmy chcieli nimi manipulować.
+LANGUAGE_COOKIE_PATH = '/'  # Domyślna ścieżka ciastków.
 
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'pl' # Tu możesz zmienić default language.
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'pl'  # Tu możesz zmienić default language.
 
 MODELTRANSLATION_LANGUAGES = ('pl', 'en')
 
-# W ten sposób zachowają sie języki jak nie znajdzie się jakiegoś w bazie. Do zmiany być może?
+# W ten sposób zachowają sie języki jak nie znajdzie się jakiegoś w bazie.
 MODELTRANSLATION_FALLBACK_LANGUAGES = {'default': ('en', ), 'en': ('pl', )}
 
-# Tutaj rejestruje się wszystkie trackery translacyjne translation.py, które umieszczasz w folderze apki.
+# Tutaj rejestruje się wszystkie trackery translacyjne.
 MODELTRANSLATION_TRANSLATION_FILES = (
     'blog.translation',
     'jobs.translation',
@@ -205,7 +208,7 @@ LOGIN_REDIRECT_URL = '/'  # Przekierowanie usera po zalogowaniu
 
 LOGOUT_REDIRECT_URL = '/'  # Przekierowanie po wylogowaniu.
 
-# Ściągnij ustawienia lokalne gdybyśmy chcieli udostępnić kod i wejść na OpenSource
+# Ściągnij ustawienia lokalne gdybyśmy chcieli udostępnić kod.
 # na serwerze obok "settings" robisz plik .local_settings i ustalasz od nowa:
 # SECRET_KEY, DEBUG = False, DATABASES, oraz CACHES jeśli używasz Memccache.
 try:

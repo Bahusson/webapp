@@ -47,7 +47,8 @@ class Database(object):
             while len(rowspacing) < len(rows):
                 rowspacing.append("\n")
             zippedrows = zip(rows, rowspacing, )
-            ziprows = list(zippedrows)
+            ziprows = list(zippedrows))
+        else:
             rolls = [rollhead, ziprows, ]
         elif norol == "0" and datal == "1":
             rolls = "Zaznaczono całość pomiarów"
