@@ -99,8 +99,7 @@ class Showroom(PageLoad):
             place_pr = kwargs['place']
             self.myprog = G404(mp, pk=place_pr)
 
-    def launcher(self, **kwargs):
-        if 'Randomizer' in kwargs:
-            randob = kwargs['Randomizer']
-            randlist = list(randob.objects.all())
-            self.randitem = randlist[0]
+    def randomizer(self, **kwargs):
+        randob = kwargs['Randomizer']
+        randlist = list(randob.objects.all())
+        self.randitem = randlist[0]

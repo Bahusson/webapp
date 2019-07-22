@@ -33,13 +33,13 @@ def progpage(request, place):
     return render(request, 'myprograms/progpage.html', context)
 
 
-# Emulator randomizera. Bo nie da rady tego po prostu "wygenerować".
+# Strona Randomizera. Podobne idą do innych programów.
 def pybrun(request):
     if request.method == 'POST':
         pass
     else:
         sh = Showroom(P, L)
-        sh.launcher(Randomizer=Ri)
+        sh.randomizer(Randomizer=Ri)
         context = {'items': sh.items,
                    'langs': sh.langs,
                    'rand': sh.randitem,
@@ -47,7 +47,7 @@ def pybrun(request):
         return render(request, 'myprograms/pybrun.html', context)
 
 
-# Launchpad dla wszystkich programów.
+# Launchpad dla wszystkich programów. Rozszerzasz tylko listę o nazwy def.
 def launchme(request, place):
     redlist = ['pybrun', ]
     return redirect(redlist[place-1])
