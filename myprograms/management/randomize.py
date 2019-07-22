@@ -7,27 +7,28 @@ import re
 import ConfigParser
 import datetime
 from .managment.commands.updatedb import Updatedb
-from special.snippets import bug_catch
 
 
 # Żeby uniknąć zdań warunkowych wykorzystaj polimorfizm dla bazy 4!
-
 class Database(object):
 
     def __init__(self, request):
         if request.is_ajax():  # Czy można bez If request is ajax?
             # Albo wyrzucić request is ajax do views?
-            self.base = request.POST.get('gamesel')
+            def intistrue(x):
+                bool(int(x == 1))
+
+            self.base = int(request.POST.get('gamesel'))
             self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['datefrom'])
             self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['dateto'])
-            self.datal = request.POST['dateall']
-            self.nhilo = request.POST['numhilow']
-            self.norol = request.POST['norolls']
-            self.moftn = request.POST['mostoften']
-            self.avsco = request.POST['avgscores']
-            self.grgen = request.POST['graphgen']
+            self.datal = intistrue(request.POST['dateall'])
+            self.nhilo = intistrue(request.POST['numhilow'])
+            self.norol = intistrue(request.POST['norolls'])
+            self.moftn = int(request.POST['mostoften'])
+            self.avsco = intistrue(request.POST['avgscores'])
+            self.grgen = intistrue(request.POST['graphgen'])
             self.table = "game" + str(self.base)
 
         # instantiate
@@ -46,7 +47,7 @@ class Database(object):
         # Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
         currday = str(fulldate.day)
-        db = "dbname={0} user={1} password={2}".format(
+        self.db = "dbname={0} user={1} password={2}".format(
          db_base, user, password)
         if currday == update_val:
             print('database up to date')
@@ -54,13 +55,13 @@ class Database(object):
         else:
             config.set('update', 'date', currday)
             udb = Updatedb()
-            udb.connect(user, password, host, port, db_base, db, )
+            udb.connect(user, password, host, port, db_base, self.db, )
             print('database updated successfully')
             # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
             # kiedy nikt nie korzysta z aplikacji.
 
         # Lączenie z bazą danych...
-        self.conn = psycopg2.connect(db)
+        self.conn = psycopg2.connect(self.db)
         self.cur = self.conn.cursor()
 
     # Select piece of database queries by date function
@@ -111,30 +112,28 @@ class Database(object):
 # aby można było zrobić graf i inne fajne rzeczy na liczbach...
 # Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 class Dataframe(Database):
-    def __init__(self, request, ):
+    def __init__(self, request, num=3):
         super().__init__(self, request, )
-        if datal is True:
-            avg = bool(aver == "1")
-            grap = bool(graph == "1")
+        if self.datal is True:
             query = 'SELECT * FROM %s' (self.table)
             par = ""
         else:
             query = 'SELECT * FROM game1 LIMIT %s OFFSET %s'
-            par = "params=[rowto, rowfrom],"
+            par = "[rowto, rowfrom],"
             df = pandas.read_sql_query(
-             sql=(query), con=psycopg2.connect(db),
-             coerce_float=False, parse_dates=None, chunksize=None)
+             sql=(query), con=psycopg2.connect(self.db),
+             coerce_float=False, parse_dates=None, params=par, chunksize=None)
 
-        if base == 4:
+        if self.base == 4:
             df1 = df.drop(df.columns[0:4], 1)
-            df1 = df1.drop(df.columns[-1], 1)
+            self.df1 = df1.drop(df.columns[-1], 1)
         else:
-            df1 = df.drop(df.columns[0:num], 1)
+            self.df1 = df.drop(df.columns[0:num], 1)
 
-    def extremes(self, num=5):
-        if base != 4:
-            df1(num)
-        df2 = df1.apply(pandas.value_counts).fillna(0)
+    def extremes(self, value, var1, num=5):
+        if self.base != 4:
+            self.df1(num)
+        df2 = self.df1.apply(pandas.value_counts).fillna(0)
         df2.loc[:, 'total'] = df2.sum(axis=1)
         df3 = df2
 
@@ -149,17 +148,20 @@ class Dataframe(Database):
             hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
         else:
             hilow = "Nie wybrano liczb skrajnych"
+        yield hilow
+
         if int(value) > 0:
             often = "Od najczęstszej: " + str(nums)
         else:
             "Nie wybrano najczęstszych liczb"
+        yield often
 
-    def makedf(self, base, avg, grap, num=3):
+    def makedf(self, num=3):
         global sourcef
         global avgsc
-        if base != 4:
-            df1(num)
-        df4 = df1.T
+        if self.base != 4:
+            self.df1(num)
+        df4 = self.df1.T
         df5 = df4.mean().round(0).value_counts()
         slist = list()
         nrlist = list()
@@ -171,7 +173,7 @@ class Dataframe(Database):
         dfvalue = df5.values.astype(str)
         zipped = zip(dfindex, slist, dfvalue, nrlist)
         a = list(zipped)
-        ahead = ["Średnia" + " / " + "Częstotliwość" + "\n" ]
+        ahead = ["Średnia" + " / " + "Częstotliwość" + "\n"]
         b = ahead + a
 
         source = ColumnDataSource(
@@ -179,121 +181,12 @@ class Dataframe(Database):
                 Means=df5.index,
                 Freqs=df5.values
                 ))
-        if avg is True:
+        if self.avsco is True:
             avgsc = b
         else:
-            avgsc = "Nie wybrano generowania średnich"
-        if grap is True:
+            self.avgsc = "Nie wybrano generowania średnich"
+        yield avgsc
+
+        if self.grgen is True:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
-
-
-# Główna oś funkcji
-def generate(request):
-    global datal
-    global nhilo
-    global norol
-    global moftn
-    global avsco
-    global grgen
-    global datfro
-    global dattoo
-    if request.is_ajax():
-        radio = request.POST.get('gamesel')
-        datfr = re.findall(
-                 r"(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['datefrom'])
-        datto = re.findall(
-                 r"(\d\d\d\d)-(\d\d)-(\d\d)", request.POST['dateto'])
-        datal = request.POST['dateall']
-        nhilo = request.POST['numhilow']
-        norol = request.POST['norolls']
-        moftn = request.POST['mostoften']
-        avsco = request.POST['avgscores']
-        grgen = request.POST['graphgen']
-
-    if datal == "0":
-        datfro = datfr[0]
-        dattoo = datto[0]
-        database.selectdate(
-                            base, table, dattoo[2], dattoo[1], dattoo[0],
-                            datfro[2], datfro[1], datfro[0], )
-        datal = False
-    elif datal == "1":
-        database.searchall(table)
-        datal == True
-    else:
-        bug_catch()
-
-    dataframes.extremes(radio,moftn,nhilo)
-    dataframes.makedf(radio,avsco,grgen)
-
-    if norol == '1':
-        rolls = "Nie wybrano losowań"
-    elif norol == "0" and datal == "0":
-        rollhead = ["Losowania wraz z datą:" + "\n"]
-        rowspacing = list()
-        while len(rowspacing)<len(rows):
-            rowspacing.append("\n")
-        zippedrows = zip(rows, rowspacing)
-        ziprows = list(zippedrows)
-        rolls = [rollhead, ziprows]
-    elif norol == "0" and datal == "1":
-        rolls = "Zaznaczono całość pomiarów"
-    else:
-        bug_catch()
-
-    responsedata = {
-        'hilow' : hilow,
-        'rolls' : rolls,
-        'often' : often,
-        'avgsc' : avgsc,
-#Co do ostatniego to możliwe, że trzeba będzie dodaĆ warunkowe return/render HttpResponse pod ten graf.
-        'graph' : graph
-    }
-    return JsonResponse(responsedata)
-# Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
-
-
-#Ta podfunkcja wywołuje graf Bokeh.
-def makegraph():
-        p=figure(plot_width=500, plot_height=400, tools = 'pan, reset', logo=None)
-        p.title.text = "Dystrybucja"
-        p.title.text_color = "Orange"
-        p.title.text_font = "times"
-        p.title.text_font_style = "italic"
-        p.yaxis.minor_tick_line_color = "Yellow"
-        p.xaxis.axis_label = "Średnie"
-        p.yaxis.axis_label = "Częstotliwości"
-        p.circle(x='Means', y='Freqs', source=source, size = 10, color="red", alpha=0.6)
-        hover=HoverTool(tooltips=[("Mean","@Means"),("Freq","@Freqs")])
-        p.add_tools(hover)
-        output_file('graph1.html')
-        show(p)
-
-
-
-
-
-#Ta funkcja wyciąga z bazy danych pierwszą/ostatnią datę. (W wersji webowej do zaimplementowania na końcu...)
-def getcaldate(base, date):
-    conn=psycopg2.connect("dbname=webappbasedb user=postgres password=Ma3taksamo_Jakja")
-    cur=conn.cursor()
-    if base == 1 and date == 1 :
-        cur.execute('SELECT "2","3","4" FROM game1 ORDER BY rowid ASC LIMIT 1')
-    elif base == 2 and date == 1 :
-        cur.execute('SELECT "2","3","4" FROM game2 ORDER BY rowid ASC LIMIT 1')
-    elif base == 3 and date == 1 :
-        cur.execute('SELECT "2","3","4" FROM game3 ORDER BY rowid ASC LIMIT 1')
-    elif base == 4 and date == 1 :
-        cur.execute('SELECT "2","3","4" FROM game4 ORDER BY rowid ASC LIMIT 1')
-    elif base == 1 and date == 2 :
-        cur.execute('SELECT "2","3","4" FROM game1 ORDER BY rowid DESC LIMIT 1')
-    elif base == 2 and date == 2 :
-        cur.execute('SELECT "2","3","4" FROM game2 ORDER BY rowid DESC LIMIT 1')
-    elif base == 3 and date == 2 :
-        cur.execute('SELECT "2","3","4" FROM game3 ORDER BY rowid DESC LIMIT 1')
-    elif base == 4 and date == 2 :
-        cur.execute('SELECT "2","3","4" FROM game4 ORDER BY rowid DESC LIMIT 1')
-    rows=cur.fetchall()
-    conn.close()
-    #return rows
