@@ -85,7 +85,7 @@ class Selector(Database):
         elif q == 0:
             duck = '='
             quack = '='
-        if if base == 4 or 8::
+        if base == 4 or 8:
             range = "0"
             execall = 'SELECT * FROM %s LIMIT %s OFFSET %s', (
              table, rowto, rowfrom, )

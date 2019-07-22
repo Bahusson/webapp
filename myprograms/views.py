@@ -5,7 +5,7 @@ from .models import MyProgram as Mp
 from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
-from special.classess import Showroom
+from special.classes import Showroom
 
 
 # Strona z programami do ściągnięcia/przetestowania.
@@ -14,7 +14,7 @@ def download(request):
         pass
     else:
         sh = Showroom(P, L)
-        sh.gen(Pp, Mp)
+        sh.gen(Pp=Pp, Mp=Mp)
         context = {'items': sh.items,
                    'langs': sh.langs,
                    'pritems': sh.pritems,
@@ -25,7 +25,7 @@ def download(request):
 # Strona ze szczegółami konkretnego programu.
 def progpage(request, place):
     sh = Showroom(P, L)
-    sh.gen(Pp, Mp, G404=G404, place=place)
+    sh.gen(Pp=Pp, Mp=Mp, G404=G404, place=place)
     context = {'items': sh.items,
                'langs': sh.langs,
                'pritems': sh.pritems,

@@ -5,7 +5,7 @@ class PageLoad(object):
     (ID_Języka, Ścieżka_Flagi_Języka), oraz
     Ładuje wszystkie podstawowe elementy w widoku strony. '''
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args):
         lang_id = []
         langsl = []
         a = args[0]
@@ -31,7 +31,7 @@ class PageLoad(object):
 class Blog(PageLoad):
     def __init__(self, *args, **kwargs):
         if args:
-            super().__init__(self, *args, **kwargs)
+            super().__init__(*args)
 
     def gen(self, **kwargs):
         b = kwargs['B']
@@ -47,7 +47,7 @@ class Blog(PageLoad):
 class Trick(PageLoad):
     def __init__(self, *args, **kwargs):
         if args:
-            super().__init__(self, *args, **kwargs)
+            super().__init__(*args)
 
     def gen(self, **kwargs):
         tr = kwargs['Tr']
@@ -62,7 +62,7 @@ class Trick(PageLoad):
 class Tech(PageLoad):
     def __init__(self, *args, **kwargs):
         if args:
-            super().__init__(self, *args, **kwargs)
+            super().__init__(*args)
 
     def gen(self, **kwargs):
         te = kwargs['Te']
@@ -84,7 +84,7 @@ class CV(object):
 class Showroom(PageLoad):
     def __init__(self, *args, **kwargs):
         if args:
-            super().__init__(self, *args, **kwargs)
+            super().__init__(*args)
 
     def gen(self, **kwargs):
         pp = kwargs['Pp']

@@ -30,7 +30,7 @@ def newsletter(request):
     tr.gen(Tr=Tr)
     bl.gen(B=B)
     te.gen(Te=Te)
-    pr.gen(Pp, Mp)
+    pr.gen(Pp=Pp, Mp=Mp)
     context = {'items': tr.items,
                'langs': tr.langs,
                'tricks': tr.tricks,
@@ -55,10 +55,10 @@ def books(request, tricks_id):
 def skills(request, techs_id):
     te = Tech(P, L)
     cv = CV(Cv=Cv)
-    te.Tech(Te=Te, G404=G404, techsid=techs_id)
+    te.gen(Te=Te, G404=G404, techsid=techs_id)
     context = {'items': te.items,
                'langs': te.langs,
                'techs': te.techs,
                'tech': te.tech,
-               'cv': cv, }
+               'cv': cv.cv, }
     return render(request, 'techs/skills.html', context)
