@@ -106,8 +106,8 @@ class Database(object):
         rows = self.cur.fetchall()
         return rows
 
-    def searchall(self, table, ):
-        query = 'SELECT * FROM {0}'.format(table)
+    def searchall(self):
+        query = 'SELECT * FROM {0}'.format(self.table)
         self.cur.execute(query)
         rows = self.cur.fetchall()
         return rows

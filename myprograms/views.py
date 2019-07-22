@@ -7,6 +7,7 @@ from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import Showroom
 from commands.randomize import Database, Dataframe
+from django.http import JsonResponse
 
 
 # Strona z programami do ściągnięcia/przetestowania.
@@ -36,12 +37,24 @@ def pybrun(request):
     if request.method == 'POST':
         r_db = Database(request)
         r_df = Dataframe(request)
-        r_db.
+        if r_db.no_rolls is True:
+            pass
+        else:
+            if r_db.alldata is True:
+                rows = r_db.searchall()
+            else:
+                rows = r_db.selectdate()
+        if r_db.extreme_nums or r_db.mode is True:
+            ext = r_df.extremes()
+        if r_db.av_score is True:  # OR r_db.gen_graph //
+            dfr = r_df.makedf()
         responsedata = {
-            'number' : lst1
+            'rows': rows,
+            'extremes': ext.extr,
+            'modals': ext.modals,
+            'average': dfr.average,
         }
         return JsonResponse(responsedata)
-
     else:
         sh = Showroom(P, L)
         sh.randomizer(Randomizer=Ri)
