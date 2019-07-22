@@ -1,6 +1,6 @@
 import psycopg2
 import pandas
-import urllib.request.urlopen
+import urllib.request
 from bs4 import BeautifulSoup
 import re
 import ssl

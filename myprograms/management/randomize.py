@@ -4,9 +4,9 @@ import pandas
 # from bokeh.plotting import figure, output_file, show
 # from bokeh.models import HoverTool, ColumnDataSource
 import re
-import ConfigParser
+import configparser
 import datetime
-from .managment.commands.updatedb import Updatedb
+from .commands.updatedb import Updatedb
 
 
 # Żeby uniknąć zdań warunkowych wykorzystaj polimorfizm dla bazy 4!
@@ -39,7 +39,7 @@ class Database(object):
 
         # instantiate
         # formułka konfiguracji funkcji odczytu baz danych.
-        config = ConfigParser()
+        config = configparser()
         # parse existing file
         config.read('database.ini')
         # read values from a section

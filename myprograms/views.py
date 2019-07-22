@@ -6,7 +6,7 @@ from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import Showroom
-from commands.randomize import Database, Dataframe
+from .management.randomize import Database, Dataframe
 from django.http import JsonResponse
 
 
