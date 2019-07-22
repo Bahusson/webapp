@@ -6,13 +6,11 @@ from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import Showroom
+from commands.randomize import Database, Dataframe
 
 
 # Strona z programami do ściągnięcia/przetestowania.
 def download(request):
-    if request.method == 'POST':
-        pass
-    else:
         sh = Showroom(P, L)
         sh.gen(Pp=Pp, Mp=Mp)
         context = {'items': sh.items,
@@ -36,7 +34,14 @@ def progpage(request, place):
 # Strona Randomizera. Podobne idą do innych programów.
 def pybrun(request):
     if request.method == 'POST':
-        pass
+        r_db = Database(request)
+        r_df = Dataframe(request)
+        r_db.
+        responsedata = {
+            'number' : lst1
+        }
+        return JsonResponse(responsedata)
+
     else:
         sh = Showroom(P, L)
         sh.randomizer(Randomizer=Ri)

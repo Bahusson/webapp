@@ -11,6 +11,9 @@ from .managment.commands.updatedb import Updatedb
 
 # Żeby uniknąć zdań warunkowych wykorzystaj polimorfizm dla bazy 4!
 class Database(object):
+    '''Klasa rodzic, wzywa bazę danych do aktualizacji przy każdym uruchomieniu
+    o ile nie była już aktualizowana danego dnia,
+    oraz zwraca całość lub fragment pomiarów. '''
 
     def __init__(self, request):
         if request.is_ajax():  # Czy można bez If request is ajax?
@@ -19,16 +22,19 @@ class Database(object):
                 bool(int(x == 1))
 
             self.base = int(request.POST.get('gamesel'))
-            self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
-                                    request.POST['datefrom'])
-            self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
-                                    request.POST['dateto'])
-            self.datal = intistrue(request.POST['dateall'])
-            self.nhilo = intistrue(request.POST['numhilow'])
-            self.norol = intistrue(request.POST['norolls'])
-            self.moftn = int(request.POST['mostoften'])
-            self.avsco = intistrue(request.POST['avgscores'])
-            self.grgen = intistrue(request.POST['graphgen'])
+            datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                               request.POST['datefrom'])
+            self.date_from = datfr[0]
+
+            datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                               request.POST['dateto'])
+            self.date_to = datto[0]
+            self.all_data = intistrue(request.POST['dateall'])
+            self.extreme_nums = intistrue(request.POST['numhilow'])
+            self.no_rolls = intistrue(request.POST['norolls'])
+            self.mode = int(request.POST['mostoften'])
+            self.av_score = intistrue(request.POST['avgscores'])
+            self.gen_graph = intistrue(request.POST['graphgen'])
             self.table = "game" + str(self.base)
 
         # instantiate
@@ -66,7 +72,7 @@ class Database(object):
 
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
-    def selectdate(self, day1, month1, year1, day2, month2, year2, ):
+    def selectdate(self):
         if self.base == 1 or 4:
             lessq = '='
             moreq = '='
@@ -88,10 +94,12 @@ class Database(object):
              self.table, rowto, rowfrom, )
         selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
          AND "4"={6}'''.format(
-         sign[0], range, self.table, lessq, day2, month2, year2, )
+         sign[0], range, self.table, lessq,
+         self.date_from[2], self.date_from[1], self.date_from[0], )
         selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
          AND "4"={6}'''.format(
-         sign[1], range, self.table, moreq, day2, month2, year2, )
+         sign[1], range, self.table, moreq,
+         self.date_to[2], self.date_to[1], self.date_to[0], )
         self.cur.execute(selquery)
         self.cur.execute(selquery_)
         self.cur.execute(execall)
@@ -108,13 +116,13 @@ class Database(object):
         self.conn.close()
 
 
-# Ta podfunkcja rekonwertująca bazę danych do df
-# aby można było zrobić graf i inne fajne rzeczy na liczbach...
-# Zwraca najwyższą, najniższą liczbę, oraz liczby od najczęstszej.
 class Dataframe(Database):
+    ''' Generuje największą i najmniejszą liczbę,
+    najczęstsze liczby, średnie i graf'''
+
     def __init__(self, request, num=3):
         super().__init__(self, request, )
-        if self.datal is True:
+        if self.all_data is True:
             query = 'SELECT * FROM %s' (self.table)
             par = ""
         else:
@@ -130,7 +138,7 @@ class Dataframe(Database):
         else:
             self.df1 = df.drop(df.columns[0:num], 1)
 
-    def extremes(self, value, var1, num=5):
+    def extremes(self, num=5):
         if self.base != 4:
             self.df1(num)
         df2 = self.df1.apply(pandas.value_counts).fillna(0)
@@ -142,23 +150,19 @@ class Dataframe(Database):
         nminus = df3.sort_values(
          ['total'], ascending=[False])[-1:].index.values
         nums = df3.sort_values(
-         ['total'], ascending=[False])[:int(value)].index.values
+         ['total'], ascending=[False])[:self.mode].index.values
 
-        if var1 == '1':
-            hilow = "Max: " + str(nplus) + "  Min: " + str(nminus)
+        if self.extreme_nums is True:
+            self.extr = "Max: " + str(nplus) + "  Min: " + str(nminus)
         else:
-            hilow = "Nie wybrano liczb skrajnych"
-        yield hilow
+            self.extr = "Nie wybrano liczb skrajnych"
 
-        if int(value) > 0:
-            often = "Od najczęstszej: " + str(nums)
+        if int(self.mode) > 0:
+            self.modals = "Od najczęstszej: " + str(nums)
         else:
-            "Nie wybrano najczęstszych liczb"
-        yield often
+            self.modals = "Nie wybrano najczęstszych liczb"
 
     def makedf(self, num=3):
-        global sourcef
-        global avgsc
         if self.base != 4:
             self.df1(num)
         df4 = self.df1.T
@@ -181,12 +185,14 @@ class Dataframe(Database):
     #            Means=df5.index,
     #            Freqs=df5.values
     #            ))
-        if self.avsco is True:
-            avgsc = b
+        if self.av_score is True:
+            self.average = b
         else:
-            self.avgsc = "Nie wybrano generowania średnich"
-        yield avgsc
+            self.average = "Nie wybrano generowania średnich"
 
-        if self.grgen is True:
+        if self.gen_graph is True:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
+
+    def __del__(self):
+        super().__del__(self)

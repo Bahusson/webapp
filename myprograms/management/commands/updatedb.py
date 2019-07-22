@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 
 
 class Updatedb(object):
+    ''' Klasa aktualizująca bazę danych randomizera '''
 
     def __init__(self):
         ctx = ssl.create_default_context()
