@@ -5,7 +5,7 @@ from .models import MyProgram as Mp
 from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
-from special.classess import Showroom
+from special.classes import PageLoad
 
 
 # Strona z programami do ściągnięcia/przetestowania.
@@ -13,23 +13,23 @@ def download(request):
     if request.method == 'POST':
         pass
     else:
-        sh = Showroom(P, L)
-        sh.gen(Pp, Mp)
-        context = {'items': sh.items,
-                   'langs': sh.langs,
-                   'pritems': sh.pritems,
-                   'myprogs': sh.myprogs, }
+        pl = PageLoad(P, L)
+        pl.showroom(Pp, Mp)
+        context = {'items': pl.items,
+                   'langs': pl.langs,
+                   'pritems': pl.pritems,
+                   'myprogs': pl.myprogs, }
         return render(request, 'myprograms/download.html', context)
 
 
 # Strona ze szczegółami konkretnego programu.
 def progpage(request, place):
-    sh = Showroom(P, L)
-    sh.gen(Pp, Mp, G404=G404, place=place)
-    context = {'items': sh.items,
-               'langs': sh.langs,
-               'pritems': sh.pritems,
-               'myprog': sh.myprog, }
+    pl = PageLoad(P, L)
+    pl.showroom(Pp, Mp, G404=G404, place=place)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'pritems': pl.pritems,
+               'myprog': pl.myprog, }
     return render(request, 'myprograms/progpage.html', context)
 
 
@@ -38,16 +38,16 @@ def pybrun(request):
     if request.method == 'POST':
         pass
     else:
-        sh = Showroom(P, L)
-        sh.launcher(Randomizer=Ri)
-        context = {'items': sh.items,
-                   'langs': sh.langs,
-                   'rand': sh.randitem,
+        pl = PageLoad(P, L)
+        pl.launcher(Randomizer=Ri)
+        context = {'items': pl.items,
+                   'langs': pl.langs,
+                   'rand': pl.randitem,
                    }
         return render(request, 'myprograms/pybrun.html', context)
 
 
 # Launchpad dla wszystkich programów.
 def launchme(request, place):
-    redlist = ['pybrun', ]
+    redlist = ['pybrun',]
     return redirect(redlist[place-1])

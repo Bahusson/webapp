@@ -5,11 +5,9 @@ class PageLoad(object):
     (ID_Języka, Ścieżka_Flagi_Języka), oraz
     Ładuje wszystkie podstawowe elementy w widoku strony. '''
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, a, b, *args, **kwargs):
         lang_id = []
         langsl = []
-        a = args[0]
-        b = args[1]
         self.langs = []
         locations = list(a.objects.all())
         self.items = locations[0]
@@ -27,72 +25,51 @@ class PageLoad(object):
 
         self.langs = zip(lang_id, langsl)
 
+    def portal(self, **kwargs):
+        # Spora złożoność cyklomatyczna (8),
+        # można ją zredukować przez polimorfizm,
+        # ale jeszcze nie jest to konieczne.
+        if 'B' in kwargs:
+            b = kwargs['B']
+            self.bloglist = list(b.objects.all())
+            self.blogs = b.objects
 
-class Blog(PageLoad):
-    def __init__(self, *args, **kwargs):
-        if args:
-            super().__init__(self, *args, **kwargs)
+        if 'Tr' in kwargs:
+            tr = kwargs['Tr']
+            self.tricks = tr.objects
 
-    def gen(self, **kwargs):
-        b = kwargs['B']
-        self.bloglist = list(b.objects.all())
-        self.blogs = b.objects
+        if 'Te' in kwargs:
+            te = kwargs['Te']
+            self.techs = te.objects
+
+        if 'Cv' in kwargs:
+            cvs = kwargs['Cv']
+            cvlist = list(cvs.objects.all())
+            self.cv = cvlist[0]
+
+        if 'G404' in kwargs:
+            G404 = kwargs['G404']
 
         if 'blogid' in kwargs:
-            G404 = kwargs['G404']
             blog_id = kwargs['blogid']
             self.blog = G404(b, pk=blog_id)
 
-
-class Trick(PageLoad):
-    def __init__(self, *args, **kwargs):
-        if args:
-            super().__init__(self, *args, **kwargs)
-
-    def gen(self, **kwargs):
-        tr = kwargs['Tr']
-        self.tricks = tr.objects
-
         if 'tricksid' in kwargs:
-            G404 = kwargs['G404']
             tricks_id = kwargs['tricksid']
             self.trick = G404(tr, pk=tricks_id)
 
-
-class Tech(PageLoad):
-    def __init__(self, *args, **kwargs):
-        if args:
-            super().__init__(self, *args, **kwargs)
-
-    def gen(self, **kwargs):
-        te = kwargs['Te']
-        self.techs = te.objects
-
         if 'techsid' in kwargs:
-            G404 = kwargs['G404']
             techs_id = kwargs['techsid']
             self.tech = G404(te, pk=techs_id)
 
-
-class CV(object):
-    def __init__(self, **kwargs):
-        cvs = kwargs['Cv']
-        cvlist = list(cvs.objects.all())
-        self.cv = cvlist[0]
-
-
-class Showroom(PageLoad):
-    def __init__(self, *args, **kwargs):
-        if args:
-            super().__init__(self, *args, **kwargs)
-
-    def gen(self, **kwargs):
-        pp = kwargs['Pp']
-        mp = kwargs['Mp']
-        firstp = list(pp.objects.all())
-        self.proglist = list(mp.objects.all())
-        self.pritems = firstp[0]
-        self.myprogs = mp.objects
+    def showroom(self, *args, **kwargs):
+        if len(args) > 0:
+            pp = args[0]
+            mp = args[1]
+            firstp = list(pp.objects.all())
+            self.proglist = list(mp.objects.all())
+            self.pritems = firstp[0]
+            self.myprogs = mp.objects
 
         if 'place' in kwargs:
             G404 = kwargs['G404']

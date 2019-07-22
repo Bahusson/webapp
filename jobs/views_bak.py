@@ -8,34 +8,30 @@ from myprograms.models import MyProgram as Mp
 from myprograms.models import ProgramPage as Pp
 from .models import Pageitem as P
 from webapp.settings import LANGUAGES as L
-from special.classes import Trick, Blog, Tech, Showroom, CV
+from special.classes import PageLoad
 
 
 # Strona Startowa.
 def home(request):
-    tr = Trick(P, L)
-    tr.gen(Tr=Tr)
-    context = {'items': tr.items,
-               'langs': tr.langs,
-               'tricks': tr.tricks, }
+    pl = PageLoad(P, L)
+    pl.portal(B=B, Tr=Tr)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'tricks': pl.tricks, }
     return render(request, 'tricks/home.html', context)
 
 
 # Strona 'Aktualności'. Dużo różnych rzeczy - skrótowo.
 def newsletter(request):
-    tr = Trick(P, L)
-    bl = Blog()
-    te = Tech()
-    pr = Showroom()
-    tr.gen(Tr=Tr)
-    bl.gen(B=B)
-    te.gen(Te=Te)
-    pr.gen(Pp, Mp)
-    context = {'items': tr.items,
-               'langs': tr.langs,
-               'tricks': tr.tricks,
-               'techs': te.techs,
-               'blogs': bl.bloglist,
+    pl = PageLoad(P, L)
+    pr = PageLoad(P, L)
+    pl.portal(B=B, Tr=Tr, Te=Te)
+    pr.showroom(Pp, Mp)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'tricks': pl.tricks,
+               'techs': pl.techs,
+               'blogs': pl.bloglist,
                'pritems': pr.pritems,
                'myprogs': pr.proglist, }
     return render(request, 'tricks/newsletter.html', context)
@@ -43,22 +39,21 @@ def newsletter(request):
 
 # Pełna strona konkretnej ciekawostki.
 def books(request, tricks_id):
-    tr = Trick(P, L)
-    tr.gen(Tr=Tr, G404=G404, tricksid=tricks_id)
-    context = {'items': tr.items,
-               'langs': tr.langs,
-               'trick': tr.trick, }
+    pl = PageLoad(P, L)
+    pl.portal(Tr=Tr, G404=G404, tricksid=tricks_id)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'trick': pl.trick, }
     return render(request, 'tricks/books.html', context)
 
 
 # Pełna strona konkretnej umiejętności.
 def skills(request, techs_id):
-    te = Tech(P, L)
-    cv = CV(Cv=Cv)
-    te.Tech(Te=Te, G404=G404, techsid=techs_id)
-    context = {'items': te.items,
-               'langs': te.langs,
-               'techs': te.techs,
-               'tech': te.tech,
-               'cv': cv, }
+    pl = PageLoad(P, L)
+    pl.portal(Te=Te, Cv=Cv, G404=G404, techsid=techs_id)
+    context = {'items': pl.items,
+               'langs': pl.langs,
+               'techs': pl.techs,
+               'tech': pl.tech,
+               'cv': pl.cv, }
     return render(request, 'techs/skills.html', context)
