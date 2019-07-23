@@ -23,10 +23,10 @@ class Database(object):
 
             self.base = int(request.POST.get('gamesel'))
             self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
-                               request.POST['datefrom'])
+                                    request.POST['datefrom'])
 
             self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
-                               request.POST['dateto'])
+                                    request.POST['dateto'])
             self.all_data = intistrue(request.POST['dateall'])
             self.extreme_nums = intistrue(request.POST['numhilow'])
             self.no_rolls = intistrue(request.POST['norolls'])
@@ -52,26 +52,28 @@ class Database(object):
         # Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
         currday = str(fulldate.day)
+        print('today is ' + currday)
         self.db = "dbname={0} user={1} password={2}".format(
          db_base, user, password)
         if currday == update_val:
             print('database up to date')
             pass
         else:
-            config.set('db_update', 'date', currday)
-            udb = Updatedb()
-            udb.connect(user, password, host, port, db_base, self.db, )
+            udb = Updatedb(user, password, host, port, db_base, self.db,)
+            udb
             print('database updated successfully')
+            config.set('db_update', 'date', currday)
+            print('current date set to:' + currday)
             # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
             # kiedy nikt nie korzysta z aplikacji.
 
         # Lączenie z bazą danych...
-        self.conn = psycopg2.connect(self.db)
-        self.cur = self.conn.cursor()
 
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
     def selectdate(self):
+        conn = psycopg2.connect(self.db)
+        cur = conn.cursor()
         date_from = self.datfr[0]
         date_to = self.datto[0]
         if self.base == 1 or 4:
@@ -82,8 +84,8 @@ class Database(object):
             lessq = '<='
             moreq = ">="
             sign = ['MAX', 'MIN']
-        rowfrom = (self.cur.fetchone()[0])
-        rowto = (self.cur.fetchone()[0])-rowfrom
+        rowfrom = (cur.fetchone()[0])
+        rowto = (cur.fetchone()[0])-rowfrom
         if self.base == 4:
             range = "1"
             execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
@@ -101,20 +103,24 @@ class Database(object):
          AND "4"={6}'''.format(
          sign[1], range, self.table, moreq,
          date_to[2], date_to[1], date_to[0], )
-        self.cur.execute(selquery)
-        self.cur.execute(selquery_)
-        self.cur.execute(execall)
-        rows = self.cur.fetchall()
+        cur.execute(selquery)
+        cur.execute(selquery_)
+        cur.execute(execall)
+        rows = cur.fetchall()
+        conn.close()
         return rows
 
     def searchall(self):
+        conn = psycopg2.connect(self.db)
+        cur = conn.cursor()
         query = 'SELECT * FROM {0}'.format(self.table)
-        self.cur.execute(query)
-        rows = self.cur.fetchall()
+        cur.execute(query)
+        rows = cur.fetchall()
+        conn.close()
         return rows
 
-    def __del__(self):
-        self.conn.close()
+    # def __del__(self):
+    #     conn.close()
 
 
 class Dataframe(Database):
@@ -122,7 +128,7 @@ class Dataframe(Database):
     najczęstsze liczby, średnie i graf'''
 
     def __init__(self, request, num=3):
-        super().__init__(self, request, )
+        super().__init__(request)
         if self.all_data is True:
             query = 'SELECT * FROM %s' (self.table)
             par = ""
@@ -195,5 +201,5 @@ class Dataframe(Database):
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
 
-    def __del__(self):
-        super().__del__(self)
+#    def __del__(self):
+#        super().__del__(self)

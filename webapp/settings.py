@@ -98,6 +98,10 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
     },
+    'tertiary': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'testbase',
+    },
 }
 
 # Password validation
