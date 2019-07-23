@@ -53,13 +53,13 @@ class Database(object):
         fulldate = datetime.date.today()
         currday = str(fulldate.day)
         print('today is ' + currday)
-        self.db = "dbname={0} user={1} password={2}".format(
-         db_base, user, password)
+        # self.db = "database={0} user={1} host={2} password={3}".format(
+        # db_base, user, host, password)
         if currday == update_val:
             print('database up to date')
             pass
         else:
-            udb = Updatedb(user, password, host, port, db_base, self.db,)
+            udb = Updatedb(user, password, host, port, db_base, )
             udb
             print('database updated successfully')
             config.set('db_update', 'date', currday)
@@ -68,12 +68,13 @@ class Database(object):
             # kiedy nikt nie korzysta z aplikacji.
 
         # Lączenie z bazą danych...
-
+        self.conn = psycopg2.connect(
+         dbname=db_base, user=user, host=host, password=password, )
+        self.cur = self.conn.cursor()
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
     def selectdate(self):
-        conn = psycopg2.connect(self.db)
-        cur = conn.cursor()
+
         date_from = self.datfr[0]
         date_to = self.datto[0]
         if self.base == 1 or 4:

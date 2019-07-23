@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 class Updatedb(object):
     ''' Klasa aktualizująca bazę danych randomizera '''
 
-    def __init__(self):
+    def __init__(self, user, password, host, port, db_base, ):
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
@@ -22,42 +22,42 @@ class Updatedb(object):
         p = re.findall(r">(\d\d\d\d)<", a)
         url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'+str(p)
         lsource = str(soup.find_all('td'))
-        self.g1 = re.findall(
+        g1 = re.findall(
          r'''>(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>,
          <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<''',
          lsource)
 
-    def connect(self, user, password, host, port, db_base, db, ):
-        x = 0
+        x = 1
         gra = (' ', 'http://www.mbnet.com.pl/ml.txt',
                'http://www.mbnet.com.pl/dl.txt',
                'http://www.mbnet.com.pl/el.txt')
-        query = 'game{0}, engine,if_exists="replace",index=False'.format(x)
+        table = 'game' + str(x)
         db_ini = 'postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}'.format(
                   user, password, host, port, db_base, )
         engine = create_engine(db_ini)
+        conn = psycopg2.connect(
+         dbname=db_base, user=user, host=host, password=password, )
+        cur = conn.cursor()
+        print('Updating databases...')
         while x < 4:
-            x = x + 1
             df = pandas.read_csv(gra[x], header=None, sep='[., ]',
                                  engine='python')
-            df.to_sql(query)
-            conn = engine.raw_connection()
-            cur = self.conn.cursor()
-            self.conn.commit()
+            df.to_sql(table, engine, if_exists="replace", index=False)
+            print('updated db ' + str(x) + '...')
+            x = x + 1
 
-        conn = psycopg2.connect(db)
-        cur = conn.cursor()
         cur.execute(
          '''CREATE TABLE IF NOT EXISTS game4 ("1" INTEGER UNIQUE, "2" INTEGER,
          "3" INTEGER, "4" INTEGER, "5" INTEGER, "6" INTEGER, "7" INTEGER,
          "8" INTEGER, "9" INTEGER, "10" text)''')
-        cur.execute(
-         'CREATE UNIQUE INDEX IF NOT EXISTS idx_casenum ON game4 ("1")')
+        print('check 3')
         cur.executemany(
          '''INSERT INTO game4 ("1","2","3","4","5","6","7","8","9","10") VALUES
          (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT ("1") DO NOTHING''',
-         [(v) for v in self.g1])
-        self.conn.commit()
-
-    def __del__(self):
-        self.conn.close()
+         [(v) for v in g1])
+        cur.execute(
+         'CREATE UNIQUE INDEX IF NOT EXISTS idx_casenum ON game4 ("1")')
+        print('updated db ' + str(x) + '...')
+        conn.commit()
+        conn.close()
+        print('connection closed')

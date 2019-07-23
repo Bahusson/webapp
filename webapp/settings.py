@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'ajax',
+    'ajax',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'webappdb',
         'USER': 'postgres',
         'PASSWORD': 'Mu3kata!owieC',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '5432',
     },
     'secondary': {
@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': 'randombase',
         'USER': 'jackk',
         'PASSWORD': 'Mordega2',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '5432',
     },
     'tertiary': {
