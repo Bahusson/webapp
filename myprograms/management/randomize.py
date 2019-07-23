@@ -18,21 +18,18 @@ class Database(object):
     def __init__(self, request):
         if request.is_ajax():  # Czy można bez If request is ajax?
             # Albo wyrzucić request is ajax do views?
-            def intistrue(x):
-                bool(int(x == 1))
 
             self.base = int(request.POST.get('gamesel'))
+            self.all_data = int(request.POST['dateall'])
             self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['datefrom'])
-
             self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['dateto'])
-            self.all_data = intistrue(request.POST['dateall'])
-            self.extreme_nums = intistrue(request.POST['numhilow'])
-            self.no_rolls = intistrue(request.POST['norolls'])
+            self.extreme_nums = int(request.POST['numhilow'])
+            self.no_rolls = int(request.POST['norolls'])
             self.mode = int(request.POST['mostoften'])
-            self.av_score = intistrue(request.POST['avgscores'])
-            self.gen_graph = intistrue(request.POST['graphgen'])
+            self.av_score = int(request.POST['avgscores'])
+            self.gen_graph = int(request.POST['graphgen'])
             self.table = "game" + str(self.base)
 
         # instantiate
@@ -71,12 +68,16 @@ class Database(object):
         self.conn = psycopg2.connect(
          dbname=db_base, user=user, host=host, password=password, )
         self.cur = self.conn.cursor()
+        # self.rowfrom = self.cur.fetchone()[0]
+        # self.rowto = self.cur.fetchone()[0]-self.rowfrom
+
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
     def selectdate(self):
-
         date_from = self.datfr[0]
         date_to = self.datto[0]
+        self.rowto = ''  # Empty string bo go muszę zadeklarować przed użyciem
+        self.rowfrom = ''  # inaczej się robi bałagan. Nie mam lepszego pomysłu
         if self.base == 1 or 4:
             lessq = '='
             moreq = '='
@@ -85,43 +86,41 @@ class Database(object):
             lessq = '<='
             moreq = ">="
             sign = ['MAX', 'MIN']
-        rowfrom = (cur.fetchone()[0])
-        rowto = (cur.fetchone()[0])-rowfrom
         if self.base == 4:
             range = "1"
             execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
             FROM {0} LIMIT {1} OFFSET {2}'''.format(
-             self.table, rowto, rowfrom, )
+             self.table, self.rowto, self.rowfrom, )
         else:
             range = "0"
-            execall = 'SELECT * FROM {0} LIMIT {1} OFFSET {2}'.format(
-             self.table, rowto, rowfrom, )
-        selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
-         AND "4"={6}'''.format(
+            execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
+             self.table, self.rowto, self.rowfrom, )
+        selquery = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3" = {5}
+         AND "4" = {6}'''.format(
          sign[0], range, self.table, lessq,
          date_from[2], date_from[1], date_from[0], )
-        selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3"={5}
-         AND "4"={6}'''.format(
+        selquery_ = '''SELECT {0}({1}) FROM {2} WHERE "2" {3} {4} AND "3" = {5}
+         AND "4" = {6}'''.format(
          sign[1], range, self.table, moreq,
          date_to[2], date_to[1], date_to[0], )
-        cur.execute(selquery)
-        cur.execute(selquery_)
-        cur.execute(execall)
-        rows = cur.fetchall()
-        conn.close()
+        self.cur.execute(selquery)
+        self.rowfrom = self.cur.fetchone()[0]
+        print(self.rowfrom)
+        self.cur.execute(selquery_)
+        self.rowto = self.cur.fetchone()[0] - self.rowfrom
+        print(self.rowto)
+        self.cur.execute(execall)
+        rows = self.cur.fetchall()
         return rows
 
     def searchall(self):
-        conn = psycopg2.connect(self.db)
-        cur = conn.cursor()
-        query = 'SELECT * FROM {0}'.format(self.table)
-        cur.execute(query)
-        rows = cur.fetchall()
-        conn.close()
+        query = '''SELECT * FROM {0}'''.format(self.table)
+        self.cur.execute(query)
+        rows = self.cur.fetchall()
         return rows
 
-    # def __del__(self):
-    #     conn.close()
+    def __del__(self):
+        self.conn.close()
 
 
 class Dataframe(Database):
@@ -130,15 +129,17 @@ class Dataframe(Database):
 
     def __init__(self, request, num=3):
         super().__init__(request)
-        if self.all_data is True:
-            query = 'SELECT * FROM %s' (self.table)
-            par = ""
+        if self.all_data == 1:
+            query = '''SELECT * FROM {0}'''.format(self.table)
+            # par = ""
         else:
-            query = 'SELECT * FROM game1 LIMIT %s OFFSET %s'
-            par = "[rowto, rowfrom],"
-            df = pandas.read_sql_query(
-             sql=(query), con=psycopg2.connect(self.db),
-             coerce_float=False, parse_dates=None, params=par, chunksize=None)
+            super().selectdate()
+            query = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
+                    self.table, self.rowto, self.rowfrom)
+            # par = "[self.rowto, self.rowfrom],"
+        df = pandas.read_sql_query(
+         sql=(query), con=self.conn,
+         coerce_float=False, parse_dates=None, chunksize=None)
 
         if self.base == 4:
             df1 = df.drop(df.columns[0:4], 1)
@@ -193,14 +194,14 @@ class Dataframe(Database):
     #            Means=df5.index,
     #            Freqs=df5.values
     #            ))
-        if self.av_score is True:
+        if self.av_score == 1:
             self.average = b
         else:
             self.average = "Nie wybrano generowania średnich"
 
-        if self.gen_graph is True:
+        if self.gen_graph == 1:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
 
-#    def __del__(self):
-#        super().__del__(self)
+    def __del__(self):
+        super().__del__()

@@ -56,7 +56,7 @@ class Updatedb(object):
          (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT ("1") DO NOTHING''',
          [(v) for v in g1])
         cur.execute(
-         'CREATE UNIQUE INDEX IF NOT EXISTS idx_casenum ON game4 ("1")')
+         '''CREATE UNIQUE INDEX IF NOT EXISTS idx_casenum ON game4 ("1")''')
         print('updated db ' + str(x) + '...')
         conn.commit()
         conn.close()
