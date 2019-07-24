@@ -3,6 +3,7 @@ import psycopg2
 import pandas
 # from bokeh.plotting import figure, output_file, show
 # from bokeh.models import HoverTool, ColumnDataSource
+import os
 import re
 import configparser
 import datetime
@@ -23,8 +24,10 @@ class Database(object):
             self.all_data = int(request.POST['dateall'])
             self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['datefrom'])
+            print('datfr = ' + str(self.datfr))
             self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['dateto'])
+            print('datto = ' + str(self.datto))
             self.extreme_nums = int(request.POST['numhilow'])
             self.no_rolls = int(request.POST['norolls'])
             self.mode = int(request.POST['mostoften'])
@@ -60,6 +63,10 @@ class Database(object):
             udb
             print('database updated successfully')
             config.set('db_update', 'date', currday)
+            with open("database.ini.new", "w") as fh:
+                config.write(fh)
+            os.rename("database.ini", "database.ini~")
+            os.rename("database.ini.new", "database.ini")
             print('current date set to:' + currday)
             # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
             # kiedy nikt nie korzysta z aplikacji.
@@ -75,7 +82,9 @@ class Database(object):
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
     def selectdate(self):
         date_from = self.datfr[0]
+        print('date from = ' + str(date_from))
         date_to = self.datto[0]
+        print('date to = ' + str(date_to))
         self.rowto = ''  # Empty string bo go muszę zadeklarować przed użyciem
         self.rowfrom = ''  # inaczej się robi bałagan. Nie mam lepszego pomysłu
         if self.base == 1 or 4:
@@ -105,10 +114,10 @@ class Database(object):
          date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.rowfrom = self.cur.fetchone()[0]
-        print(self.rowfrom)
+        print('rowfrom = ' + str(self.rowfrom))
         self.cur.execute(selquery_)
         self.rowto = self.cur.fetchone()[0] - self.rowfrom
-        print(self.rowto)
+        print('rowfrom = ' + str(self.rowto))
         self.cur.execute(execall)
         rows = self.cur.fetchall()
         return rows
