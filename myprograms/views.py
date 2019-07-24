@@ -38,6 +38,8 @@ def pybrun(request):
         r_db = Database(request)
         r_df = Dataframe(request)
         extr = ''
+        mode = ''
+        dtfr = ''
 
         if r_db.no_rolls == 1:
             rows = ''

@@ -204,4 +204,5 @@ class Dataframe(Database):
             pass
 
     def __del__(self):
-        super().__del__()
+        self.conn.close()
+        # super().__del__()
