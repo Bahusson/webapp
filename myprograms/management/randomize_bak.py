@@ -86,43 +86,40 @@ class Database(object):
         date_to = self.datto[0]
         print('date to = ' + str(date_to))
         print('base is: ' + str(self.base))
-
-        if self.base == 1:
-            range = "0"
-            lessq = '='
-            moreq = '='
-            sign = ['MIN', 'MAX']
-        elif self.base == 4:
-            range = "1"
+        self.rowto = ''  # Empty string bo go muszę zadeklarować przed użyciem
+        self.rowfrom = ''  # inaczej się robi bałagan. Nie mam lepszego pomysłu
+        print('datefrom2: ' + date_from[2] + 'datefrom1: ' + date_from[1] + ' datefrom0: ' + date_from[0])
+        if self.base == 1 or 4:
             lessq = '='
             moreq = '='
             sign = ['MIN', 'MAX']
         else:
-            range = "0"
-            lessq = '<='
+            lessq = '=<'
             moreq = '>='
             sign = ['MAX', 'MIN']
-        selquery = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4}
-         AND "3" = {5} AND "4" = {6}'''.format(
-          sign[0], range, self.table, lessq,
-          date_from[2], date_from[1], date_from[0], )
-        selquery_ = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4}
-         AND "3" = {5} AND "4" = {6}'''.format(
-          sign[1], range, self.table, moreq,
-          date_to[2], date_to[1], date_to[0], )
+        if self.base == 4:
+            range = "1"
+            execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
+            FROM {0} LIMIT {1} OFFSET {2}'''.format(
+             self.table, self.rowto, self.rowfrom, )
+        else:
+            range = "0"
+            execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
+             self.table, self.rowto, self.rowfrom, )
+        selquery = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4} AND "3" = {5}
+         AND "4" = {6}'''.format(
+         sign[0], range, self.table, lessq,
+         date_from[2], date_from[1], date_from[0], )
+        selquery_ = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4} AND "3" = {5}
+         AND "4" = {6}'''.format(
+         sign[1], range, self.table, moreq,
+         date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.rowfrom = self.cur.fetchone()[0]
         print('rowfrom = ' + str(self.rowfrom))
         self.cur.execute(selquery_)
         self.rowto = self.cur.fetchone()[0] - self.rowfrom
         print('rowto = ' + str(self.rowto))
-        if self.base == 4:
-            execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
-             FROM {0} LIMIT {1} OFFSET {2}'''.format(
-              self.table, self.rowto, self.rowfrom, )
-        else:
-            execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
-             self.table, self.rowto, self.rowfrom, )
         self.cur.execute(execall)
         rows = self.cur.fetchall()
         return rows

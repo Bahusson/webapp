@@ -36,10 +36,10 @@ def progpage(request, place):
 def pybrun(request):
     if request.method == 'POST':
         r_db = Database(request)
-        r_df = Dataframe(request)
-        extr = ''
-        mode = ''
-        dtfr = ''
+        #r_df = Dataframe(request)
+        #extr = ''
+        #mode = ''
+        #dtfr = ''
 
         if r_db.no_rolls == 1:
             rows = ''
@@ -48,18 +48,18 @@ def pybrun(request):
                 rows = r_db.searchall()
             else:
                 rows = r_db.selectdate()
-        if r_db.extreme_nums or r_db.mode == 1:
-            ext = r_df.extremes()
-            extr = getattr(ext, 'extr', '')
-            mode = getattr(ext, 'modals', '')
-        if r_db.av_score == 1:  # OR r_db.gen_graph //
-            dfr = r_df.makedf()
-            dtfr = getattr(dfr, 'average', '')
+    #    if r_db.extreme_nums or r_db.mode == 1:
+    #        ext = r_df.extremes()
+    #        extr = getattr(ext, 'extr', '')
+    #        mode = getattr(ext, 'modals', '')
+    #    if r_db.av_score == 1:  # OR r_db.gen_graph //
+    #        dfr = r_df.makedf()
+    #        dtfr = getattr(dfr, 'average', '')
         responsedata = {
             'rows': rows,
-            'extremes': extr,
-            'modals': mode,
-            'average': dtfr
+    #        'extremes': extr,
+    #        'modals': mode,
+    #        'average': dtfr
         }
         return JsonResponse(responsedata)
     else:

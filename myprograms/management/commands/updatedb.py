@@ -60,7 +60,7 @@ class Updatedb(object):
          '''CREATE UNIQUE INDEX IF NOT EXISTS idx_casenum ON game4 ("1")''')
         cur.executemany(
          '''INSERT INTO game4 ("1","2","3","4","5","6","7","8","9","10") VALUES
-         (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT ("1") DO NOTHING''',
+         (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT ("1") REPLACE''',
          [(v) for v in g1])
         print('updated db ' + str(x) + '...')
         conn.commit()
