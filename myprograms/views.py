@@ -35,7 +35,6 @@ def progpage(request, place):
 # Strona Randomizera. Podobne idą do innych programów.
 def pybrun(request):
     if request.method == 'POST':
-        r_db = Database(request)
         r_df = Dataframe(request)
         ext = r_df.extremes()
         extr = ext.extr
@@ -43,13 +42,13 @@ def pybrun(request):
         mode = getattr(ext, 'modals', '')
         dfr = r_df.makedf()
         dtfr = getattr(dfr, 'average', '')
-        if r_db.no_rolls == 1:
+        if r_df.no_rolls == 1:
             rows = ''
         else:
-            if r_db.all_data == 1:
-                rows = r_db.searchall()
+            if r_df.all_data == 1:
+                rows = r_df.searchall()
             else:
-                rows = r_db.selectdate()
+                rows = r_df.returndate()
         responsedata = {
             'rows': rows,
             'extremes': extr,

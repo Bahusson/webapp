@@ -81,18 +81,12 @@ class Database(object):
         else:
             self.execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
              self.table, self.rowto, self.rowfrom, )
-        self.cur.execute(self.execall)
-        rows = self.cur.fetchall()
-        return rows
 
-    def searchall(self):
+    def selectall(self):
         self.searchquery = '''SELECT * FROM {0}'''.format(self.table)
-        self.cur.execute(self.searchquery)
-        rows = self.cur.fetchall()
-        return rows
 
-    def __del__(self):
-        self.conn.close()
+#    def __del__(self):
+#        self.conn.close()
 
 
 class Dataframe(Database):
@@ -102,7 +96,7 @@ class Dataframe(Database):
     def __init__(self, request, num=3):
         super().__init__(request)
         if self.all_data == 1:
-            super().searchall()
+            super().selectall()
             query = self.searchquery
         else:
             super().selectdate()
@@ -117,6 +111,18 @@ class Dataframe(Database):
             self.df1 = df1.drop(df.columns[-1], 1)
         else:
             self.df1 = df.drop(df.columns[0:num], 1)
+
+    def searchall(self):
+        super().selectall()
+        self.cur.execute(self.searchquery)
+        rows = self.cur.fetchall()
+        return rows
+
+    def returndate(self):
+        super().selectdate()
+        self.cur.execute(self.execall)
+        rows = self.cur.fetchall()
+        return rows
 
     def extremes(self, num=5):
         if self.base != 4:
