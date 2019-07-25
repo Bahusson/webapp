@@ -3,10 +3,7 @@ import psycopg2
 import pandas
 # from bokeh.plotting import figure, output_file, show
 # from bokeh.models import HoverTool, ColumnDataSource
-import os
 import re
-import configparser
-import datetime
 from .commands.updatedb import Updatedb
 
 
@@ -35,45 +32,11 @@ class Database(object):
             self.gen_graph = int(request.POST['graphgen'])
             self.table = "game" + str(self.base)
 
-        # instantiate
-        # formułka konfiguracji funkcji odczytu baz danych.
-        config = configparser.ConfigParser()
-        # parse existing file
-        config.read('database.ini')
-        # read values from a section
-        host = config.get('db_setup', 'host')
-        print(host)
-        port = config.get('db_setup', 'port')
-        db_base = config.get('db_setup', 'db_base')
-        user = config.get('db_setup', 'user')
-        password = config.get('db_setup', 'password')
-        update_val = config.get('db_update', 'date')
-
-        # Updates database if it's the first visit that day.
-        fulldate = datetime.date.today()
-        currday = str(fulldate.day)
-        print('today is ' + currday)
-        # self.db = "database={0} user={1} host={2} password={3}".format(
-        # db_base, user, host, password)
-        if currday == update_val:
-            print('database up to date')
-            pass
-        else:
-            udb = Updatedb(user, password, host, port, db_base, )
-            udb
-            print('database updated successfully')
-            config.set('db_update', 'date', currday)
-            with open("database.ini.new", "w") as fh:
-                config.write(fh)
-            os.rename("database.ini", "database.ini~")
-            os.rename("database.ini.new", "database.ini")
-            print('current date set to:' + currday)
-            # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
-            # kiedy nikt nie korzysta z aplikacji.
-
+        udb = Updatedb()
         # Lączenie z bazą danych...
         self.conn = psycopg2.connect(
-         dbname=db_base, user=user, host=host, password=password, )
+         dbname=udb.db_base, user=udb.user,
+         host=udb.host, password=udb.password, )
         self.cur = self.conn.cursor()
         # self.rowfrom = self.cur.fetchone()[0]
         # self.rowto = self.cur.fetchone()[0]-self.rowfrom
@@ -86,22 +49,17 @@ class Database(object):
         date_to = self.datto[0]
         print('date to = ' + str(date_to))
         print('base is: ' + str(self.base))
+        range = "0"
+        lessq = '<='
+        moreq = '>='
+        sign = ['MAX', 'MIN']
+        if self.base == 1 or 4:
+            lessq = '>='
+            moreq = '<='
+            sign = ['MIN', 'MAX']
+            if self.base == 4:
+                range = "1"
 
-        if self.base == 1:
-            range = "0"
-            lessq = '='
-            moreq = '='
-            sign = ['MIN', 'MAX']
-        elif self.base == 4:
-            range = "1"
-            lessq = '='
-            moreq = '='
-            sign = ['MIN', 'MAX']
-        else:
-            range = "0"
-            lessq = '<='
-            moreq = '>='
-            sign = ['MAX', 'MIN']
         selquery = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4}
          AND "3" = {5} AND "4" = {6}'''.format(
           sign[0], range, self.table, lessq,

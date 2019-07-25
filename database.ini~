@@ -6,4 +6,5 @@ user = postgres
 password = Mu3kata!owieC
 
 [db_update]
-date = 23
+date = 24
+
