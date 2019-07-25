@@ -41,19 +41,17 @@ def pybrun(request):
         else:
             if r_df.all_data == 1:
                 rows = r_df.searchall()
+                print(rows)
             else:
                 rows = r_df.returndate()
-        ext = r_df.extremes()
-        #extr = ext.extr
-        # extr = getattr(ext, 'extr', '')
-        #mode = getattr(extr, 'modals', '')
+        extr = r_df.extremes()
+        mode = r_df.modals()
         dfr = r_df.makedf()
-        #dtfr = getattr(dfr, 'average', '')
         responsedata = {
             'rows': rows,
-        #    'extremes': extr,
-        #    'modals': mode,
-        #    'average': dtfr
+            'extremes': extr,
+            'modals': mode,
+            'average': dfr
         }
         return JsonResponse(responsedata)
     else:

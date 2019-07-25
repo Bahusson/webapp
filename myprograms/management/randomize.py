@@ -122,39 +122,40 @@ class Dataframe(Database):
         rows = self.cur.fetchall()
         return rows
 
-    def extremes(self, num=5):
+    def preparedf(self):
         if self.base != 4:
-            self.df1 = self.df.drop(self.df.columns[0:num], 1)
-        # print(self.df1)
+            self.df1 = self.df.drop(self.df.columns[0:5], 1)
         df2 = self.df1.apply(pandas.value_counts).fillna(0)
         df2.loc[:, 'total'] = df2.sum(axis=1)
         df3 = df2
-        nplus = df3.sort_values(
+        self.nplus = df3.sort_values(
          ['total'], ascending=[False])[:1].index.values
-        nminus = df3.sort_values(
+        self.nminus = df3.sort_values(
          ['total'], ascending=[False])[-1:].index.values
-        nums = df3.sort_values(
+        self.nums = df3.sort_values(
          ['total'], ascending=[False])[:self.mode].index.values
 
+    def extremes(self):
+        self.preparedf()
         if self.extreme_nums is 1:
-            self.extr = "Max: " + str(nplus) + "  Min: " + str(nminus)
-            # return "Max: " + str(nplus) + "  Min: " + str(nminus)
+            extr = "Max: " + str(self.nplus) + "  Min: " + str(self.nminus)
+            return extr
         else:
-            self.extr = "Nie wybrano liczb skrajnych"
-            # return "Nie wybrano liczb skrajnych"
-        print(self.extr)
+            extr = "Nie wybrano liczb skrajnych"
+            return extr
 
+    def modals(self):
+        self.preparedf()
         if int(self.mode) > 0:
-            self.modals = "Od najczęstszej: " + str(nums)
-            # yield "Od najczęstszej: " + str(nums)
+            modals = "Od najczęstszej: " + str(self.nums)
+            return modals
         else:
-            self.modals = "Nie wybrano najczęstszych liczb"
-            # yield "Nie wybrano najczęstszych liczb"
-        print(self.modals)
+            modals = "Nie wybrano najczęstszych liczb"
+            return modals
 
-    def makedf(self, num=3):
+    def makedf(self):
         if self.base != 4:
-            self.df1 = self.df.drop(self.df.columns[0:num], 1)
+            self.df1 = self.df.drop(self.df.columns[0:3], 1)
         df4 = self.df1.T
         df5 = df4.mean().round(0).value_counts()
         slist = list()
@@ -168,7 +169,6 @@ class Dataframe(Database):
         zipped = zip(dfindex, slist, dfvalue, nrlist)
         a = list(zipped)
         ahead = ["Średnia" + " / " + "Częstotliwość" + "\n"]
-        # b = ahead + a
         average = ahead + a
     #    source = ColumnDataSource(
     #        data=dict(
@@ -176,17 +176,17 @@ class Dataframe(Database):
     #            Freqs=df5.values
     #            ))
         if self.av_score == 1:
-            self.average = average
+            # self.average = average
             # return self.average
-            # yield average
+            return average
         else:
-            self.average = "Nie wybrano generowania średnich"
-            # yield "Nie wybrano generowania średnich"
-        print(self.average)
+            average = "Nie wybrano generowania średnich"
+            return average #"Nie wybrano generowania średnich"
+        #print(self.average)
+        #print(type(self.average))
         if self.gen_graph == 1:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
 
     def __del__(self):
         self.conn.close()
-        # super().__del__()
