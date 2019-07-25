@@ -75,8 +75,8 @@ class Database(object):
         self.rowto = self.cur.fetchone()[0] - self.rowfrom
         print('rowto = ' + str(self.rowto))
         if self.base == 4:
-            execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9", "10"
-             FROM {0} LIMIT {1} OFFSET {2}'''.format(
+            self.execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9",
+             "10" FROM {0} LIMIT {1} OFFSET {2}'''.format(
               self.table, self.rowto, self.rowfrom, )
         else:
             self.execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
@@ -102,7 +102,7 @@ class Dataframe(Database):
     def __init__(self, request, num=3):
         super().__init__(request)
         if self.all_data == 1:
-            super.searchall()
+            super().searchall()
             query = self.searchquery
         else:
             super().selectdate()
@@ -133,18 +133,18 @@ class Dataframe(Database):
          ['total'], ascending=[False])[:self.mode].index.values
 
         if self.extreme_nums is True:
-            # self.extr = "Max: " + str(nplus) + "  Min: " + str(nminus)
-            yield "Max: " + str(nplus) + "  Min: " + str(nminus)
+            self.extr = "Max: " + str(nplus) + "  Min: " + str(nminus)
+            # yield "Max: " + str(nplus) + "  Min: " + str(nminus)
         else:
-            # self.extr = "Nie wybrano liczb skrajnych"
-            yield "Nie wybrano liczb skrajnych"
+            self.extr = "Nie wybrano liczb skrajnych"
+            # yield "Nie wybrano liczb skrajnych"
 
         if int(self.mode) > 0:
-            # self.modals = "Od najczęstszej: " + str(nums)
-            yield "Od najczęstszej: " + str(nums)
+            self.modals = "Od najczęstszej: " + str(nums)
+            # yield "Od najczęstszej: " + str(nums)
         else:
-            # self.modals = "Nie wybrano najczęstszych liczb"
-            yield "Nie wybrano najczęstszych liczb"
+            self.modals = "Nie wybrano najczęstszych liczb"
+            # yield "Nie wybrano najczęstszych liczb"
 
     def makedf(self, num=3):
         if self.base != 4:
