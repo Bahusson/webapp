@@ -85,15 +85,15 @@ class Database(object):
     def selectall(self):
         self.searchquery = '''SELECT * FROM {0}'''.format(self.table)
 
-#    def __del__(self):
-#        self.conn.close()
+    def __del__(self):
+        self.conn.close()
 
 
 class Dataframe(Database):
     ''' Generuje największą i najmniejszą liczbę,
     najczęstsze liczby, średnie i graf'''
 
-    def __init__(self, request, num=3):
+    def __init__(self, request):
         super().__init__(request)
         if self.all_data == 1:
             super().selectall()
@@ -102,15 +102,13 @@ class Dataframe(Database):
             super().selectdate()
             query = self.execall
 
-        df = pandas.read_sql_query(
+        self.df = pandas.read_sql_query(
          sql=(query), con=self.conn,
          coerce_float=False, parse_dates=None, chunksize=None)
 
         if self.base == 4:
-            df1 = df.drop(df.columns[0:4], 1)
-            self.df1 = df1.drop(df.columns[-1], 1)
-        else:
-            self.df1 = df.drop(df.columns[0:num], 1)
+            self.df1 = self.df.drop(self.df.columns[0:4], 1)
+            self.df1 = self.df1.drop(self.df.columns[-1], 1)
 
     def searchall(self):
         super().selectall()
@@ -126,11 +124,11 @@ class Dataframe(Database):
 
     def extremes(self, num=5):
         if self.base != 4:
-            self.df1(num)
+            self.df1 = self.df.drop(self.df.columns[0:num], 1)
+        # print(self.df1)
         df2 = self.df1.apply(pandas.value_counts).fillna(0)
         df2.loc[:, 'total'] = df2.sum(axis=1)
         df3 = df2
-
         nplus = df3.sort_values(
          ['total'], ascending=[False])[:1].index.values
         nminus = df3.sort_values(
@@ -138,12 +136,13 @@ class Dataframe(Database):
         nums = df3.sort_values(
          ['total'], ascending=[False])[:self.mode].index.values
 
-        if self.extreme_nums is True:
+        if self.extreme_nums is 1:
             self.extr = "Max: " + str(nplus) + "  Min: " + str(nminus)
-            # yield "Max: " + str(nplus) + "  Min: " + str(nminus)
+            # return "Max: " + str(nplus) + "  Min: " + str(nminus)
         else:
             self.extr = "Nie wybrano liczb skrajnych"
-            # yield "Nie wybrano liczb skrajnych"
+            # return "Nie wybrano liczb skrajnych"
+        print(self.extr)
 
         if int(self.mode) > 0:
             self.modals = "Od najczęstszej: " + str(nums)
@@ -151,10 +150,11 @@ class Dataframe(Database):
         else:
             self.modals = "Nie wybrano najczęstszych liczb"
             # yield "Nie wybrano najczęstszych liczb"
+        print(self.modals)
 
     def makedf(self, num=3):
         if self.base != 4:
-            self.df1(num)
+            self.df1 = self.df.drop(self.df.columns[0:num], 1)
         df4 = self.df1.T
         df5 = df4.mean().round(0).value_counts()
         slist = list()
@@ -176,12 +176,13 @@ class Dataframe(Database):
     #            Freqs=df5.values
     #            ))
         if self.av_score == 1:
-            # self.average = b
+            self.average = average
             # return self.average
-            yield average
+            # yield average
         else:
-            yield "Nie wybrano generowania średnich"
-
+            self.average = "Nie wybrano generowania średnich"
+            # yield "Nie wybrano generowania średnich"
+        print(self.average)
         if self.gen_graph == 1:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass

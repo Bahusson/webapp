@@ -6,7 +6,7 @@ from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import Showroom
-from .management.randomize import Database, Dataframe
+from .management.randomize import Dataframe
 from django.http import JsonResponse
 
 
@@ -36,12 +36,6 @@ def progpage(request, place):
 def pybrun(request):
     if request.method == 'POST':
         r_df = Dataframe(request)
-        ext = r_df.extremes()
-        extr = ext.extr
-        # extr = getattr(ext, 'extr', '')
-        mode = getattr(ext, 'modals', '')
-        dfr = r_df.makedf()
-        dtfr = getattr(dfr, 'average', '')
         if r_df.no_rolls == 1:
             rows = ''
         else:
@@ -49,11 +43,17 @@ def pybrun(request):
                 rows = r_df.searchall()
             else:
                 rows = r_df.returndate()
+        ext = r_df.extremes()
+        #extr = ext.extr
+        # extr = getattr(ext, 'extr', '')
+        #mode = getattr(extr, 'modals', '')
+        dfr = r_df.makedf()
+        #dtfr = getattr(dfr, 'average', '')
         responsedata = {
             'rows': rows,
-            'extremes': extr,
-            'modals': mode,
-            'average': dtfr
+        #    'extremes': extr,
+        #    'modals': mode,
+        #    'average': dtfr
         }
         return JsonResponse(responsedata)
     else:
