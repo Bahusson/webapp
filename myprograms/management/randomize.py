@@ -21,10 +21,8 @@ class Database(object):
             self.all_data = int(request.POST['dateall'])
             self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['datefrom'])
-            print('datfr = ' + str(self.datfr))
             self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                     request.POST['dateto'])
-            print('datto = ' + str(self.datto))
             self.extreme_nums = int(request.POST['numhilow'])
             self.no_rolls = int(request.POST['norolls'])
             self.mode = int(request.POST['mostoften'])
@@ -38,17 +36,12 @@ class Database(object):
          dbname=udb.db_base, user=udb.user,
          host=udb.host, password=udb.password, )
         self.cur = self.conn.cursor()
-        # self.rowfrom = self.cur.fetchone()[0]
-        # self.rowto = self.cur.fetchone()[0]-self.rowfrom
 
     # Select piece of database queries by date function
     # Zaznacza wycinek bazy danych ograniczony wyborem użytkownika.
     def selectdate(self):
         date_from = self.datfr[0]
-        print('date from = ' + str(date_from))
         date_to = self.datto[0]
-        print('date to = ' + str(date_to))
-        print('base is: ' + str(self.base))
         range = "0"
         lessq = '<='
         moreq = '>='
@@ -70,10 +63,8 @@ class Database(object):
           date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.rowfrom = self.cur.fetchone()[0]
-        print('rowfrom = ' + str(self.rowfrom))
         self.cur.execute(selquery_)
         self.rowto = self.cur.fetchone()[0] - self.rowfrom
-        print('rowto = ' + str(self.rowto))
         if self.base == 4:
             self.execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9",
              "10" FROM {0} LIMIT {1} OFFSET {2}'''.format(
@@ -174,17 +165,15 @@ class Dataframe(Database):
     #            Freqs=df5.values
     #            ))
         if self.av_score == 1:
-            # self.average = average
-            # return self.average
+
             return average
         else:
             average = "Nie wybrano generowania średnich"
             return average #"Nie wybrano generowania średnich"
-        #print(self.average)
-        #print(type(self.average))
         if self.gen_graph == 1:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
 
     def __del__(self):
-        self.conn.close()
+        super().__del__()
+        #self.conn.close()

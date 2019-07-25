@@ -10,6 +10,15 @@ import datetime
 import os
 
 
+def gotolast(ctx):
+    url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
+    html = urllib.request.urlopen(url, context=ctx).read()
+    soup = BeautifulSoup(html, 'html.parser')
+    a = str(soup.find_all('td'))
+    p = re.findall(r">(\d\d\d\d)<", a)
+    return(p[-1])
+
+
 class Updatedb(object):
     ''' Klasa aktualizująca bazę danych randomizera,
     współpracuje z database.ini przy pomocy configparsera.'''
@@ -30,7 +39,8 @@ class Updatedb(object):
 
         # Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
-        currday = str(fulldate.day)
+        #currday = str(fulldate.day)
+        currday = str(fulldate)
         print('today is ' + currday)
         # self.db = "database={0} user={1} host={2} password={3}".format(
         # db_base, user, host, password)
@@ -44,17 +54,17 @@ class Updatedb(object):
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
 
-            url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
+            # Funkcja znajduje zawsze ostatnią stronę wyników.
+            rl = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
+            url = rl + str(gotolast(ctx))
             html = urllib.request.urlopen(url, context=ctx).read()
             soup = BeautifulSoup(html, 'html.parser')
-            a = str(soup.find_all('td'))
-            p = re.findall(r">(\d\d\d\d)<", a)
-            url = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'+str(p)
             lsource = str(soup.find_all('td'))
             g1 = re.findall(
-             r'''>(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>,
-             <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<''',
+             r">(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>," +
+             " <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<",
              lsource)
+            print(g1)
 
             x = 1
             gra = (' ', 'http://www.mbnet.com.pl/ml.txt',
@@ -78,8 +88,8 @@ class Updatedb(object):
             print('updated dfs')
 
             conn = psycopg2.connect(
-             dbname=self.db_base, user=self.user, host=self.host,
-             password=self.password, )
+             dbname=self.db_base, user=self.user,
+             host=self.host, password=self.password,)
             print('connected to db4')
             cur = conn.cursor()
             cur.execute(
@@ -92,8 +102,8 @@ class Updatedb(object):
             cur.executemany(
              '''INSERT INTO game4 ("1","2","3","4","5","6","7","8","9","10")
              VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT ("1")
-             REPLACE''', [(v) for v in g1])
-            print('updated db ' + str(x) + '...')
+             Do NOTHING''', [(v) for v in g1])
+            print('updated db 4...')
             conn.commit()
             conn.close()
             print('connection closed')

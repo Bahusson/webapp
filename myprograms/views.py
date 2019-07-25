@@ -41,7 +41,6 @@ def pybrun(request):
         else:
             if r_df.all_data == 1:
                 rows = r_df.searchall()
-                print(rows)
             else:
                 rows = r_df.returndate()
         extr = r_df.extremes()
