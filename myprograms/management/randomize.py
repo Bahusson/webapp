@@ -136,22 +136,20 @@ class Dataframe(Database):
          ['total'], ascending=[False])[:self.mode].index.values
 
     def extremes(self):
-        self.preparedf()
         if self.extreme_nums is 1:
+            self.preparedf()
             extr = "Max: " + str(self.nplus) + "  Min: " + str(self.nminus)
             return extr
         else:
-            extr = "Nie wybrano liczb skrajnych"
-            return extr
+            return "Nie wybrano liczb skrajnych"
 
     def modals(self):
-        self.preparedf()
         if int(self.mode) > 0:
+            self.preparedf()
             modals = "Od najczęstszej: " + str(self.nums)
             return modals
         else:
-            modals = "Nie wybrano najczęstszych liczb"
-            return modals
+            return "Nie wybrano najczęstszych liczb"
 
     def makedf(self):
         if self.base != 4:

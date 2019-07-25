@@ -48,10 +48,10 @@ def pybrun(request):
         mode = r_df.modals()
         dfr = r_df.makedf()
         responsedata = {
-            'rows': rows,
             'extremes': extr,
             'modals': mode,
-            'average': dfr
+            'average': dfr,
+            'rows': rows,
         }
         return JsonResponse(responsedata)
     else:
