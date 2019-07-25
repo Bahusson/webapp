@@ -79,15 +79,15 @@ class Database(object):
              FROM {0} LIMIT {1} OFFSET {2}'''.format(
               self.table, self.rowto, self.rowfrom, )
         else:
-            execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
+            self.execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
              self.table, self.rowto, self.rowfrom, )
-        self.cur.execute(execall)
+        self.cur.execute(self.execall)
         rows = self.cur.fetchall()
         return rows
 
     def searchall(self):
-        query = '''SELECT * FROM {0}'''.format(self.table)
-        self.cur.execute(query)
+        self.searchquery = '''SELECT * FROM {0}'''.format(self.table)
+        self.cur.execute(self.searchquery)
         rows = self.cur.fetchall()
         return rows
 
@@ -102,13 +102,12 @@ class Dataframe(Database):
     def __init__(self, request, num=3):
         super().__init__(request)
         if self.all_data == 1:
-            query = '''SELECT * FROM {0}'''.format(self.table)
-            # par = ""
+            super.searchall()
+            query = self.searchquery
         else:
             super().selectdate()
-            query = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
-                    self.table, self.rowto, self.rowfrom)
-            # par = "[self.rowto, self.rowfrom],"
+            query = self.execall
+
         df = pandas.read_sql_query(
          sql=(query), con=self.conn,
          coerce_float=False, parse_dates=None, chunksize=None)
