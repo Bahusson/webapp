@@ -7,5 +7,4 @@ urlpatterns = [
     path('pybrun/', views.pybrun, name='pybrun'),
     path('roll/', views.roll, name='roll'),
     path('launchme/<int:place>/', views.launchme, name='launchme')
-    # path('myprograms/roll/', views.roll, name='roll'),
 ]

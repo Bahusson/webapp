@@ -183,16 +183,14 @@ class Dataframe(Database):
         super().__del__()
 
 
-class Roll(object):
+def randomroll(request):
     # Ta funkcja generuje losowe wyniki dla wybranej gry.
-    def __init__(request):
-        radio = request.POST['gamesel']
-        rangedict = {"1": 80, "2": 50, "3": 43, "4": 36, }
-        kdict = {"1": 20, "2": 6, "3": 5, "4": 5, }
-        lst1 = []
-        lst1.append(sorted(random.sample(
-         list(range(1, rangedict[radio])), kdict[radio])))
-        if radio == "4":
-            lst1.append(random.sample(list(range(1, 5)), k=1))
-        print(lst1)
-        return lst1
+    radio = request.POST['gamesel']
+    rangedict = {"1": 80, "2": 50, "3": 43, "4": 36, }
+    kdict = {"1": 20, "2": 6, "3": 5, "4": 5, }
+    lst1 = []
+    lst1.append(sorted(random.sample(
+     list(range(1, rangedict[radio])), kdict[radio])))
+    if radio == "4":
+        lst1.append(random.sample(list(range(1, 5)), k=1))
+    return lst1

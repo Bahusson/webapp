@@ -6,7 +6,7 @@ from .models import RandomizerItems as Ri
 from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import Showroom
-from .management.randomize import Dataframe, Roll
+from .management.randomize import Dataframe, randomroll
 from django.http import JsonResponse
 
 
@@ -66,7 +66,7 @@ def pybrun(request):
 # Przycisk Randomizera "Zagraj".
 def roll(request):
     if request.method == 'POST':
-        rolls = Roll(request)
+        rolls = randomroll(request)
         responsedata = {
             'numbers': rolls
         }
