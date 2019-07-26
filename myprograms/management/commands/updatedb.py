@@ -39,17 +39,12 @@ class Updatedb(object):
 
         # Updates database if it's the first visit that day.
         fulldate = datetime.date.today()
-        #currday = str(fulldate.day)
         currday = str(fulldate)
         print('today is ' + currday)
-        # self.db = "database={0} user={1} host={2} password={3}".format(
-        # db_base, user, host, password)
         if currday == update_val:
             print('database up to date')
             pass
         else:
-            # OszczędnośĆ zasobów. Nie aktualizuje bazy danych,
-            # kiedy nikt nie korzysta z aplikacji.
             ctx = ssl.create_default_context()
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE

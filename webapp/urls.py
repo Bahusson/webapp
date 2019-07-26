@@ -18,8 +18,6 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 import jobs.views
-#import myprograms.randomize1
-#import myprograms.randomize
 
 
 urlpatterns = [
@@ -28,8 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
     path('myprograms/', include('myprograms.urls')),
-#    path('myprograms/generate/', myprograms.randomize.generate, name='generate'),
-#    path('myprograms/roll/', myprograms.randomize1.roll, name='roll'),
     path('techs/', include('jobs.urls')),
     path('tricks/', include('jobs.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

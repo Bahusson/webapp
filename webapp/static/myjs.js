@@ -10,7 +10,7 @@ $(document).ready(function(){
         $('#play').click(function(e) {
           e.preventDefault()
            $.ajax({
-                    url: "/lotto/roll/",
+                    url: "/myprograms/roll/",
                     type: "POST",
                     dataType: "json",
                     data: {
@@ -19,7 +19,7 @@ $(document).ready(function(){
 
                           },
                     success:function(data){
-                    $('#textarea2').val(data['number']);
+                    $('#textarea2').val(data['numbers']);
                                       }
                   });
         });

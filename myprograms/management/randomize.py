@@ -3,33 +3,32 @@ import psycopg2
 import pandas
 # from bokeh.plotting import figure, output_file, show
 # from bokeh.models import HoverTool, ColumnDataSource
+import random
 import re
 from .commands.updatedb import Updatedb
 
 
 # Żeby uniknąć zdań warunkowych wykorzystaj polimorfizm dla bazy 4!
 class Database(object):
-    '''Klasa rodzic, wzywa bazę danych do aktualizacji przy każdym uruchomieniu
-    o ile nie była już aktualizowana danego dnia,
-    oraz zwraca całość lub fragment pomiarów. '''
+    '''Klasa rodzic - wzywa bazę danych do aktualizacji przy każdym
+    uruchomieniu (o ile nie była już aktualizowana danego dnia),
+    oraz kalkuluje całość lub fragment pomiarów. '''
 
     def __init__(self, request):
-        if request.is_ajax():  # Czy można bez If request is ajax?
-            # Albo wyrzucić request is ajax do views?
+        self.base = int(request.POST.get('gamesel'))
+        self.all_data = int(request.POST['dateall'])
+        self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                                request.POST['datefrom'])
+        self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
+                                request.POST['dateto'])
+        self.extreme_nums = int(request.POST['numhilow'])
+        self.no_rolls = int(request.POST['norolls'])
+        self.mode = int(request.POST['mostoften'])
+        self.av_score = int(request.POST['avgscores'])
+        self.gen_graph = int(request.POST['graphgen'])
+        self.table = "game" + str(self.base)
 
-            self.base = int(request.POST.get('gamesel'))
-            self.all_data = int(request.POST['dateall'])
-            self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
-                                    request.POST['datefrom'])
-            self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
-                                    request.POST['dateto'])
-            self.extreme_nums = int(request.POST['numhilow'])
-            self.no_rolls = int(request.POST['norolls'])
-            self.mode = int(request.POST['mostoften'])
-            self.av_score = int(request.POST['avgscores'])
-            self.gen_graph = int(request.POST['graphgen'])
-            self.table = "game" + str(self.base)
-
+        # Zaktualizuj bazę danych.
         udb = Updatedb()
         # Lączenie z bazą danych...
         self.conn = psycopg2.connect(
@@ -81,8 +80,8 @@ class Database(object):
 
 
 class Dataframe(Database):
-    ''' Generuje największą i najmniejszą liczbę,
-    najczęstsze liczby, średnie i graf'''
+    ''' Klasa dziecko - Generuje największą i najmniejszą liczbę,
+    najczęstsze liczby, średnie, graf, oraz gołe wyniki'''
 
     def __init__(self, request):
         super().__init__(request)
@@ -101,18 +100,21 @@ class Dataframe(Database):
             self.df1 = self.df.drop(self.df.columns[0:4], 1)
             self.df1 = self.df1.drop(self.df.columns[-1], 1)
 
+    # Zwraca gołe wyniki z całego okresu pomiarów
     def searchall(self):
         super().selectall()
         self.cur.execute(self.searchquery)
         rows = self.cur.fetchall()
         return rows
 
+    # Zwraca ograniczone wyniki z danego okresu.
     def returndate(self):
         super().selectdate()
         self.cur.execute(self.execall)
         rows = self.cur.fetchall()
         return rows
 
+    # Nadfunkcja - kalkuluje df dla dwóch podfunkcji poniżej.
     def preparedf(self):
         if self.base != 4:
             self.df1 = self.df.drop(self.df.columns[0:5], 1)
@@ -126,6 +128,7 @@ class Dataframe(Database):
         self.nums = df3.sort_values(
          ['total'], ascending=[False])[:self.mode].index.values
 
+    # Zwraca najwyższą i najniższą liczbę.
     def extremes(self):
         if self.extreme_nums is 1:
             self.preparedf()
@@ -134,6 +137,7 @@ class Dataframe(Database):
         else:
             return "Nie wybrano liczb skrajnych"
 
+    # Zwraca najczęściej występujące liczby w ilości X od najwyższej.
     def modals(self):
         if int(self.mode) > 0:
             self.preparedf()
@@ -142,6 +146,8 @@ class Dataframe(Database):
         else:
             return "Nie wybrano najczęstszych liczb"
 
+    # Nadfunkcja - szykująca df dla dwóch podfunkci poniżej. NIEUKOŃCZONA!
+    # W tej chwili po prostu zwraca średnie.
     def makedf(self):
         if self.base != 4:
             self.df1 = self.df.drop(self.df.columns[0:3], 1)
@@ -165,15 +171,28 @@ class Dataframe(Database):
     #            Freqs=df5.values
     #            ))
         if self.av_score == 1:
-
             return average
         else:
             average = "Nie wybrano generowania średnich"
-            return average #"Nie wybrano generowania średnich"
+            return average
         if self.gen_graph == 1:
             # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
             pass
 
     def __del__(self):
         super().__del__()
-        #self.conn.close()
+
+
+class Roll(object):
+    # Ta funkcja generuje losowe wyniki dla wybranej gry.
+    def __init__(request):
+        radio = request.POST['gamesel']
+        rangedict = {"1": 80, "2": 50, "3": 43, "4": 36, }
+        kdict = {"1": 20, "2": 6, "3": 5, "4": 5, }
+        lst1 = []
+        lst1.append(sorted(random.sample(
+         list(range(1, rangedict[radio])), kdict[radio])))
+        if radio == "4":
+            lst1.append(random.sample(list(range(1, 5)), k=1))
+        print(lst1)
+        return lst1
