@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.forms import UserCreationForm, User
+from django import forms
 
 
 class Pageitem(models.Model):
@@ -79,3 +81,19 @@ class Curriculum(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ExtendedCreationForm(UserCreationForm):
+    # Rozszerzenie formularza rejestracji
+    email = forms.EmailField(max_length=75)
+
+    class Meta:
+        model = User
+        fields = ("username", "email")
+
+    def save(self, commit=True):
+        user = super(ExtendedCreationForm, self).save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user

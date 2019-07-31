@@ -27,11 +27,10 @@
             <p>{{ items.username }}: {{ form.username }} </p>
             <p>{{ items.password }}: {{ form.password }} </p>
 
-            <input class="btn btn-primary my-2" type="submit" value="{{ item1.login }}">
+            <input class="btn btn-primary my-2" type="submit" value="{{ items.login }}">
             <input type="hidden" name="next" value="{{ next }}">
-            <a class="btn btn-secondary my-2" href="{% url 'home' %}">{{ item.back }}</a>
           </form>
-          <p><a href="{% url 'register' %}">{{ item.register }}</a></p>
+          <p><a href="{% url 'register' %}">{{ items.register }}</a></p>
         </div>
       </section>
     </main>

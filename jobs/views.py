@@ -10,13 +10,13 @@ from myprograms.models import ProgramPage as Pp
 from .models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import PageLoad, Trick, Blog, Tech, Showroom, CV
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from .models import ExtendedCreationForm
 
 
 # Strona Startowa.
 def home(request):
     pl = PageLoad(P, L)
-    pl.gen()
     context = {'items': pl.items,
                'langs': pl.langs, }
     return render(request, 'tricks/home.html', context)
@@ -96,7 +96,7 @@ def logger(request):
 # Formularz rejestracji.
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = ExtendedCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data['username']
@@ -107,7 +107,7 @@ def register(request):
             # Przekierowuje na stronę główną zalogowanego usera.
     else:  # Zanim wyślemy cokolwiek mysimy wygenerować formularz na stronie.
         pl = PageLoad(P, L)
-        form = UserCreationForm()
+        form = ExtendedCreationForm()
         context = {'items': pl.items,
                    'langs': pl.langs,
                    'form': form, }
