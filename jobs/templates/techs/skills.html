@@ -17,9 +17,13 @@
         <br />
         {% if tech.file %}<!--Pobierz certyfikat umiejętności w PDF jeśli dostępny-->
             <br />
+            {% if user.is_authenticated %}
             {% with tech as t %}
             <a href="{{ t.file.url }}">{{ items.see_cert }}</a>
             {% endwith %}
+            {% else %}
+            <a href="">{{ items.login_to_see }}</a>
+            {% endif %}
         {% else %}
             <br/>
         {% endif %}
@@ -36,9 +40,15 @@
           </ol>
         </div>
         <div class="p-3">
+          {% if user.is_authenticated %}
           <h4 class="font-strong">{{ items.download_cv }}</h4><!--Pobierz najnowsze CV w PDF-->
           <ol class="list-unstyled mb-0">
             <li><a href="{{ cv.file.url }}">{{ items.download_pdf }}</a></li>
+          {% else %}
+          <h4 class="font-strong">{{ items.download_cv }}</h4><!--Pobierz najnowsze CV w PDF-->
+          <ol class="list-unstyled mb-0">
+            <li><a href="">{{ items.login_to_see }}</a></li>
+          {% endif %}
         </div>
       </aside><!-- /.blog-sidebar -->
       </div>

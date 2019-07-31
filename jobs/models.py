@@ -8,7 +8,7 @@ class Pageitem(models.Model):
     news = models.CharField(max_length=200)  # Aktualności
     blog = models.CharField(max_length=200)  # Blog w tym języku
     download = models.CharField(max_length=200)  # programy w tym języku
-    contact = models.CharField(max_length=200)  # Kontakt w tym języku
+    contact = models.CharField(max_length=200)  # Kontakt / O mnie
     send_email = models.CharField(max_length=200)  # Ważne pliki
     login = models.CharField(max_length=200)  # Zaloguj
     logout = models.CharField(max_length=200)  # Wyloguj
@@ -32,6 +32,9 @@ class Pageitem(models.Model):
     gitter_link = models.CharField(max_length=200)  # link do gittera
     fresh_entries = models.CharField(max_length=200)  # Najnowsze wpisy.
     myphoto = models.ImageField(upload_to='images')  # Obrazek intro
+    authphoto = models.ImageField(upload_to='images')  # Obrazek o mnie
+    about_me = models.TextField()  # O mnie
+    login_to_see = models.CharField(max_length=200)  # zaluguj by obejrzeć
 
 
 class Trick(models.Model):

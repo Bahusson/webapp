@@ -24,8 +24,8 @@
                 <li>{{ pritems.published }}: {{ myprog.date_short }}</li>
                 <li>{{ pritems.weight }}: {{ myprog.weight }}</li>
                 <li>{{ pritems.license }}: {{ myprog.license }}
-                <a href="{{ myprog.downlink }}" target="_blank"><li>ściągnij plik exe</li></a>
-                <a href="{{ myprog.gitsrccode }}" target="_blank"><li>ściągnij kod źródłowy</li></a>
+                <a href="{{ myprog.downlink }}" target="_blank"><li>{{ pritems.download_exe }}</li></a>
+                <a href="{{ myprog.gitsrccode }}" target="_blank"><li>{{ pritems.link_git }}</li></a>
               </ul>
               <p>{{ myprog.readme }}</p>
 
