@@ -34,7 +34,12 @@ class Pageitem(models.Model):
     myphoto = models.ImageField(upload_to='images')  # Obrazek intro
     authphoto = models.ImageField(upload_to='images')  # Obrazek o mnie
     about_me = models.TextField()  # O mnie
-    login_to_see = models.CharField(max_length=200)  # zaluguj by obejrzeć
+    login_to_see = models.CharField(max_length=200)  # zaloguj by obejrzeć
+    register = models.CharField(max_length=200)  # zarejestruj
+    username = models.CharField(max_length=200)  # nazwa użytkownika
+    password = models.CharField(max_length=200)  # hasło
+    re_password = models.CharField(max_length=200)  # powt. hasło
+    email = models.CharField(max_length=200)  # email
 
 
 class Trick(models.Model):

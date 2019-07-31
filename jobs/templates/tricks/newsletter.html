@@ -113,11 +113,11 @@
               <li><a href="{{ items.git_link }}">{{ items.github }}</a></li>
               <li><a href="{{ items.gitter_link }}">{{ items.gitter }}</a></li>
               {% else %}
-              <li><a href="">{{ items.login_to_see }}</a></li>
+              <li><a href="{% url 'logger' %}">{{ items.login_to_see }}</a></li>
               {% endif %}
             </ol>
           </div>
-          
+
         </aside><!-- /.blog-sidebar -->
 
       </div><!-- /.row -->

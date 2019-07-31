@@ -9,7 +9,8 @@ class PageitemTranslate(TranslationOptions):
      'download_cv', 'download_pdf', 'blogfeed', 'carryon', 'newcode',
      'worthwhile', 'about', 'pageinfo', 'myskills', 'welcome', 'intro',
      'other', 'github', 'gitter', 'gitter_link', 'fresh_entries', 'myphoto',
-     'authphoto', 'about_me', 'login_to_see',)
+     'authphoto', 'about_me', 'login_to_see', 'register', 'username',
+     'password', 're_password', 'email', )
 
 
 translator.register(Pageitem, PageitemTranslate)

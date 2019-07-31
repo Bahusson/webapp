@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head %}
+  <title>{{ items.register }}</title>
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block body %}
+    <main role="main">
+      <section class="jumbotron text-center">
+        <div class="container">
+          <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <p>Formularz zawiera błędy!</p>
+            {% endif %}
+
+
+            <p>{{ items.username }} {{ form.username }}</p>
+            <p>{{ items.password }} {{ form.password1 }}</p>
+            <p>{{ items.re_password }} {{ form.password2 }}</p>
+            <p>{{ items.email }} {{ form.email }}</p>
+
+            <input type="submit" value="{{ item.register }}">
+          </form>
+        </div>
+      </section>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

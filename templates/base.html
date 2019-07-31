@@ -44,7 +44,7 @@
               {% if user.is_authenticated %}
               <a class="nav-link" href="">{{ items.logout }} ({{ user.username }})</a>
               {% else %}
-              <a class="nav-link" href="">{{ items.login }}</a>
+              <a class="nav-link" href="{% url 'logger' %}">{{ items.login }}</a>
               {% endif %}
             </li>
             <li class="nav-item"><!-- Menu zmiany języka. Nie ruszaj tego -->

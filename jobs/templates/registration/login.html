@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head %}
+  <title>{{ items.login }}</title>
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block body %}
+    <main role="main">
+      <section class="jumbotron text-center">
+        <div class="container">
+          {% if form.errors %}
+          <p>Ups! Coś poszło nie tak!</p>
+          {% endif %}
+
+          {% if next %}
+          <p>Ta strona jest niedostępna.</p>
+          {% endif %}
+
+          <form method="post" action="{% url 'logger' %}">
+            {% csrf_token %}
+
+            <p>{{ items.username }}: {{ form.username }} </p>
+            <p>{{ items.password }}: {{ form.password }} </p>
+
+            <input class="btn btn-primary my-2" type="submit" value="{{ item1.login }}">
+            <input type="hidden" name="next" value="{{ next }}">
+            <a class="btn btn-secondary my-2" href="{% url 'home' %}">{{ item.back }}</a>
+          </form>
+          <p><a href="{% url 'register' %}">{{ item.register }}</a></p>
+        </div>
+      </section>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

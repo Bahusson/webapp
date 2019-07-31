@@ -36,7 +36,7 @@
             </div>
           </div>
           {% else %}
-            <a href="" class="btn btn-secondary my-3">{{ items.login_to_see }}</a>
+            <a href="{% url 'logger' %}" class="btn btn-secondary my-3">{{ items.login_to_see }}</a>
           {% endif %}
         </div>
       </section>
