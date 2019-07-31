@@ -38,7 +38,7 @@
               <a class="nav-link" href="{% url 'download' %}">{{ items.download }}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href=" ">{{ items.contact }}</a>
+              <a class="nav-link" href="{% url 'about' %}">{{ items.contact }}</a>
             </li>
             <li class="nav-item">
               {% if user.is_authenticated %}

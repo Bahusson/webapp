@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block head %}
-  <title>{{ items.headtitle }}</title>
+  <title>{{ items.contact }}</title>
 {% endblock %}
 
 {% block styles %}
@@ -14,10 +14,11 @@
       <section class="jumbotron text-center">
         <div class="container">
           <h1 class="jumbotron-heading">{{ items.welcome }}</h1>
-          <br>
           <img src="{{ items.myphoto.url }}" height="250" />
-          <br><br>
           <p class="lead text-muted">{{ items.intro }}</p>
+          <p>
+            <a href="mailto:jakub.kozdrowicz@gmail.com" class="btn btn-primary my-2">{{ items.send_email }}</a>
+          </p>
         </div>
       </section>
     </main>

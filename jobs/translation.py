@@ -8,7 +8,7 @@ class PageitemTranslate(TranslationOptions):
      'contact', 'send_email', 'login', 'logout', 'see_cert', 'skills_all',
      'download_cv', 'download_pdf', 'blogfeed', 'carryon', 'newcode',
      'worthwhile', 'about', 'pageinfo', 'myskills', 'welcome', 'intro',
-     'other', 'github', 'gitter', 'gitter_link', 'fresh_entries',)
+     'other', 'github', 'gitter', 'gitter_link', 'fresh_entries', 'myphoto')
 
 
 translator.register(Pageitem, PageitemTranslate)

@@ -31,6 +31,7 @@ class Pageitem(models.Model):
     gitter = models.CharField(max_length=200)  # tekst linku do gittera
     gitter_link = models.CharField(max_length=200)  # link do gittera
     fresh_entries = models.CharField(max_length=200)  # Najnowsze wpisy.
+    myphoto = models.ImageField(upload_to='images')  # Obrazek intro
 
 
 class Trick(models.Model):

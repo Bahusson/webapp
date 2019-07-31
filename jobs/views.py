@@ -21,6 +21,15 @@ def home(request):
     return render(request, 'tricks/home.html', context)
 
 
+def about(request):
+    tr = Trick(P, L)
+    tr.gen(Tr=Tr)
+    context = {'items': tr.items,
+               'langs': tr.langs,
+               'tricks': tr.tricks, }
+    return render(request, 'tricks/about.html', context)
+
+
 # Strona 'Aktualności'. Dużo różnych rzeczy - skrótowo.
 def newsletter(request):
     tr = Trick(P, L)
