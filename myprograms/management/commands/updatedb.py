@@ -77,9 +77,10 @@ class Updatedb(object):
                 df.to_sql(table, engine, if_exists="replace", index=False)
                 print('updated db ' + str(x) + '...')
                 x = x + 1
-            conn = engine.raw_connection()
-            cur = conn.cursor()
-            conn.commit()
+                conn = engine.raw_connection()
+                cur = conn.cursor()
+                conn.commit()
+                conn.close()
             print('updated dfs')
 
             conn = psycopg2.connect(
