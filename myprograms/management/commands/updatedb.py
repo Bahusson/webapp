@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 import configparser
 import datetime
 import os
+import time
 
 
 def gotolast(ctx):
@@ -45,22 +46,12 @@ class Updatedb(object):
             print('database up to date')
             pass
         else:
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-
-            # Funkcja znajduje zawsze ostatnią stronę wyników.
-            rl = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
-            url = rl + str(gotolast(ctx))
-            html = urllib.request.urlopen(url, context=ctx).read()
-            soup = BeautifulSoup(html, 'html.parser')
-            lsource = str(soup.find_all('td'))
-            g1 = re.findall(
-             r">(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>," +
-             " <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<",
-             lsource)
-            print(g1)
-
+            config.set('db_update', 'date', currday)
+            with open("database.ini.new", "w") as fh:
+                config.write(fh)
+            os.rename("database.ini", "database.ini~")
+            os.rename("database.ini.new", "database.ini")
+            print('current date set to:' + currday)
             x = 1
             gra = (' ', 'http://www.mbnet.com.pl/ml.txt',
                    'http://www.mbnet.com.pl/dl.txt',
@@ -81,8 +72,24 @@ class Updatedb(object):
                 cur = conn.cursor()
                 conn.commit()
                 conn.close()
+                time.sleep(1)
             print('updated dfs')
 
+            print("parsing data for base4")
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+
+            # Funkcja znajduje zawsze ostatnią stronę wyników.
+            rl = 'https://www.wynikilotto.net.pl/ekstra-pensja/wyniki/'
+            url = rl + str(gotolast(ctx))
+            html = urllib.request.urlopen(url, context=ctx).read()
+            soup = BeautifulSoup(html, 'html.parser')
+            lsource = str(soup.find_all('td'))
+            g1 = re.findall(
+             r">(\d\d\d\d)</td>, <td>(\d\d)[.](\d\d)[.](\d\d\d\d)</td>," +
+             " <td>(\d\d) (\d\d) (\d\d) (\d\d) (\d\d) [+] <b>(\d\d)<",
+             lsource)
             conn = psycopg2.connect(
              dbname=self.db_base, user=self.user,
              host=self.host, password=self.password,)
@@ -103,10 +110,10 @@ class Updatedb(object):
             conn.commit()
             conn.close()
             print('connection closed')
-            config.set('db_update', 'date', currday)
-            with open("database.ini.new", "w") as fh:
-                config.write(fh)
-            os.rename("database.ini", "database.ini~")
-            os.rename("database.ini.new", "database.ini")
-            print('current date set to:' + currday)
+        #    config.set('db_update', 'date', currday)
+        #    with open("database.ini.new", "w") as fh:
+        #        config.write(fh)
+        #    os.rename("database.ini", "database.ini~")
+        #    os.rename("database.ini.new", "database.ini")
+        #    print('current date set to:' + currday)
             print('database updated successfully')

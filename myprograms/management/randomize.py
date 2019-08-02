@@ -181,6 +181,8 @@ class Dataframe(Database):
 
     def __del__(self):
         super().__del__()
+    # def __del__(self):
+    #     self.conn.close()
 
 
 def randomroll(request):
