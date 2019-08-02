@@ -45,11 +45,13 @@ def pybrun(request):
                 rows = r_df.returndate()
         extr = r_df.extremes()
         mode = r_df.modals()
-        dfr = r_df.makedf()
+        avg = r_df.giveaverage()
+        graph = r_df.givegraph()
         responsedata = {
             'extremes': extr,
             'modals': mode,
-            'average': dfr,
+            'average': avg,
+            'graph': graph,
             'rows': rows,
         }
         return JsonResponse(responsedata)

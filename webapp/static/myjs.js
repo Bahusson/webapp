@@ -46,7 +46,7 @@ $(document).ready(function(){
                     success:function(data){
                 //    var jdata = data['hilow','often',"avgsc","rolls"];
                   //  var finaldata = jdata.join("\n\n");
-                    $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + data['rows']);
+                    $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + data['graph'] + "\n\n" + data['rows']);
                     console.log(data)
                                       }
                   });

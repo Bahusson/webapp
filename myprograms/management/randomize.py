@@ -1,8 +1,8 @@
 # from django.http import JsonResponse, HttpResponse
 import psycopg2
 import pandas
-# from bokeh.plotting import figure, output_file, show
-# from bokeh.models import HoverTool, ColumnDataSource
+from bokeh.plotting import figure, output_file, show
+from bokeh.models import HoverTool, ColumnDataSource
 import random
 import re
 from .commands.updatedb import Updatedb
@@ -148,32 +148,56 @@ class Dataframe(Database):
         if self.base != 4:
             self.df1 = self.df.drop(self.df.columns[0:3], 1)
         df4 = self.df1.T
-        df5 = df4.mean().round(0).value_counts()
+        self.df5 = df4.mean().round(0).value_counts()
+
+    def giveaverage(self):
+        self.makedf()
         slist = list()
         nrlist = list()
-        while len(slist) < len(df5.index):
+        while len(slist) < len(self.df5.index):
             slist.append(" / ")
-        while len(nrlist) < len(df5.index):
+        while len(nrlist) < len(self.df5.index):
             nrlist.append("\n")
-        dfindex = df5.index.astype(str)
-        dfvalue = df5.values.astype(str)
+        dfindex = self.df5.index.astype(str)
+        dfvalue = self.df5.values.astype(str)
         zipped = zip(dfindex, slist, dfvalue, nrlist)
         a = list(zipped)
         ahead = ["Średnia" + " / " + "Częstotliwość" + "\n"]
         average = ahead + a
-    #    source = ColumnDataSource(
-    #        data=dict(
-    #            Means=df5.index,
-    #            Freqs=df5.values
-    #            ))
         if self.av_score == 1:
             return average
         else:
             average = "Nie wybrano generowania średnich"
             return average
+
+    def makegraph(self, source):
+        p = figure(
+         plot_width=500, plot_height=400, tools='pan, reset')
+        p.title.text = "Dystrybucja"
+        p.title.text_color = "Orange"
+        p.title.text_font = "times"
+        p.title.text_font_style = "italic"
+        p.yaxis.minor_tick_line_color = "Yellow"
+        p.xaxis.axis_label = "Średnie"
+        p.yaxis.axis_label = "Częstotliwości"
+        p.circle(
+         x='Means', y='Freqs', source=source,
+         size=10, color="red", alpha=0.6, )
+        hover = HoverTool(tooltips=[("Mean", "@Means"), ("Freq", "@Freqs")])
+        p.add_tools(hover)
+        output_file('graph1.html')
+        show(p)
+
+    def givegraph(self):
+        source = ColumnDataSource(
+            data=dict(
+                Means=self.df5.index,
+                Freqs=self.df5.values
+                ))
         if self.gen_graph == 1:
-            # makegraph() tutaj muszę popracowaĆ nad integracją bokeh z django
-            pass
+            self.makegraph(source)
+        else:
+            return 'Nie wybrano generowania wykresu'
 
     def __del__(self):
         super().__del__()
