@@ -24,8 +24,12 @@
                 <li>{{ pritems.published }}: {{ myprog.date_short }}</li>
                 <li>{{ pritems.weight }}: {{ myprog.weight }}</li>
                 <li>{{ pritems.license }}: {{ myprog.license }}
-                <a href="{{ myprog.downlink }}" target="_blank"><li>{{ pritems.download_exe }}</li></a>
-                <a href="{{ myprog.gitsrccode }}" target="_blank"><li>{{ pritems.link_git }}</li></a>
+                {% if user.is_authenticated %}
+                  <a href="{{ myprog.downlink }}" target="_blank"><li>{{ pritems.download_exe }}</li></a>
+                  <a href="{{ myprog.gitsrccode }}" target="_blank"><li>{{ pritems.link_git }}</li></a>
+                {% else %}
+                  <a href="{% url 'logger' %}"><li>{{ items.login_to_see }}</li></a>
+                {% endif %}
               </ul>
               <p>{{ myprog.readme }}</p>
 
