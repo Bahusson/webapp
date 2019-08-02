@@ -42,23 +42,19 @@ class Database(object):
         date_from = self.datfr[0]
         date_to = self.datto[0]
         range = "0"
-        lessq = '<='
-        moreq = '>='
         sign = ['MAX', 'MIN']
         if self.base == 1 or 4:
-            lessq = '>='
-            moreq = '<='
             sign = ['MIN', 'MAX']
             if self.base == 4:
                 range = "1"
 
-        selquery = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4}
-         AND "3" = {5} AND "4" = {6}'''.format(
-          sign[0], range, self.table, lessq,
+        selquery = '''SELECT {0}("{1}") FROM {2} WHERE "2" >= {3}
+         AND "3" = {4} AND "4" = {5}'''.format(
+          sign[0], range, self.table,
           date_from[2], date_from[1], date_from[0], )
-        selquery_ = '''SELECT {0}("{1}") FROM {2} WHERE "2" {3} {4}
-         AND "3" = {5} AND "4" = {6}'''.format(
-          sign[1], range, self.table, moreq,
+        selquery_ = '''SELECT {0}("{1}") FROM {2} WHERE "2" <= {3}
+         AND "3" = {4} AND "4" = {5}'''.format(
+          sign[1], range, self.table,
           date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.rowfrom = self.cur.fetchone()[0]
@@ -181,8 +177,6 @@ class Dataframe(Database):
 
     def __del__(self):
         super().__del__()
-    # def __del__(self):
-    #     self.conn.close()
 
 
 def randomroll(request):
