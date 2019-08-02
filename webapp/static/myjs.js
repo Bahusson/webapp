@@ -44,9 +44,10 @@ $(document).ready(function(){
                       csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                           },
                     success:function(data){
-                //    var jdata = data['hilow','often',"avgsc","rolls"];
-                  //  var finaldata = jdata.join("\n\n");
-                    $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + data['graph'] + "\n\n" + data['rows']);
+                    $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + data['rows']);
+                    document.getElementById("randgraph").innerHTML = "";
+                    item = JSON.parse(data['graph']);
+                    Bokeh.embed.embed_item(item, "randgraph");
                     console.log(data)
                                       }
                   });

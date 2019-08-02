@@ -7,8 +7,8 @@
 
 {% block styles %}
   <link href="{% static 'pybrun.css' %}" rel="stylesheet">
+  <link href="http://cdn.pydata.org/bokeh/release/bokeh-1.3.1.min.css" rel="stylesheet" type="text/css">
 {% endblock %}
-
 {% block body %}
   <div class="container"><!--start container for the APP-->
     <h1 class="px-3 py-3 pt-md-5 pb-md-4 text-center">{{ rand.title }}</h1>
@@ -154,9 +154,16 @@
           </div>
         </div><!--end row 8--><!--start of application form {% csrf_token %} -->
     </form><!--end of application form-->
+    <br><br>
+    <div id="randgraph"></div>
+    <br><br>
   </div><!--end container-->
 {% endblock %}
 
 {% block scripts %}
   <script src="{% static 'myjs.js' %}"></script>
+  <script src="https://cdn.pydata.org/bokeh/release/bokeh-1.3.1.min.js"></script>
+  <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.3.1.min.js"></script>
+  <script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-1.3.1.min.js"></script>
+  {{ script | safe }}
 {% endblock %}

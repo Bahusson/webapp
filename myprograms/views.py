@@ -75,7 +75,7 @@ def roll(request):
         return JsonResponse(responsedata)
 
 
-# Launchpad dla wszystkich programów. Rozszerzasz tylko listę o nazwy def.
+# Launchpad dla wszystkich programów. Rozszerzasz tylko redlistę o nazwy def.
 def launchme(request, place):
     redlist = ['pybrun', ]
     return redirect(redlist[place-1])

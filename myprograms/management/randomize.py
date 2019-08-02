@@ -1,11 +1,13 @@
 # from django.http import JsonResponse, HttpResponse
 import psycopg2
 import pandas
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure
 from bokeh.models import HoverTool, ColumnDataSource
 import random
 import re
 from .commands.updatedb import Updatedb
+from bokeh.embed import json_item
+import json
 
 
 # Żeby uniknąć zdań warunkowych wykorzystaj polimorfizm dla bazy 4!
@@ -170,32 +172,32 @@ class Dataframe(Database):
             average = "Nie wybrano generowania średnich"
             return average
 
-    def makegraph(self, source):
-        p = figure(
-         plot_width=500, plot_height=400, tools='pan, reset')
-        p.title.text = "Dystrybucja"
-        p.title.text_color = "Orange"
-        p.title.text_font = "times"
-        p.title.text_font_style = "italic"
-        p.yaxis.minor_tick_line_color = "Yellow"
-        p.xaxis.axis_label = "Średnie"
-        p.yaxis.axis_label = "Częstotliwości"
-        p.circle(
-         x='Means', y='Freqs', source=source,
-         size=10, color="red", alpha=0.6, )
-        hover = HoverTool(tooltips=[("Mean", "@Means"), ("Freq", "@Freqs")])
-        p.add_tools(hover)
-        output_file('graph1.html')
-        show(p)
-
     def givegraph(self):
+        self.makedf()
         source = ColumnDataSource(
             data=dict(
                 Means=self.df5.index,
                 Freqs=self.df5.values
                 ))
         if self.gen_graph == 1:
-            self.makegraph(source)
+            p = figure(
+             plot_width=500, plot_height=400, tools='pan, reset')
+            p.title.text = "Dystrybucja"
+            p.title.text_color = "Orange"
+            p.title.text_font = "times"
+            p.title.text_font_style = "italic"
+            p.yaxis.minor_tick_line_color = "Yellow"
+            p.xaxis.axis_label = "Średnie"
+            p.yaxis.axis_label = "Częstotliwości"
+            p.circle(
+             x='Means', y='Freqs', source=source,
+             size=10, color="red", alpha=0.6, )
+            hover = HoverTool(
+             tooltips=[("Mean", "@Means"), ("Freq", "@Freqs")])
+            p.add_tools(hover)
+            # json_export = json_item(p)
+            return json.dumps(json_item(p))
+
         else:
             return 'Nie wybrano generowania wykresu'
 
