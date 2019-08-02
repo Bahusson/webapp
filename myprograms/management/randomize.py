@@ -172,6 +172,7 @@ class Dataframe(Database):
             average = "Nie wybrano generowania średnich"
             return average
 
+    # Ta funkcja zwraca wykres Bokeh
     def givegraph(self):
         self.makedf()
         source = ColumnDataSource(
@@ -195,11 +196,9 @@ class Dataframe(Database):
             hover = HoverTool(
              tooltips=[("Mean", "@Means"), ("Freq", "@Freqs")])
             p.add_tools(hover)
-            # json_export = json_item(p)
             return json.dumps(json_item(p))
-
         else:
-            return 'Nie wybrano generowania wykresu'
+            return "0"
 
     def __del__(self):
         super().__del__()

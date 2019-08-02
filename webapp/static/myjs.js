@@ -44,12 +44,18 @@ $(document).ready(function(){
                       csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                           },
                     success:function(data){
-                    $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + data['rows']);
-                    document.getElementById("randgraph").innerHTML = "";
-                    item = JSON.parse(data['graph']);
-                    Bokeh.embed.embed_item(item, "randgraph");
-                    console.log(data)
-                                      }
-                  });
+                    var dograph = data['graph']
+                    if (dograph === "0") {
+                      document.getElementById("randgraph").innerHTML = ""; //Wyczyść zawartość, żeby nie powtarzać grafu
+                      $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + 'Nie wybrano generowania wykresu' + "\n\n" + data['rows']);
+                    }
+                    else {
+                      $('#textarea1').val(data['extremes'] + "\n\n" + data['modals'] + "\n\n" + data['average'] + "\n\n" + data['rows']);
+                      document.getElementById("randgraph").innerHTML = ""; //Wyczyść zawartość, żeby nie powtarzać grafu
+                      item = JSON.parse(data['graph']); //Zinterpretuj dane do grafu
+                      Bokeh.embed.embed_item(item, "randgraph"); //Wstaw graf w odpowiednie miejsce
+                    }
+                  }
+                });
         });
 });
