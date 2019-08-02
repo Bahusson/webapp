@@ -51,11 +51,11 @@ class Database(object):
                 range = "1"
 
         selquery = '''SELECT {0}("{1}") FROM {2} WHERE "2" >= {3}
-         AND "3" = {4} AND "4" = {5}'''.format(
+         AND "3" >= {4} AND "4" >= {5}'''.format(
           sign[0], range, self.table,
           date_from[2], date_from[1], date_from[0], )
         selquery_ = '''SELECT {0}("{1}") FROM {2} WHERE "2" <= {3}
-         AND "3" = {4} AND "4" = {5}'''.format(
+         AND "3" <= {4} AND "4" <= {5}'''.format(
           sign[1], range, self.table,
           date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
