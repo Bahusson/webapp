@@ -21,14 +21,19 @@ class Database(object):
         self.all_data = int(request.POST['dateall'])
         self.datfr = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                 request.POST['datefrom'])
+        print(str(len(self.datfr)))
         self.datto = re.findall(r"(\d\d\d\d)-(\d\d)-(\d\d)",
                                 request.POST['dateto'])
+        print(str(len(self.datto)))
         self.extreme_nums = int(request.POST['numhilow'])
         self.no_rolls = int(request.POST['norolls'])
         self.mode = int(request.POST['mostoften'])
         self.av_score = int(request.POST['avgscores'])
         self.gen_graph = int(request.POST['graphgen'])
         self.table = "game" + str(self.base)
+        if len(self.datfr) == 0 or len(self.datto) == 0:
+            self.all_data = 1
+            print('Nie wybrałeś/aś zakresu! Aplikuję korektę!')
 
         # Zaktualizuj bazę danych.
         udb = Updatedb()
