@@ -60,8 +60,15 @@ class Database(object):
           date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.rowfrom = self.cur.fetchone()[0]
+        print(self.rowfrom)
         self.cur.execute(selquery_)
-        self.rowto = self.cur.fetchone()[0] - self.rowfrom
+        try:
+            self.rowto = self.cur.fetchone()[0] - self.rowfrom
+        except TypeError:
+            print(
+             "To nie przejdzie. Jesteś poza zakresem! Aplikuję korektę...")
+            self.rowto = 0
+            self.rowfrom = 0
         if self.base == 4:
             self.execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9",
              "10" FROM {0} LIMIT {1} OFFSET {2}'''.format(
