@@ -60,7 +60,6 @@ class Database(object):
           date_to[2], date_to[1], date_to[0], )
         self.cur.execute(selquery)
         self.rowfrom = self.cur.fetchone()[0]
-        print(self.rowfrom)
         self.cur.execute(selquery_)
         try:
             self.rowto = self.cur.fetchone()[0] - self.rowfrom
@@ -70,8 +69,8 @@ class Database(object):
             self.rowto = 0
             self.rowfrom = 0
         if self.base == 4:
-            self.execall = '''SELECT "2", "3", "4", "5", "6", "7", "8", "9",
-             "10" FROM {0} LIMIT {1} OFFSET {2}'''.format(
+            self.execall = '''SELECT "1", "2", "3", "4", "5", "6", "7", "8",
+             "9", "10" FROM {0} LIMIT {1} OFFSET {2}'''.format(
               self.table, self.rowto, self.rowfrom, )
         else:
             self.execall = '''SELECT * FROM {0} LIMIT {1} OFFSET {2}'''.format(
@@ -105,19 +104,32 @@ class Dataframe(Database):
             self.df1 = self.df.drop(self.df.columns[0:4], 1)
             self.df1 = self.df1.drop(self.df.columns[-1], 1)
 
+    # Pokazuje ładniejsze wyniki na tablicy
+    def addspaces(self):
+        rollist = []
+        breaklist = []
+        while len(rollist) < len(self.rows):
+            rollist.append("Losowanie_nr: ")
+        while len(breaklist) < len(self.rows):
+            breaklist.append("\n\n")
+        zippedrows = zip(rollist, self.rows, breaklist)
+        self.rows = list(zippedrows)
+
     # Zwraca gołe wyniki z całego okresu pomiarów
     def searchall(self):
         super().selectall()
         self.cur.execute(self.searchquery)
-        rows = self.cur.fetchall()
-        return rows
+        self.rows = self.cur.fetchall()
+        self.addspaces()
+        return self.rows
 
     # Zwraca ograniczone wyniki z danego okresu.
     def returndate(self):
         super().selectdate()
         self.cur.execute(self.execall)
-        rows = self.cur.fetchall()
-        return rows
+        self.rows = self.cur.fetchall()
+        self.addspaces()
+        return self.rows
 
     # Nadfunkcja - kalkuluje df dla dwóch podfunkcji poniżej.
     def preparedf(self):
@@ -151,14 +163,14 @@ class Dataframe(Database):
         else:
             return "Nie wybrano najczęstszych liczb"
 
-    # Nadfunkcja - szykująca df dla dwóch podfunkci poniżej. NIEUKOŃCZONA!
-    # W tej chwili po prostu zwraca średnie.
+    # Nadfunkcja - szykująca df dla dwóch podfunkci poniżej.
     def makedf(self):
         if self.base != 4:
             self.df1 = self.df.drop(self.df.columns[0:3], 1)
         df4 = self.df1.T
         self.df5 = df4.mean().round(0).value_counts()
 
+    # Te funkcja zwraca średnie
     def giveaverage(self):
         self.makedf()
         slist = list()
