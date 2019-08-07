@@ -13,17 +13,18 @@ from special.classes import PageLoad, Trick, Blog, Tech, Showroom, CV
 from django.contrib.auth.forms import AuthenticationForm
 from .models import ExtendedCreationForm
 
+pl = PageLoad(P, L)
+tr = Trick(P, L)
+
 
 # Strona Startowa.
 def home(request):
-    pl = PageLoad(P, L)
     context = {'items': pl.items,
                'langs': pl.langs, }
     return render(request, 'tricks/home.html', context)
 
 
 def about(request):
-    pl = PageLoad(P, L)
     context = {'items': pl.items,
                'langs': pl.langs, }
     return render(request, 'tricks/about.html', context)
@@ -31,7 +32,6 @@ def about(request):
 
 # Strona 'Aktualności'. Dużo różnych rzeczy - skrótowo.
 def newsletter(request):
-    tr = Trick(P, L)
     bl = Blog()
     te = Tech()
     pr = Showroom()
@@ -51,7 +51,6 @@ def newsletter(request):
 
 # Pełna strona konkretnej ciekawostki.
 def books(request, tricks_id):
-    tr = Trick(P, L)
     tr.gen(Tr=Tr, G404=G404, tricksid=tricks_id)
     context = {'items': tr.items,
                'langs': tr.langs,
@@ -85,7 +84,6 @@ def logger(request):
             # Tutaj trzeba wstawić jakiś error message.
             pass
     else:
-        pl = PageLoad(P, L)
         form = AuthenticationForm()
         context = {'items': pl.items,
                    'langs': pl.langs,
@@ -106,7 +104,6 @@ def register(request):
             return redirect('home')
             # Przekierowuje na stronę główną zalogowanego usera.
     else:  # Zanim wyślemy cokolwiek mysimy wygenerować formularz na stronie.
-        pl = PageLoad(P, L)
         form = ExtendedCreationForm()
         context = {'items': pl.items,
                    'langs': pl.langs,

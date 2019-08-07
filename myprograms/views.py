@@ -9,10 +9,11 @@ from special.classes import Showroom
 from .management.randomize import Dataframe, randomroll
 from django.http import JsonResponse
 
+sh = Showroom(P, L)
+
 
 # Strona z programami do ściągnięcia/przetestowania.
 def download(request):
-        sh = Showroom(P, L)
         sh.gen(Pp=Pp, Mp=Mp)
         context = {'items': sh.items,
                    'langs': sh.langs,
@@ -23,7 +24,6 @@ def download(request):
 
 # Strona ze szczegółami konkretnego programu.
 def progpage(request, place):
-    sh = Showroom(P, L)
     sh.gen(Pp=Pp, Mp=Mp, G404=G404, place=place)
     context = {'items': sh.items,
                'langs': sh.langs,
@@ -56,7 +56,6 @@ def pybrun(request):
         }
         return JsonResponse(responsedata)
     else:
-        sh = Showroom(P, L)
         sh.randomizer(Randomizer=Ri)
         context = {'items': sh.items,
                    'langs': sh.langs,
