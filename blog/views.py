@@ -5,11 +5,10 @@ from jobs.models import Pageitem as P
 from webapp.settings import LANGUAGES as L
 from special.classes import Blog
 
-bl = Blog(P, L)
-
 
 # Zestawienie wszystkich wpisów na blogu.
 def allblogs(request):
+    bl = Blog(P, L)
     bl.gen(B=B)
     context = {'items': bl.items,
                'langs': bl.langs,
@@ -19,6 +18,7 @@ def allblogs(request):
 
 # Pełna strona konkretnego wpisu na blogu.
 def detail(request, blog_id):
+    bl = Blog(P, L)
     bl.gen(B=B, G404=G404, blogid=blog_id)
     context = {'items': bl.items,
                'langs': bl.langs,
