@@ -6,7 +6,7 @@ bs4==0.0.1
 certifi==2019.6.16
 configparser==3.7.4
 decorator==4.4.0
-Django==2.2.13
+Django==2.2.22
 django-appconf==1.0.3
 django-modeltranslation==0.13.3
 Jinja2==2.10.1
